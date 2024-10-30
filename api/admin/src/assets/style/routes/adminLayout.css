@@ -1,0 +1,204 @@
+.layoutSet {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    height: 100vh;
+    overflow: hidden;
+
+    .layoutLeft {
+        border-right: 1px solid hsl(var(--border));
+
+        .listWrap {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px 10px 20px 20px;
+
+            .listMain {
+                .logoInfo {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+
+                    .logo {
+                        height: 30px;
+                        width: 30px;
+                    }
+                }
+
+                .list {
+                    margin-top: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+
+                    a {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 10px 15px;
+                        letter-spacing: .5px;
+                        border-radius: 10px;
+                        opacity: .6;
+
+                        p {
+                            font-weight: 500;
+                            font-size: .8rem;
+                        }
+                    }
+
+                    a:hover {
+                        opacity: 1;
+                        background: rgba(68, 68, 68, 0.267);
+                        border-radius: 10px;
+                    }
+
+                    .active {
+                        background: rgba(68, 68, 68, 0.267);
+                        opacity: 1;
+                    }
+                }
+
+                .listProfile {
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    background: rgba(68, 68, 68, 0.267);
+                    border-radius: 10px;
+                    padding: 10px 15px;
+                    margin-top: 10px;
+
+                    .o {
+                        height: 28px;
+                        width: 28px;
+                        background: orangered;
+                        border-radius: 100px;
+                    }
+
+                    .oContent {
+                        p:nth-child(1) {
+                            font-size: .9rem;
+                            font-weight: 600;
+                        }
+
+                        p:nth-child(2) {
+                            font-size: .75rem;
+                            margin-top: -4px;
+                            opacity: .8;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .layoutRight {
+        padding: 30px 20px 80px 20px;
+        overflow-y: scroll;
+    }
+
+    .layoutRight::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* users */
+.users {
+    .userrDataTop {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+
+        div {
+            flex: 1;
+        }
+    }
+
+    .userData {
+        margin-top: 30px;
+    }
+}
+
+.o {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}
+.navTop {
+    display: none;
+}
+
+
+@media screen and (max-width: 700px) {
+    .navTop {
+        height: 10vh;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        background: hsl(var(--background));
+        z-index: 30;
+        border-bottom: 1px solid hsl(var(--border));
+
+        .logoInfoV {
+            display: flex;
+            gap: 4px;
+        }
+
+        .navHam {
+            height: 30px;
+            width: 30px;
+        }
+    }
+
+    .layoutSet {
+        display: grid;
+        grid-template-columns: 1fr;
+        position: relative;
+
+        .layoutLeft {
+            background: hsl(var(--background));
+            position: absolute;
+            width: 80vw;
+            z-index: 5;
+            transform: translateX(-80vw);
+            animation: close 0.5s ease-in forwards; /* Adjusted for smooth closing */
+        }
+
+        .mobile-Open {
+            animation: open 0.5s ease-out forwards; /* Adjusted for smooth opening */
+        }
+
+        .layoutRight {
+            margin-top: 8vh;
+            .userrDataTop {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+}
+
+@keyframes open {
+    from {
+        transform: translateX(-80vw);
+    }
+
+    to {
+        transform: translateX(0vw);
+    }
+}
+
+@keyframes close {
+    from {
+        transform: translateX(0vw);
+    }
+
+    to {
+        transform: translateX(-80vw);
+    }
+}

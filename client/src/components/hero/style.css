@@ -1,0 +1,29 @@
+.hero {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url(../images/main/IMG_2855.jpg);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+
+    .heroWrap {
+        position: relative;
+        z-index: 2;
+        margin-top: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+
+
+        .heroAction {
+            margin-top: 10px;
+            display: flex;
+            gap: 20px;
+        }
+    }
+}

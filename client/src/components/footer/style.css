@@ -1,0 +1,113 @@
+footer{
+    margin-top: 60px;
+    padding: var(--set-spacing);
+    padding-top: 60px;
+    padding-bottom: 60px;
+    background: var(--color-blue);
+    color: white;
+    hr{
+        margin: 50px 0;
+        border: 1px solid white;
+    }
+}
+
+.logoFooter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    .logoBox {
+        width: 300px;
+    }
+}
+
+.logoList {
+    display: flex;
+    justify-content: space-between;
+
+    .lBox {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+
+        h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+    }
+}
+
+.logoCO{
+    display: flex;
+    gap: 20px;
+
+    .coBox{
+        height: 200px;
+        flex: 1;
+        background: white;
+
+    }
+
+    .coBox:nth-child(1){
+        background: url(../../libs/images/main/IMG_2909.jpg);
+        background-size: cover;
+        background-position: center;
+    }
+    .coBox:nth-child(2){
+        background: url(../../libs/images/main/IMG_2773.jpg);
+        background-size: cover;
+        background-position: center;
+    }
+    .coBox:nth-child(3){
+        background: url(../../libs/images/main/IMG_3516.jpg);
+        background-size: cover;
+        background-position: center;
+    }
+    .coBox:nth-child(4){
+        background: url(../../libs/images/main/IMG_2924.jpg);
+        background-size: cover;
+        background-position: center;
+    }
+    .coBox:nth-child(5){
+        background: url(../../libs/images/main/IMG_2855.jpg);
+        background-size: cover;
+        background-position: left;
+    }
+
+    .coBox:nth-child(6){
+        background: url(../../libs/images/main/IMG_2948.jpg);
+        background-size: cover;
+        background-position: center;
+    }
+}
+
+
+
+@media screen and (max-width: 700px){
+    .logoFooter {
+        .logoBox {
+            width: 200px;
+        }
+    }
+    
+    .logoList {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        justify-content: space-between;
+    }
+
+    .logoCO{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 140px 140px;
+        gap: 10px;
+
+    
+        .coBox{
+            height: 100%;
+            flex: 1;
+            background: white;
+    
+        }
+    }
+}

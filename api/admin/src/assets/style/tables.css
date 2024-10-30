@@ -1,0 +1,62 @@
+.actionWrap{
+    display: flex;
+    justify-content: space-between;
+}
+.rightAction{
+    display: flex;
+    gap:20px;
+}
+.fromWrapTour{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    margin-top: -200px;
+}
+
+.bttnWrap{
+    display: flex;
+    justify-content: space-between;
+}
+.checkP{
+    display: flex;
+    justify-content: center;
+
+    .pill{
+        font-size: .9rem;
+        text-transform: capitalize;
+    }
+}
+.proBoxImg{
+    height:80px;
+    width:80px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    img{
+        width: 100%;
+    }
+}
+.userImage{
+    height:100px;
+    width: 100px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: gray;
+}
+
+.pLabel{
+    font-size: .9rem;
+    opacity: .6;
+    letter-spacing: 1px;
+    margin-bottom: -5px;
+}
+.profileContentList{
+    margin-top: 20px;
+}
+.spacWrap{
+    display: flex;
+    gap: 20px;
+    .proInfo{
+        flex: 1;
+    }
+}

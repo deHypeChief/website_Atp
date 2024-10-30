@@ -1,0 +1,600 @@
+.borderWrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr 150px 350px;
+    grid-template-rows: 55vh 56vh;
+    gap: 10px;
+    grid-template-areas:
+        "aaa aaa aaa bbb"
+        "ccc ddd ddd bbb";
+    padding-bottom: 50px;
+}
+
+button {
+    font-size: .9rem;
+}
+
+.profile,
+.track,
+.notify,
+.cals {
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: white;
+}
+
+.profile {
+    grid-area: aaa;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .topAct {
+        display: flex;
+        justify-content: space-between;
+
+        .actProf {
+            height: 100px;
+            width: 100px;
+            border-radius: 1000px;
+            background: var(--color-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            h1{
+                color: white;
+                text-align: center;
+            }
+        }
+    }
+
+    .infoList {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        row-gap: 20px;
+        margin-top: 20px;
+
+        .infoMo {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+
+            p {
+                font-size: .9rem;
+                font-weight: 600;
+
+            }
+
+            .nHead {
+                font-weight: 500;
+
+                font-size: .8rem;
+            }
+
+        }
+    }
+}
+
+.track {
+    grid-area: ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    h2 {
+        text-align: center;
+    }
+
+    .trackBox {
+        height: 220px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .sopts {
+        display: flex;
+        justify-content: space-between;
+
+        .spbox {
+            gap: 5px;
+            display: flex;
+            align-items: center;
+
+            .spM {
+                height: 20px;
+                width: 20px;
+                background: var(--color-blue);
+                border-radius: 6px;
+            }
+
+            .spMa {
+                background: var(--color-main);
+            }
+
+            p {
+                font-size: .8rem;
+            }
+        }
+    }
+}
+
+.notify {
+    grid-area: ddd;
+
+    .topNo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .notiList {
+        overflow-y: scroll;
+        height: 262px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 20px;
+    }
+
+    .notiList::-webkit-scrollbar {
+        display: none;
+    }
+
+    .notiBox {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        border-radius: 10px;
+        background: #11385829;
+
+        p {
+            font-size: .9rem;
+        }
+
+        .comP {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .notiBo {
+            font-size: .8rem;
+            font-weight: 700;
+        }
+    }
+}
+
+.cals {
+    grid-area: bbb;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    h2 {
+        text-align: center;
+    }
+
+    .calBox {
+        height: 250px;
+    }
+
+    .torns {
+        height: 310px;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding-bottom: 40px;
+
+        .bonBox {
+            border: 1px solid #11385829;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-radius: 10px;
+
+            .bonVor {
+                display: flex;
+                gap: 10px;
+
+                .bonboxN {
+                    height: 20px;
+                    width: 20px;
+
+                    img {
+                        width: 80%;
+                    }
+                }
+
+                p {
+                    font-size: .9rem;
+                }
+            }
+
+
+        }
+    }
+
+    .torns::-webkit-scrollbar {
+        display: none;
+    }
+
+    .calsAction {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.spec {
+    display: none;
+}
+
+
+.overlayPage {
+    position: fixed;
+    top: 0;
+    z-index: 4;
+    backdrop-filter: blur(8px);
+    background: rgba(44, 44, 44, 0.131);
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .overWrap {
+        position: relative;
+        padding: 20px;
+        border-radius: 10px;
+        background: white;
+    }
+
+    .closeIcon {
+        position: fixed;
+        top: 60px;
+        right: 10vw;
+        height: 50px;
+        width: 50px;
+        border-radius: 100px;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    .tourCenter {
+        .tourImage {
+            height: 40vh;
+            width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            img {
+                width: 100%;
+            }
+
+            .qrCode {
+                height: 200px;
+                width: 200px;
+                background: red;
+                border-radius: 10px;
+                margin: 10px 0;
+            }
+        }
+
+        .Bn {
+            height: fit-content;
+        }
+
+        .tourText {
+            width: 300px;
+
+            .cetText {
+                text-align: center;
+            }
+
+            .regInfo {
+                margin: 20px 0 5px;
+                font-size: .9rem;
+                color: var(--color-blue);
+            }
+
+            .regPoints {
+                font-size: .9rem;
+                padding-bottom: 5px;
+            }
+        }
+
+        .tourAction {
+            margin-top: 20px;
+        }
+    }
+}
+
+.tourtextMain {
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+
+.coachBox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.caochImg {
+    height: 420px;
+    width: 380px;
+    background: red;
+    border-radius: 10px;
+}
+
+.boxStar {
+    margin: 20px 0 20px;
+    display: flex;
+    gap: 10px;
+
+    .starBox {
+        height: 20px;
+        width: 20px;
+        background: red;
+    }
+}
+
+.comentList {
+    margin-top: 10px;
+
+
+    h2 {
+        font-size: .9rem;
+    }
+
+    .commentBoxWrap {
+        height: 160px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-bottom: 30px;
+    }
+
+    .commentBoxWrap::-webkit-scrollbar {
+        /* width: 20px; */
+        display: none;
+    }
+
+    .commentBox {
+        display: flex;
+        gap: 10px;
+        background: #dfdfdf47;
+        padding: 10px;
+        border-radius: 10px;
+
+        .profileBox {
+            .imgBoxP {
+                height: 38px;
+                width: 38px;
+                background: red;
+                border-radius: 100px;
+            }
+        }
+
+        .contText {
+            width: 100%;
+
+            p {
+                font-size: .9rem;
+            }
+
+        }
+
+        .starSec {
+            display: flex;
+            margin-bottom: 3px;
+            justify-content: space-between;
+            gap: 5px;
+
+            p {
+                font-weight: 600;
+            }
+
+            .sec {
+                display: flex;
+                gap: 5px;
+
+                p {
+                    font-size: .9rem;
+                }
+
+                .starBox {
+                    height: 18px;
+                    width: 18px;
+                    background: red;
+                }
+            }
+        }
+    }
+}
+
+.textAreaReview {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    resize: none;
+}
+
+.coachInfo {
+    padding: 20px 0;
+    width: 400px;
+    height: 420px;
+}
+
+.reviewBttn {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.calBox {
+    position: relative;
+
+    button {
+        width: 20px;
+        padding: 0;
+        height: 20px;
+        background: green;
+        top: 40%;
+        position: absolute;
+    }
+
+    .upR {
+        right: 0;
+    }
+}
+
+.cardBoxup {
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    display: grid;
+    gap: 10px;
+}
+
+.cardBoxup::-webkit-scrollbar {
+    display: none;
+}
+
+.upCard {
+    /* width: 100px; Make each card take the full viewport width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 0;
+    gap: 10px;
+    text-align: center;
+    scroll-snap-align: start;
+
+    .ipText {
+        font-size: 6rem;
+    }
+
+    .datPill:nth-child(2) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5px;
+        gap: 5px;
+
+        img {
+            width: 11px;
+        }
+
+        p {
+            font-size: .9rem;
+            font-weight: 700;
+        }
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    .coachInfo {
+        width: 100%;
+        padding: 0;
+    }
+
+    .caochImg {
+        height: 200px;
+        width: 100%;
+    }
+
+    .coachBox {
+        overflow: hidden;
+        height: 580px;
+    }
+
+    .overlayPage {
+        .overWrap {
+            width: 350px;
+        }
+    }
+
+    .textAreaReview {
+        height: 160px;
+    }
+
+    .borderWrap {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .upCard {
+        padding: 55px 0;
+        gap: 30px;
+    }
+
+    .notify {
+        .notiBox {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border-radius: 10px;
+            background: #11385829;
+        }
+    }
+
+    .profile {
+        grid-area: aaa;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .topAct {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: space-between;
+            margin-bottom: 20px;
+
+            .actL {
+                h2 {
+                    margin-bottom: 10px;
+                    display: none;
+                }
+
+                .spec {
+                    display: block;
+                    text-align: center;
+                    margin: 10px 0 0px;
+                }
+            }
+
+            .actProf {
+                margin: auto;
+            }
+
+            .actR {
+                button {
+                    width: 100%;
+                }
+            }
+        }
+
+        .infoList {
+            display: none;
+            grid-template-columns: 1fr 1fr 1fr;
+            row-gap: 6px;
+        }
+    }
+}

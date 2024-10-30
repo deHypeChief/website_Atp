@@ -1,0 +1,282 @@
+.memContentSection {
+    margin: 15vh 0;
+
+    h1 {
+        padding-bottom: 10px;
+    }
+
+    .mem-plans {
+        padding: 60px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+        color: var(--color-blue);
+
+        .mem-image {
+            height: 280px;
+            width: 280px;
+            border-radius: 10px;
+            background: gray;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img{
+                width: 105%;
+            }
+        }
+    }
+}
+
+.mem-box {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 10px;
+    border: 4px solid transparent;
+    border-radius: 15px;
+
+    .bold {
+        font-weight: 600;
+        padding-right: 3px;
+    }
+
+    .info-text {
+        font-weight: 600;
+        font-style: italic;
+    }
+
+    .mem-info-price {
+        margin-top: -10px;
+        font-size: .9rem;
+        font-style: italic;
+    }
+
+    .mem-box-info {
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+
+        .mem-header {
+            margin-bottom: 20px;
+        }
+    }
+
+}
+
+.mem-box:hover {
+    background: rgba(128, 128, 128, 0.087);
+}
+
+.mem-selected {
+    border-color: var(--color-main);
+}
+
+.mem-action-bottom {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.coachList {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    overflow-y: auto;
+    gap: 30px;
+    margin-top: 20px;
+    padding-bottom: 30px;
+
+    .boxWrap{
+        text-align: center;
+        display: block;
+        width: 100%;
+
+        p{
+            text-align: center;
+        width: 100%;
+        }
+    }
+
+    .cardBox {
+        width: 350px;
+    }
+}
+
+.coach-selected {
+    border: 4px solid transparent;
+    border-radius: 15px;
+    border-color: var(--color-main);
+
+
+    .cardInfo {
+        border: none;
+    }
+}
+
+
+.durationWrap{
+    padding-bottom: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    .durImg{
+        height: 400px;,
+        width: 100%;
+        overflow: hidd;
+        img{
+            width: 100%;
+        }
+    }
+
+    .durBox{
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid var(--color-blue);
+    }
+
+    .durBox-selected {
+        border: 4px solid transparent;
+        border-radius: 15px;
+        border-color: var(--color-main);
+    }
+}
+
+
+.pickHeader{
+    margin-bottom: 30px;
+}
+.memButtonWrapAction{
+    display: flex;
+    gap: 20px;
+}
+
+@media screen and (max-width: 600px) {
+    .memContentSection {
+        margin: 15vh 0;
+
+        h1 {
+            padding-bottom: 10px;
+        }
+
+        .mem-plans {
+            padding: 60px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            color: var(--color-blue);
+        }
+
+        .mem-image {
+            height: 280px;
+            width: 100%;
+            border-radius: 10px;
+            background: gray;
+            margin-bottom: 10px;
+
+        }
+
+        .mem-box {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 300px;
+            gap: 10px;
+            border: 1 px solid transparent;
+            border-color: var(--color-main) border-radius: 15px;
+
+            .bold {
+                font-weight: 600;
+                padding-right: 3px;
+            }
+
+            .info-text {
+                font-weight: 600;
+                font-style: italic;
+            }
+
+            .mem-info-price {
+                margin-top: 10px;
+                font-size: .9rem;
+                font-style: italic;
+            }
+
+            .mem-box-info {
+                display: flex;
+                gap: 10px;
+                flex-direction: column;
+
+                .mem-header {
+                    margin-bottom: 20px;
+                }
+            }
+
+        }
+
+        .mem-box:hover {
+            background: rgba(128, 128, 128, 0.087);
+        }
+
+        .mem-selected {
+            border: 4px solid transparent;
+
+            border-color: var(--color-main);
+        }
+
+        .coach-selected {
+            border: 4px solid transparent;
+            border-radius: 15px;
+            border-color: var(--color-main);
+
+
+            .cardInfo {
+                border: none;
+            }
+        }
+
+        .mem-action-bottom {
+            display: flex;
+            justify-content: center;
+
+        }
+
+        .pickCoach {
+            padding: 20px 0 10vh;
+
+            .coachesBox {
+                position: relative;
+
+                .moveToggle {
+                    height: 30px;
+                    width: 30px;
+                    position: absolute;
+                    top: 40%;
+                    padding: 0;
+                }
+
+                .lMoveToggle {
+                    left: -1%;
+                }
+
+                .rMoveToggle {
+                    right: -1%;
+                }
+            }
+
+            .coachList {
+                width: 100%;
+                display: grid;
+                overflow-y: auto;
+                gap: 30px;
+                margin-top: 20px;
+
+
+                .cardBox {
+                    width: 350px;
+                }
+            }
+        }
+    }
+}

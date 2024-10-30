@@ -1,0 +1,32 @@
+.bCard {
+    text-align: center;
+    .bTop{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .vBoxbb {
+        height: 300px;
+        width:360px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+}
+
+@media screen and (max-width: 600px){
+    .bCard {
+        width: 100%;
+        text-align: center;
+        .bTop{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .vBoxbb {
+            height: 300px;
+            width:100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    
+    }
+}

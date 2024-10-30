@@ -1,0 +1,134 @@
+.aboutInfoBig {
+    margin: 100px 0;
+
+    h1 {
+        text-align: center;
+        font-size: 2.6rem;
+        line-height: 3rem;
+    }
+}
+
+.ourStory {
+    margin-top: 60px;
+
+    .storywrap {
+        display: flex;
+        gap: 40px;
+
+        .storyText {
+            width: 565px;
+
+            h1 {
+                margin-bottom: 20px;
+            }
+        }
+
+        .storyImg {
+            background: url(../images/main/IMG_3087.jpg);
+            background-size: cover;
+            background-position: bottom;
+            height: 90vh;
+            flex: 1;
+        }
+    }
+}
+
+.aims {
+    display: flex;
+    gap: 40px;
+    margin: 50px 0;
+
+    .aimfBox {
+        width: 565px;
+
+        h1 {
+            margin-bottom: 20px;
+        }
+    }
+}
+
+
+.teams {
+    margin-bottom: 80px;
+
+    .teamText {
+        margin-bottom: 40px;
+
+        h1 {
+            margin-bottom: 20px;
+        }
+    }
+
+    .teamCards {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    .aboutInfoBig {
+        margin: 50px 0;
+
+        h1 {
+            text-align: center;
+            font-size: 1.4rem;
+            line-height: 1.8rem;
+        }
+    }
+
+    .aims {
+        display: flex;
+        flex-direction: column;
+
+        .aimfBox {
+            width: 100%;
+
+            h1 {
+                margin-bottom: 20px;
+            }
+        }
+    }
+
+    .ourStory {
+        margin-top: 60px;
+
+        .storywrap {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 40px;
+
+            .storyText {
+                width: 100%;
+
+                h1 {
+                    margin-bottom: 20px;
+                }
+            }
+
+            .storyImg {
+                height: 50vh;
+                flex: initial;
+            }
+        }
+    }
+
+    .teams {
+        margin-bottom: 80px;
+
+        .teamText {
+            margin-bottom: 40px;
+
+            h1 {
+                margin-bottom: 20px;
+            }
+        }
+
+        .teamCards {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            justify-content: space-between;
+        }
+    }
+}

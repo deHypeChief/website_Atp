@@ -1,0 +1,39 @@
+.footerBase {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+from {
+    margin: 30px 0 0;
+}
+
+.fomWrap {
+    display: flex;
+    justify-content: center;
+}
+
+.scanBox {
+    .boxi {
+        height: 280px;
+        display: flex;
+        justify-content: center;
+        background: #000;
+
+        .boxMo {
+            width: 280px;
+            position: relative;
+
+            /* video{
+                width: 280px;
+                height: 280px;
+            } */
+
+            canvas{
+                position: absolute;
+                top: 0;
+                left: 0
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+button{
+    padding: 12px 30px;
+    font-size: 1rem;
+    background: var(--color-main);
+    color: var(--color-blue);
+    border: none;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+.alt{
+    background: none;
+    color: white;
+    border: var(--set-border);
+}
+
+.blue{
+    border-color: var(--color-blue);
+    color: var(--color-blue);
+} 
+
+.green{
+    border-color: var(--color-main);
+    color: var(--color-main);
+}   
+
+.full{
+    width: 100%;
+}

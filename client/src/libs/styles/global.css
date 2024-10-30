@@ -1,0 +1,134 @@
+@font-face {
+    font-family: Montserrat;
+    src: url(../fonts/Montserrat-VariableFont_wght.ttf);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Montserrat;
+
+    /* background: rgba(255, 0, 0, 0.123); */
+}
+body{
+    background: #F5F5F5;
+}
+:root {
+    --color-main: #92CD0C;
+    --color-alt: #92CD0C33;
+    --color-blue: #113858;
+
+    --set-spacing: 0 90px;
+    --set-border: 1px solid white;
+}
+
+
+h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    line-height: 4.5rem;
+    letter-spacing: 1%;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 2.5rem;
+    letter-spacing: 1%;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 2.5rem;
+    letter-spacing: 1%;
+}
+
+h4{
+    text-transform: uppercase;
+}
+
+a {
+    font-size: 1rem;
+    letter-spacing: 1%;
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+}
+
+p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 1%;
+}
+
+img {
+    width: 100%;
+}
+
+section {
+    padding: var(--set-spacing);
+}
+.disabled{
+    opacity: .5;
+}
+
+@media screen and (max-width: 700px){
+    
+:root {
+    --set-spacing: 0 20px;
+}
+
+
+h1 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 2.5rem;
+    letter-spacing: 1%;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    letter-spacing: 1%;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 2.5rem;
+    letter-spacing: 1%;
+}
+
+h4{
+    text-transform: uppercase;
+}
+
+a {
+    font-size: 1.1rem;
+    letter-spacing: 1%;
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+}
+
+p {
+    font-size: .9rem;
+    font-weight: 500;
+    letter-spacing: 1%;
+}
+
+img {
+    width: 100%;
+}
+
+section {
+    padding: var(--set-spacing);
+}
+}

@@ -1,0 +1,15 @@
+.ticketWrap{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height:80vh;
+
+}
+.ticketplaceValid{
+    width: 700px;
+    text-align: center;
+
+    button{
+        margin: 20px 0 30px;
+    }
+}

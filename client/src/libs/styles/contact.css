@@ -1,0 +1,173 @@
+.contact {
+    padding-top: 120px;
+    display: flex;
+    gap: 30px;
+
+    .contactImg {
+        width: 800px;
+        height: 90vh;
+        border-radius: 10px;
+        background: url(../images/main/IMG_2781.jpg);
+        background-position: left;
+        background-size: cover;
+    }
+
+    .chatHeader {
+        margin-bottom: 30px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .formWrap {
+        display: flex;
+        gap: 10px;
+
+        input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #647C8F;
+            padding: 10px 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            outline: none;
+        }
+    }
+
+    textarea {
+        width: 100%;
+        resize: none;
+        font-size: 1rem;
+        font-weight: 600;
+        height: 200px;
+        border: none;
+        border-bottom: 2px solid #647C8F;
+        outline: none;
+        padding: 10px 10px;
+    }
+
+    .formAction {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .actionButton {
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            border-radius: 10px;
+            width: 500px;
+
+            .actIcon {
+                height: 40px;
+                width: 40px;
+            }
+
+            .actionText {
+                .boldForm {
+                    font-weight: 600;
+                }
+            }
+        }
+        .activeFo{
+            border: 2px solid #92CD0C;
+        }
+    }
+    form{
+        button{
+            margin: 30px 0 0;
+            width: fit-content;
+        }
+    }
+}
+
+
+@media screen and (max-width: 600px){
+    .contact {
+        padding-top: 120px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    
+        .contactImg {
+            display: none;
+        }
+    
+        .chatHeader {
+            margin-bottom: 30px;
+        }
+    
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+    
+        .formWrap {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+    
+            input {
+                width: 100%;
+                border: none;
+                border-bottom: 2px solid #647C8F;
+                padding: 10px 10px;
+                font-size: 1rem;
+                font-weight: 600;
+                outline: none;
+            }
+        }
+    
+        textarea {
+            width: 100%;
+            resize: none;
+            font-size: 1rem;
+            font-weight: 600;
+            height: 200px;
+            border: none;
+            border-bottom: 2px solid #647C8F;
+            outline: none;
+            padding: 10px 10px;
+        }
+    
+        .formAction {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+    
+            .actionButton {
+                padding: 20px;
+                display: flex;
+                gap: 10px;
+                border-radius: 10px;
+                width: 100%;
+                align-items: center;
+    
+                .actIcon {
+                    height: 40px;
+                    width: 40px;
+                }
+    
+                .actionText {
+                    flex: 1;
+                    .boldForm {
+                        font-weight: 600;
+                    }
+                }
+            }
+            .activeFo{
+                border: 2px solid #92CD0C;
+            }
+        }
+
+        form{
+            button{
+                margin: 30px 0 0;
+            }
+        }
+    }
+}

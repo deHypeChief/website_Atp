@@ -1,0 +1,31 @@
+.useNov{
+    background: #F5F5F5 ;
+}
+
+.dashTopNav{
+    padding: var(--set-spacing);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logoTop{
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .logoc{
+        width: 100px;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .logoTop h2{
+        display: none;
+    }
+}

@@ -1,0 +1,43 @@
+.ledCards{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+.lCard {
+    width: 340px;
+    /* flex: 1; */
+
+    .tourImg {
+        height: 60px;
+        width: 60px;
+        margin-bottom: 15px;
+        background: gray;
+        border-radius: 100px;
+    }
+
+    .lButton {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+
+        .tinyFaces {
+            display: flex;
+
+            .faces {
+                height: 40px;
+                width: 40px;
+                background: pink;
+                border-radius: 100px;
+                border: 2px solid black;
+            }
+            .faces:nth-child(2){
+                margin-right: -10px;
+                z-index: 1;
+            }
+            .faces:nth-child(1){
+                margin-right: -10px;
+                z-index: 2;
+            }
+        }
+    }
+}

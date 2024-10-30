@@ -1,0 +1,31 @@
+.vCardl {
+    text-align: center;
+    .vBox {
+        height: 300px;
+        width:360px;
+        border-radius: 10px;
+    }
+
+    p {
+        padding: 0 20px;
+        padding-top: 10px;
+        /* width: 300px; */
+    }
+}
+
+@media screen and (max-width: 600px){
+    .vCardl {
+        text-align: center;
+        .vBox {
+            height: 300px;
+            width:100%;
+            border-radius: 10px;
+        }
+    
+        p {
+            padding: 0 20px;
+            padding-top: 10px;
+            /* width: 300px; */
+        }
+    }
+}

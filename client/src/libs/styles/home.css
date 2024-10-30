@@ -1,0 +1,579 @@
+.hero {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url(../images/main/IMG_2855.jpg);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: white;
+
+    .heroWrap {
+        position: relative;
+        z-index: 2;
+        margin-top: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+
+
+        .heroAction {
+            margin-top: 10px;
+            display: flex;
+            gap: 20px;
+        }
+    }
+}
+
+.hero::before {
+    content: '';
+    /* Required to display the pseudo-element */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent overlay */
+    z-index: 1;
+    /* Ensure it’s behind the text */
+}
+
+.about {
+    margin-top: 70px;
+    .aboutWrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .aboutInfoSec {
+            width: 500px;
+
+            p {
+                padding-top: 20px;
+            }
+
+            .aboutAction {
+                padding-top: 20px;
+            }
+        }
+
+        .aboutImg {
+            height: 90vh;
+            width: 600px;
+            background: url(../images/main/IMG_3046.jpg);
+            background-size: cover;
+            background-position: center;
+        }
+    }
+}
+
+.heroSubTop {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+
+    .rArrow {
+        display: flex;
+        align-items: center;
+        width: 50px;
+    }
+
+    .rR {
+        img {
+            transform: rotateZ(180deg);
+        }
+    }
+}
+
+.secTop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.none {
+    opacity: .6;
+    text-decoration: line-through;
+}
+
+
+.featured {
+    margin-top: 150px;
+
+    .feaTop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cardWrap {
+        margin-top: 60px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        /* justify-content: space-between; */
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+}
+
+.membership {
+    margin-top: 150px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background: #92CD0C1A;
+
+
+    .prices {
+        padding: 0 40px;
+        margin-top: 80px;
+        display: flex;
+        justify-content: space-between;
+        gap: 38px;
+
+        .priceBox {
+            padding: 30px;
+            border-top: 8px solid var(--color-main);
+            background: #113858;
+            color: var(--color-main);
+            height: fit-content;
+            width: 400px;
+
+            .pTextHead {
+                text-align: center;
+                padding: 0 0 10px;
+
+                p {
+                    padding: 10px 0px 20px;
+                }
+
+                .amount {
+                    text-decoration: underline;
+                }
+            }
+
+            button {
+                margin-top: 10px;
+            }
+        }
+
+        .pList {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            li {
+                list-style: disc;
+            }
+        }
+
+        .priceBox:nth-child(1) {
+            margin-top: 60px;
+            border-top: 8px solid var(--color-blue);
+            background: #92CD0C;
+            color: var(--color-blue);
+        }
+
+        .priceBox:nth-child(3) {
+            border-top: 8px solid var(--color-blue);
+            margin-top: 60px;
+            background: #92CD0C;
+            color: var(--color-blue);
+        }
+    }
+}
+
+
+.pair {
+    margin-top: 150px;
+
+    .bonm {
+        margin-bottom: 30px;
+    }
+
+    .aboutWrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .aboutInfoSecPrice {
+            width: 550px;
+
+            p {
+                padding-top: 20px;
+            }
+
+            .aboutAction {
+                padding-top: 20px;
+            }
+        }
+
+        .aboutImg {
+            height: 90vh;
+            width: 600px;
+        }
+    }
+}
+
+
+
+.testimoney {
+    width: 550px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .testInfo {
+
+        height: 100%;
+
+        .person {
+            padding: 30px 0 0;
+
+            h4 {
+                margin-bottom: 10px;
+            }
+        }
+    }
+
+    .aboutAction {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+
+        .tesAction {
+            height: 30px;
+            width: 30px;
+            background: var(--color-blue);
+            border-radius: 100px;
+        }
+
+        .tesDots {
+            display: flex;
+            gap: 10px;
+
+            .aDot {
+                height: 14px;
+                width: 14px;
+                background: rgba(128, 128, 128, 0.381);
+                border-radius: 100px;
+            }
+
+            .active {
+                background: var(--color-blue);
+            }
+        }
+    }
+}
+
+.news {
+    margin-top: 100px;
+    background: #92CD0C1A;
+    padding-top: 50px;
+    padding-bottom: 50px;
+
+    .secTop {
+        text-align: center;
+    }
+
+    .newsP {
+        margin: 40px 0 0;
+    }
+
+    .newsInput {
+        margin-top: 30px;
+
+    }
+}
+
+.newWall {
+    padding-top: 80px;
+    height: 80vh;
+    background: url(../images/main/IMG_3516.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.inputN {
+    margin-top: 20px;
+    border: var(--set-border);
+    border-color: var(--color-blue);
+    width: fit-content;
+    border-radius: 10px;
+    overflow: hidden;
+
+    input {
+        /* height: 43px; */
+        font-size: 1rem;
+        padding: 10px 0px 10px 30px;
+        width: 400px;
+        border: none;
+        outline: none;
+    }
+}
+
+
+.pairImg{
+    background: url(../images/main/IMG_3302.jpg);
+    background-size: cover;
+    background-position: bottom;
+}
+
+
+@media screen and (max-width: 700px) {
+    .hero {
+        height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .heroWrap {
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+
+
+
+            .heroAction {
+                margin-top: 10px;
+                display: flex;
+                gap: 20px;
+            }
+        }
+    }
+
+    .about {
+        .aboutWrap {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            align-items: center;
+            justify-content: space-between;
+
+            .aboutInfoSec {
+                width: fit-content;
+
+                h1 {
+                    padding-top: 40px;
+                }
+
+                p {
+                    padding-top: 20px;
+                }
+
+                .aboutAction {
+                    padding-top: 20px;
+                }
+            }
+
+            .aboutImg {
+                height: 70vh;
+                width: 100%;
+            }
+        }
+    }
+
+    .featured {
+        margin-top: 150px;
+
+        .feaTop {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cardWrap {
+            margin-top: 60px;
+            display: grid;
+        grid-template-columns: 1fr;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+    }
+
+    .secTop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        h1 {
+            margin-top: 30px;
+            text-align: center;
+        }
+    }
+
+    .membership {
+        margin-top: 150px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        background: #92CD0C1A;
+
+
+        .prices {
+            padding: 0 0px;
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 38px;
+
+            .priceBox {
+                padding: 30px;
+                border-top: 8px solid var(--color-main);
+                background: #113858;
+                color: var(--color-main);
+                height: fit-content;
+                width: 100%;
+
+                .pTextHead {
+                    text-align: center;
+                    padding: 0 0;
+
+                    p {
+                        padding: 10px 0px 20px;
+                    }
+
+                    .amount {
+                        text-decoration: underline;
+                    }
+                }
+
+                button {
+                    margin-top: 0px;
+                }
+            }
+
+            .pList {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+
+                li {
+                    list-style: disc;
+                }
+            }
+
+            .priceBox:nth-child(1) {
+                margin-top: 0px;
+            }
+
+            .priceBox:nth-child(3) {
+                margin-top: 0px;
+            }
+        }
+    }
+
+    .pair {
+        margin-top: 150px;
+
+        .bonm {
+            margin-bottom: 30px;
+        }
+
+        .aboutWrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+
+            .aboutInfoSecPrice {
+                width: fit-content;
+
+                h1 {
+                    margin-top: 30px;
+
+                }
+
+                p {
+                    padding-top: 20px;
+                }
+
+                .aboutAction {
+                    padding-top: 20px;
+                }
+            }
+
+            .aboutImg {
+                margin-top: 50px;
+                height: 60vh;
+                width: 100%;
+            }
+        }
+    }
+
+    .testimoney {
+        margin-top: 40px;
+        width: fit-content;
+        height: 50vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .testInfo {
+
+            height: 100%;
+
+            .person {
+                padding: 30px 0 0;
+
+                h4 {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+
+        .aboutAction {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+
+            .tesAction {
+                height: 30px;
+                width: 30px;
+                background: var(--color-blue);
+                border-radius: 100px;
+            }
+
+            .tesDots {
+                display: flex;
+                gap: 10px;
+
+                .aDot {
+                    height: 14px;
+                    width: 14px;
+                    background: rgba(128, 128, 128, 0.381);
+                    border-radius: 100px;
+                }
+
+                .active {
+                    background: var(--color-blue);
+                }
+            }
+        }
+    }
+
+    .inputN {
+        button {
+            width: 100%;
+            border-radius: 0 0 10px 10px;
+        }
+
+        input {
+            /* height: 43px; */
+            font-size: 1rem;
+            padding: 20px 0px 20px 30px;
+            width: 100%;
+            border: none;
+            outline: none;
+        }
+    }
+}

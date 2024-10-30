@@ -1,0 +1,188 @@
+.upcomings {
+    margin-top: 100px;
+
+    .upActions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    .spBoxes{
+        display: grid;
+        gap: 30px;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+}
+
+.past {
+    margin-bottom: 30px;
+}
+
+.pasrspBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 40px;
+    padding-bottom: 20px;
+
+    button{
+        display: none;
+    }
+}
+
+.psAction {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 60px;
+}
+
+
+.meds {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    .medBox {
+        text-align: center;
+        width: fit-content;
+        margin-top: 40px;
+    }
+}
+
+.medCatGroup {
+    display: flex;
+    margin-top: 10px;
+
+    .medCat {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        padding-top: 20px;
+
+        .medIcon {
+            height: 40px;
+            width: 40px;
+            background: blue;
+        }
+
+        .medRound {
+            height: 150px;
+            width: 150px;
+            background: var(--color-main);
+            border-radius: 1000px;
+        }
+    }
+
+    .medCat:nth-child(2) {
+        z-index: 30;
+        margin: 0px -40px 0;
+        padding-top: 0;
+    }
+}
+
+
+.regWrap {
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    border-radius: 10px;
+
+    .regBox {
+        flex: 1;
+        padding: 20px;
+        width: 400px;
+        background: var(--color-alt);
+
+        .regText {
+            text-align: center;
+        }
+    }
+}
+
+
+.sporns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 40px;
+
+    .sponBox {
+        height: 80px;
+        width: 150px;
+    }
+}
+
+
+@media screen and (max-width: 700px){
+    .meds {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+        row-gap: 0px;
+        .medBox {
+            text-align: center;
+            width: fit-content;
+            margin-top: 20px;
+        }
+    }
+    .medCatGroup {
+        display: flex;
+        margin-top: 10px;
+    
+        .medCat {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            padding-top: 20px;
+    
+            .medIcon {
+                height: 40px;
+                width: 40px;
+                background: blue;
+            }
+    
+            .medRound {
+                height: 75px;
+                width: 75px;
+            }
+        }
+    
+        .medCat:nth-child(2) {
+            z-index: 30;
+            margin: 0px -40px 0;
+            padding-top: 0;
+        }
+    }
+
+    .regWrap {
+        margin-top: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+        border-radius: 10px;
+    
+        .regBox {
+            flex: 1;
+            padding: 20px;
+            width: 100%;
+            background: var(--color-alt);
+    
+            .regText {
+                text-align: center;
+            }
+        }
+    }
+
+    .upcomings {
+    .spBoxes{
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+}
+}
