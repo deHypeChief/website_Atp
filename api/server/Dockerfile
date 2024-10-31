@@ -6,19 +6,19 @@ WORKDIR /app
 COPY package.json package.json
 COPY bun.lockb bun.lockb
 
-RUN bun install
+RUN bun install  # Ensure bcrypt or bcryptjs is installed
 
 COPY ./src ./src
 
 ENV NODE_ENV=production
 
 RUN bun build \
-	--compile \
-	--minify-whitespace \
-	--minify-syntax \
-	--target bun \
-	--outfile server \
-	./src/index.ts
+    --compile \
+    --minify-whitespace \
+    --minify-syntax \
+    --target bun \
+    --outfile server \
+    ./src/index.ts
 
 FROM gcr.io/distroless/base
 
