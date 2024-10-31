@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 export function connectDb():void{
+    console.log(Bun.env.MONGO_URI)
     mongoose
     .connect(Bun.env.MONGO_URI as string)
     .then(()=>{
