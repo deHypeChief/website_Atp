@@ -90,7 +90,7 @@ const userHandle = new Elysia({
             }
             // Verify transaction via Flutterwave
             const verifyTransactions = await flw.get(`transactions/${query.transaction_id}/verify`);
-
+            console.log(verifyTransactions)
             if (verifyTransactions.data.status !== "success") {
                 set.status = 400;
                 return { message: "Transaction Error" };
@@ -121,12 +121,18 @@ const userHandle = new Elysia({
                         planId: planId,
                         planIntervalNumber: parseInt(billingType),
                         flutterwavePlanId: query.transaction_id,
-                        renewalDate: dayjs().add(billing.interval, 'month').valueOf(),
-                        planStartDate: Date.now()
+                        renewalDate:  new Date(dayjs().add(billing.interval, 'month').valueOf()),
+                        planStartDate: new Date()
                     }
                 },
-                { new: true }
-            ).lean();
+                { 
+                    new: true,
+                    runValidators: true, // Enable validation
+                    lean: true,
+                    // Explicitly select fields to avoid circular references
+                    select: 'membership assignedCoach plan email fullName'
+                }
+            );
             console.log(updatedUser);
             // Notify user of successful subscription
             await Notify.create({
@@ -165,7 +171,11 @@ const userHandle = new Elysia({
 
             set.status = 200;
             return {
-                flw: verifyTransactions,
+                flw: {
+                    amount: verifyTransactions.data.amount,
+                    currency: verifyTransactions.data.currency,
+                    status: verifyTransactions.data.status,
+                },
                 message: "Membership successfully updated"
             };
 

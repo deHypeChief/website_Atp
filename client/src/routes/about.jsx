@@ -93,6 +93,7 @@ export default function About() {
                 title={"Don’t just think, just do it."}
                 imageUrl={heroImg2}
                 altText={"Contact Us"}
+                altLink={"/contact"}
                 text={"Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat."}
             />
 

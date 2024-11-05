@@ -138,3 +138,26 @@ export const validateBilling = async(billingQuery)=>{
     throw new Error(error.response.data.message);
   }
 }
+
+export const getMe = async()=>{
+  try{
+    const response = await api.get(`/me`);
+    console.log(response.data.userData);
+    return response.data.userData
+  }catch (error) {
+    console.error("Error fetching user:", error);
+    throw new Error(error.response.data.message);
+  }
+}
+
+
+export const postComment = async(data)=>{
+  try{
+    const response = await api.post(`/coach/user/comment`, data);
+    console.log(response.data);
+    return response.data
+  }catch (error) {
+    console.error("Error posting comment:", error);
+    throw new Error(error.response.data.message);
+  }
+}

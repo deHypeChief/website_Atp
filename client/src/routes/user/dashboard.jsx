@@ -8,8 +8,8 @@ import raIcon2 from "../../libs/images/Vector-1.svg";
 import raIcon3 from "../../libs/images/Vector.svg";
 import raIcon4 from "../../libs/images/Group.svg";
 
-import { useQuery } from "@tanstack/react-query";
-import { checkMatch, getMatches, getNotify, getTour, getTourPayLink, getMembershPayLink } from "../../libs/api/api.endpoints";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { checkMatch, getMatches, getNotify, getTour, getTourPayLink, getMembershPayLink, getMe, postComment } from "../../libs/api/api.endpoints";
 import { useEffect, useRef, useState } from "react";
 // import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import dayjs from 'dayjs';
@@ -27,6 +27,7 @@ dayjs.extend(relativeTime);
 export default function Dashboard() {
     const { user } = useAuth();
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [userData, setUserData] = useState()
     const sliderRef = useRef(null);
     const isCalled = useRef(false);
 
@@ -70,6 +71,11 @@ export default function Dashboard() {
     const matchMutation = useQuery({
         queryKey: ["match"],
         queryFn: () => getMatches()
+    })
+
+    const userMutation = useQuery({
+        queryKey: ["user"],
+        queryFn: () => getMe()
     })
 
     const notifyMutation = useQuery({
@@ -135,14 +141,16 @@ export default function Dashboard() {
         setType({
             type: "paymentTour",
             data: payload,
-            user: user()  // Ensure user() is returning a valid user object
+            user: userMutation.data  // Ensure user() is returning a valid user object
         });
     }
 
     function OpenCoachReview() {
         setType({
             type: "OpenCoachReview",
-            data: {}
+            data: {
+                coach: userMutation.data?.assignedCoach
+            }
         });
     }
 
@@ -159,19 +167,21 @@ export default function Dashboard() {
                     <div className="actL">
                         <h2>Profile Overview</h2>
                         <div className="actProf">
-                            <h1>{user()?.fullName.split(" ")[0].split("")[0]}</h1>
+                            <h1>{userMutation.data?.fullName.split(" ")[0].split("")[0]}</h1>
                         </div>
-                        <h2 className="spec">Hello, {user()?.fullName}.</h2>
+                        <h2 className="spec">Hello, {userData?.fullName}.</h2>
                     </div>
                     <div className="actR">
-                        <Button onClick={OpenCoachReview}>View Coach</Button>
+                        {
+                            userMutation.data?.assignedCoach ? <Button onClick={OpenCoachReview}>View Coach</Button> : null
+                        }
                     </div>
                 </div>
 
                 <div className="infoList">
                     <div className="infoMo">
                         <p className="nHead">Name</p>
-                        <p>{user()?.fullName}</p>
+                        <p>{userMutation.data?.fullName}</p>
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Matches Played</p>
@@ -179,11 +189,11 @@ export default function Dashboard() {
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Membership</p>
-                        <p>{user()?.membership === "" ? "Free" : user()?.membership}</p>
+                        <p>{userMutation.data?.membership === "" ? "Free" : userMutation.data?.membership}</p>
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Phone</p>
-                        <p>{user()?.phoneNumber}</p>
+                        <p>{userMutation.data?.phoneNumber}</p>
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Matches Won</p>
@@ -191,11 +201,11 @@ export default function Dashboard() {
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Current Skill Level</p>
-                        <p>{user()?.level}</p>
+                        <p>{userMutation.data?.level}</p>
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Email</p>
-                        <p>{user()?.email}</p>
+                        <p>{userMutation.data?.email}</p>
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Medals Won</p>
@@ -203,7 +213,7 @@ export default function Dashboard() {
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Assigned Coach</p>
-                        <p>--</p>
+                        <p>{userMutation.data?.assignedCoach.coachName || "--"}</p>
                     </div>
                 </div>
             </div>
@@ -309,9 +319,9 @@ export default function Dashboard() {
                         <p>No tournaments available</p>
                     )}
                 </div>
-                <div className="calsAction">
+                {/* <div className="calsAction">
                     <Button>See all tournaments</Button>
-                </div>
+                </div> */}
             </div>
 
             <div className="notify">
@@ -367,7 +377,7 @@ export function ActionOverflow({ typeAction, payload }) {
                         : payload.type === "ticket"
                             ? <Ticket payload={payload} />
                             : payload.type === "OpenCoachReview"
-                                ? <ViewCoach />
+                                ? <ViewCoach payload={payload} />
                                 : null
                 }
             </div>
@@ -446,8 +456,7 @@ export function SelectedTourPayPage({ payload, action }) {
 }
 
 
-
-function Ticket(payload) {
+function Ticket({ payload }) {
     const { token, user, tournament } = payload.payload.payload.match
     useEffect(() => {
         console.log(payload.payload.payload.match)
@@ -490,155 +499,146 @@ function Ticket(payload) {
     )
 }
 
-function ViewCoach() {
-    const [commet, setComment] = useState({
+function ViewCoach({ payload }) {
+    const [formData, setFormData] = useState({});
+    const queryClient = useQueryClient();
+    const [comment, setComment] = useState({
         type: null,
         data: {}
-    })
+    });
 
     function openComment() {
-        setComment(
-            {
-                type: "connectSec",
-                data: {}
-            }
-        )
+        setComment({
+            type: "connectSec",
+            data: {}
+        });
     }
+
+    function closeComment() {
+        setComment({
+            type: null,
+            data: {}
+        });
+    }
+
+
+    const commentForm = useMutation({
+        mutationFn: (data) => postComment(data),
+        mutationKey: ["comment"],
+        onSuccess: () => {
+            // Invalidate the query for comments to refetch updated data
+            queryClient.invalidateQueries("user");
+        }
+    });
+
+    function handleForm(e) {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
+    }
+
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        console.log("Posting Comment:", formData);
+        closeComment()
+        commentForm.mutate(formData);
+    }
+
     return (
-        <>
-            <div className="coachBox">
-                <div className="caochImg">
+        <div className="coachBox">
+            <div className="caochImg">
+                <img src={payload.data?.coach.imageUrl} alt="" />
 
-                </div>
-                <div className="coachInfo">
-                    {
-                        commet.type === null ? (
-                            <>
-                                <div className="coachText">
-                                    <h3>Coach Name</h3>
-                                    <p>Coach info and what they do, like crazy thinghs</p>
-
-                                    <div className="boxStar">
-                                        <div className="starBox"></div>
-                                        <div className="starBox"></div>
-                                        <div className="starBox"></div>
-                                        <div className="starBox"></div>
-                                        <div className="starBox"></div>
-                                    </div>
-
-                                    <Button onClick={openComment}>Drop a review</Button>
-                                </div>
-                                <div className="comentList">
-                                    <h2>Reviews: </h2>
-
-                                    <div className="commentBoxWrap">
-
-                                        <div className="commentBox">
-                                            <div className="profileBox">
-                                                <div className="imgBoxP"></div>
-                                            </div>
-
-                                            <div className="contText">
-                                                <div className="starSec">
-                                                    <p>David Okoye</p>
-                                                    <div className="sec">
-                                                        <p>5</p>
-                                                        <div className="starBox"></div>
-                                                    </div>
-                                                </div>
-                                                <p>Comment text info</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="commentBox">
-                                            <div className="profileBox">
-                                                <div className="imgBoxP"></div>
-                                            </div>
-
-                                            <div className="contText">
-                                                <div className="starSec">
-                                                    <p>David Okoye</p>
-                                                    <div className="sec">
-                                                        <p>5</p>
-                                                        <div className="starBox"></div>
-                                                    </div>
-                                                </div>
-                                                <p>Comment text info</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="commentBox">
-                                            <div className="profileBox">
-                                                <div className="imgBoxP"></div>
-                                            </div>
-
-                                            <div className="contText">
-                                                <div className="starSec">
-                                                    <p>David Okoye</p>
-                                                    <div className="sec">
-                                                        <p>5</p>
-                                                        <div className="starBox"></div>
-                                                    </div>
-                                                </div>
-                                                <p>Comment text info</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="commentBox">
-                                            <div className="profileBox">
-                                                <div className="imgBoxP"></div>
-                                            </div>
-
-                                            <div className="contText">
-                                                <div className="starSec">
-                                                    <p>David Okoye</p>
-                                                    <div className="sec">
-                                                        <p>5</p>
-                                                        <div className="starBox"></div>
-                                                    </div>
-                                                </div>
-                                                <p>Comment text info</p>
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className="coachText">
-                                    <h3>Post a Review</h3>
-                                    <p>Post your review on your assigned coach</p>
-
-                                    <div className="boxStar">
-                                        <div className="starBox"></div>
-                                        <div className="starBox"></div>
-                                        <div className="starBox"></div>
-                                        <div className="starBox"></div>
-                                        <div className="starBox"></div>
-                                    </div>
-
-                                    <form action="">
-                                        <textarea className="textAreaReview" placeholder="Write your comment here" name="" id=""></textarea>
-                                        <div className="reviewBttn">
-                                            <Button alt blue onClick={() => {
-                                                setComment(
-                                                    {
-                                                        type: null,
-                                                        data: {}
-                                                    }
-                                                )
-                                            }}>Back</Button>
-                                            <Button>Drop a review</Button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </>
-                        )
-                    }
-                </div>
             </div>
-        </>
-    )
+            <div className="coachInfo">
+                {comment.type === null ? (
+                    <>
+                        <div className="coachText">
+                            <h3>{payload.data?.coach.coachName}</h3>
+                            <p>Rating: {payload.data?.coach.avgRate}</p>
+
+                            <Button onClick={openComment}>Drop a review</Button>
+                        </div>
+                        <div className="commentList">
+                            <h2>Reviews: </h2>
+                            <div className="commentBoxWrap">
+                                {payload.data?.coach.comment.length > 0 ? (
+                                    payload.data.coach.comment.map((item, index) => (
+                                        <div key={"cm" + index} className="commentBox">
+                                            <div className="profileBox">
+                                                <div className="imgBoxP">
+                                                    <h2>{item.userID.fullName.split(" ")[0].split("")[0].toUpperCase()}</h2>
+                                                </div>
+                                            </div>
+
+                                            <div className="contText">
+                                                <div className="starSec">
+                                                    <p>{item.userID.fullName}</p>
+                                                    <div className="sec">
+                                                        <p>{item.rating}</p>
+                                                        <div className="starBox">
+                                                        <Icon icon="noto:star" width="18px" height="18px" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p>{item.comment}</p>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No reviews yet.</p>
+                                )}
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="coachText">
+                            <h3>Post a Review</h3>
+                            <p>Post your review on your assigned coach</p>
+                            <form onSubmit={handleSubmit}>
+                                <input
+                                    required
+                                    name="rating"
+                                    onChange={handleForm}
+                                    type="number"
+                                    className="textInput"
+                                    placeholder="Rate the coach (0-5)"
+                                    min="0"
+                                    max="5"
+                                />
+                                <textarea
+                                    required
+                                    name="comment"
+                                    onChange={handleForm}
+                                    className="textAreaReview"
+                                    placeholder="Write your comment here"
+                                ></textarea>
+                                <div className="reviewBttn">
+                                    <Button
+                                        alt
+                                        blue
+                                        onClick={() =>
+                                            setComment({
+                                                type: null,
+                                                data: {}
+                                            })
+                                        }
+                                    >
+                                        Back
+                                    </Button>
+                                    <Button type="submit" disabled={commentForm.isPending}>
+                                        {commentForm.isPending ? "Adding Comment.." : "Drop a review"}
+                                    </Button>
+                                </div>
+                            </form>
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
 }

@@ -52,6 +52,7 @@ export const useAuth = () => {
 
         try {
             const isAuth = JSON.parse(storedPayload);
+            
             if (!isAuth?.user) {
                 userLogout();
                 return null;

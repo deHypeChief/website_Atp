@@ -67,7 +67,6 @@ function Matches() {
 			queryClient.invalidateQueries({ queryKey: ['match'] })
 		},
 		onError: (err) => {
-			console.error(err)
 			toast({
 				variant: "destructive",
 				title: "Token Verification Error",

@@ -15,6 +15,9 @@ export function MembershipAction({ planData = [] }) {
     const pickCoach = useRef();
     const plansBox = useRef();
     const pickDur = useRef();
+    const [memType, setMemType] = useState()
+    const [selectedPlan, setSelectedPlan] = useState()
+    const [selectedCoach, setSelectedCoach] = useState()
 
     const [page, setPage] = useState("plan")
     const [planId, setPlanId] = useState({
@@ -38,7 +41,21 @@ export function MembershipAction({ planData = [] }) {
         console.log(params, planId);
         navigate(`/signup?${params}`);
     }
-    function handleSelection(e, planId, index) {
+
+    useEffect(() => {
+        if (window.location.href.includes("combo")) {
+            setMemType("combo");
+            return;
+        }
+        if (window.location.href.includes("adult")) {
+            setMemType("adult");
+            return;
+        }
+    }, []);
+
+    
+
+    function handleSelection(e, planId, index, item) {
         e.preventDefault()
         const selectedBox = e.currentTarget;
 
@@ -55,13 +72,14 @@ export function MembershipAction({ planData = [] }) {
         setTimeout(() => setPage("coach"), 1000)
 
         setSelectedPlanIndex(index)
+        setSelectedPlan(item)
         setPlanId(prev => ({
             ...prev,
             planId
         }));
         console.log(planId, [...plansBox.current.children])
     }
-    function handleCoachSelection(e, coachId) {
+    function handleCoachSelection(e, coachId, item) {
         const selectedBox = e.currentTarget;
 
         // Remove the class from all children
@@ -74,6 +92,7 @@ export function MembershipAction({ planData = [] }) {
 
         // Update the selected coach ID
         setTimeout(() => setPage("duration"), 1000)
+        setSelectedCoach(item)
         setPlanId(prev => ({
             ...prev,
             coachId
@@ -113,7 +132,7 @@ export function MembershipAction({ planData = [] }) {
                                             <div
                                                 key={"memBox" + index}
                                                 className={`mem-box`}
-                                                onClick={(e) => handleSelection(e, item._id, index)}
+                                                onClick={(e) => handleSelection(e, item._id, index, item)}
                                             >
                                                 <div className="mem-image">
                                                     <img src={item.planImage} alt="" />
@@ -123,7 +142,7 @@ export function MembershipAction({ planData = [] }) {
                                                     <div className="mem-header">
                                                         <h3>{item.planName || "Kiddies Plan"}</h3>
                                                         <div className="mem-price">
-                                                            <h2>NGN {item.planPrice || "252,000"}</h2>
+                                                            <h2>{item.planPrice > 0 && "NGN"} {item.planPrice || "The price would be in coach section"}</h2>
                                                             <p className="mem-info-price">
                                                                 {item.priceInfo}
                                                             </p>
@@ -159,22 +178,35 @@ export function MembershipAction({ planData = [] }) {
                         </div>
                         <div className="coachList" ref={pickCoach}>
 
-                            {coachQuery?.data?.map((item, index) => (
+                            {
+                                coachQuery?.data?.map((item, index) => {
+                                    if (selectedPlan.filterPrams.includes(item.level)) {
+                                        return (
+                                            <div key={"ch" + index} className="cardBox" onClick={(e) => handleCoachSelection(e, item._id, item)}>
+                                                <div className="cardImg">
+                                                    <img src={item.imageUrl} alt="" />
+                                                </div>
+                                                <div className="cardInfo">
+                                                    <>
+                                                        <div className="boxWrap">
+                                                            <p>{item.coachName}</p>
+                                                        </div>
 
-                                <div key={"ch"+index} className="cardBox" onClick={(e) => handleCoachSelection(e, item._id)}>
-                                    <div className="cardImg">
-                                        <img src={item.imageUrl} alt="" />
-                                    </div>
-                                    <div className="cardInfo">
-                                        <>
-                                            <div className="boxWrap">
-                                                <p>{item.coachName}</p>
+                                                        {
+                                                            memType === "combo" ? (
+                                                                <div className="boxWrap">
+                                                                    <p>NGN {item.price}</p>
+                                                                </div>
+                                                            ) : ""
+                                                        }
+                                                    </>
+                                                </div>
                                             </div>
-                                        </>
-                                    </div>
-                                </div>
+                                        )
+                                    }
+                                })
+                            }
 
-                            ))}
                         </div>
                         <div className="memButtonWrapAction">
                             <Button onClick={() => setPage("plan")} alt blue>Back</Button>
@@ -192,13 +224,15 @@ export function MembershipAction({ planData = [] }) {
                         <div className="durationWrap" ref={pickDur}>
                             {
                                 planData[selectedPlanIndex].billingPlans.map((item, index) => {
+                                    const discountFactor = 1 - (item.discountPercentage / 100);
+                                    const payAmount = selectedCoach.price * item.interval * discountFactor;
                                     return (
                                         <div
                                             key={"in" + index}
                                             className={`durBox ${index === 0 ? "durBox-selected" : ""}`}
-                                            onClick={(e) => handleDurationSelection(e,index)}>
+                                            onClick={(e) => handleDurationSelection(e, index)}>
                                             <div className="durInfo">
-                                                <h1>NGN {item.billingPrice}</h1>
+                                                <h1>NGN {payAmount}</h1>
                                                 <h2>for {item.interval} months</h2>
                                             </div>
                                         </div>
@@ -235,56 +269,28 @@ export function ChildrenMembership() {
 }
 
 export function AdultMembership() {
-    const membershipPlans = [
-        {
-            _id: 0,
-            planName: "Kiddies Plan",
-            price: "N252,000",
-            priceInfo: "for three (3) months (VAT inclusive)",
-            description: "This plan is for children from ages 4 to 12 years.",
-            note: "Children in this age category are to be escorted and supervised by a parent/guardian on the court."
-        },
-        {
-            _id: 1,
-            planName: "Kiddies Plan",
-            price: "N252,000",
-            priceInfo: "for three (3) months (VAT inclusive)",
-            description: "This plan is for children from ages 4 to 12 years.",
-            note: "Children in this age category are to be escorted and supervised by a parent/guardian on the court."
-        }
-    ];
+    const planData = useQuery({
+        queryFn: () => getPlans("adult"),
+        queryKey: ["adultPlan"]
+    })
     return (
         <>
             <Hero title={"Adult Plan"} noAction subTitle={""} />
-            <MembershipAction planData={membershipPlans} />
+            <MembershipAction planData={planData?.data} />
         </>
     )
 }
 
 export function ComboMembership() {
-    const membershipPlans = [
-        {
-            _id: 0,
-            planName: "Kiddies Plan",
-            price: "N252,000",
-            priceInfo: "for three (3) months (VAT inclusive)",
-            description: "This plan is for children from ages 4 to 12 years.",
-            note: "Children in this age category are to be escorted and supervised by a parent/guardian on the court."
-        },
-        {
-            _id: 1,
-            planName: "Kiddies Plan",
-            price: "N252,000",
-            priceInfo: "for three (3) months (VAT inclusive)",
-            description: "This plan is for children from ages 4 to 12 years.",
-            note: "Children in this age category are to be escorted and supervised by a parent/guardian on the court."
-        }
-    ];
+    const planData = useQuery({
+        queryFn: () => getPlans("special"),
+        queryKey: ["specialPlan"]
+    })
 
     return (
         <>
             <Hero title={"Special Combo"} noAction subTitle={""} />
-            <MembershipAction planData={membershipPlans} />
+            <MembershipAction planData={planData?.data} />
         </>
     )
 }

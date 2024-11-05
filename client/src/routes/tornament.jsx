@@ -56,7 +56,7 @@ export default function Tournament() {
             </section>
 
             {/* past tornament */}
-            <section className="upcomings">
+            {/* <section className="upcomings">
                 <div className="upComs past">
                     <h1>Past Tournaments</h1>
                 </div>
@@ -78,7 +78,7 @@ export default function Tournament() {
                 <div className="psAction">
                     <Button>Vew Past Tornaments</Button>
                 </div>
-            </section>
+            </section> */}
 
             {/* leaderboard */}
             <section className="upcomings">
@@ -87,13 +87,13 @@ export default function Tournament() {
                     <p>Choose a level to see the leaders in that category</p>
                 </div>
                 <div className="upActions">
-                    {
+                    {/* {
                         tags.map((item) => (
                             <div key={item} className="tAc">
                                 <Button>{item}</Button>
                             </div>
                         ))
-                    }
+                    } */}
                 </div>
                 <div className="meds">
                     <div className="medBox">

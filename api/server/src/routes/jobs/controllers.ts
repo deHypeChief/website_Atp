@@ -13,7 +13,7 @@ const jobs = new Elysia()
 
             // Find users whose renewal date has passed
             const usersWithExpiredMemberships = await User.find({
-                "plan.renewalDate": { $lt: currentDate.toISOString() }
+                "plan.renewalDate": Date.now()
             });
 
             if (!usersWithExpiredMemberships.length) {
@@ -44,7 +44,8 @@ const jobs = new Elysia()
                 await User.findByIdAndUpdate(user._id, {
                     $unset: {
                         membership: "",
-                        plan: ""
+                        plan: {},
+                        assignedCoach:{}
                     }
                 });
 

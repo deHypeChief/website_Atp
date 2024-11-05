@@ -6,7 +6,7 @@ export const sendMail = (app: Elysia) =>
     .derive(async function handler({ set }) {
       function mailConfig(to: string, subject: string, html: string) {
         const mailOptions = {
-          from: process.env.MAIL,
+          from: "ATP Team",
           to,
           subject,
           html,

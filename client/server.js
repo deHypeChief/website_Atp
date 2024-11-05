@@ -1,4 +1,4 @@
-import { serve } from "bun";
+  import { serve } from "bun";
 import { statSync, readFileSync } from "fs";
 import { resolve, join, extname } from "path";
 

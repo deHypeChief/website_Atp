@@ -45,10 +45,6 @@ export default function Card({ altCard, payload, teamCard, onClick }) {
                                 </div>
                                 <div className="boxWrap">
                                     <div className="boxIcon"></div>
-                                    <p>NGN {payload?.price}</p>
-                                </div>
-                                <div className="boxWrap">
-                                    <div className="boxIcon"></div>
                                     <p>{payload?.rating}</p>
                                 </div>
                             </>
@@ -88,13 +84,13 @@ export default function Card({ altCard, payload, teamCard, onClick }) {
 
                 {
                     teamCard ? (
-                        <Link to={"/coaching/prosper"}>
+                        <Link to={`/coaching/${payload.id}`}>
                             <Button alt full blue>View Coach Profile</Button>
                         </Link>
                     ) : (
                         altCard ? (
                             <div className="altCard">
-                                <Link to={"/coaching/prosper"}>
+                                <Link to={`/coaching/${payload.id}`}>
                                     <Button alt full blue>View Coach Profile</Button>
                                 </Link>
                                 {/* {

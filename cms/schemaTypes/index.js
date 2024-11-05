@@ -1,7 +1,7 @@
 import { content } from "./content";
-import { plans } from "./plan";
+import { imageGala } from "./imageGala";
+import { reviews } from "./reviews";
 import { sponsorship } from "./sponsorship";
-import { team } from "./team";
-import { comments } from "./testimonials";
+import {links} from "./links"
 
-export const schemaTypes = [content, plans, comments, sponsorship, team]
+export const schemaTypes = [content, reviews, sponsorship, imageGala, links]

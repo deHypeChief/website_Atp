@@ -1,6 +1,6 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import Button from "../../components/button/button";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query"
 import { validateBilling } from "../../libs/api/api.endpoints";
 
@@ -9,17 +9,30 @@ export default function Billing() {
     const location = useLocation();
     const { planID, billingType, coachId } = useParams();
     const [isValid, setIsValid] = useState(false)
+    const hasRunRef = useRef(false);
+
 
     const billingQuery = useQuery({
-        queryFn: () => {
-            const url = new URL(window.location.href)
-            const billigUrl = `/${planID}/${billingType}/${coachId}/planCallback${url.search}`
-            return validateBilling(billigUrl)
+        queryFn: async () => {
+            if (hasRunRef.current) {
+                if (billingQuery.error) throw billingQuery.error;
+                return billingQuery.data;
+            }
+
+            hasRunRef.current = true;
+            const url = new URL(window.location.href);
+            const billingUrl = `/${planID}/${billingType}/${coachId}/planCallback${url.search}`;
+            return validateBilling(billingUrl);
         },
-        queryKey: ["validateTicket"],
+        queryKey: ["validateTicket", planID, billingType, coachId],
+        retry: false,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
-    })
+        refetchOnReconnect: false,
+        staleTime: Infinity,
+        cacheTime: 0,
+    });
+
     return (
         <div className="ticketWrap">
             {
@@ -45,6 +58,15 @@ export default function Billing() {
                     </div>
                 )
             }
+            {
+                billingQuery.isLoading && (
+                    <div className="ticket-place-valid">
+                        <div className="loading-container">
+                            <div className="loader"></div>
+                            <p>Processing payment...</p>
+                        </div>
+                    </div>
+                )}
         </div>
     )
 }

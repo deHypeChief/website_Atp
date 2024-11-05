@@ -9,7 +9,7 @@ export const membershipJob = new Elysia({
     .use(
         cron({
             name: 'membershipCleanup',
-            pattern: Patterns.everyMinutes(), // Runs daily at midnight; adjust as necessary
+            pattern: Patterns.EVERY_DAY_AT_MIDNIGHT, // Runs daily at midnight; adjust as necessary
             async run() {
                 console.log('Running membership cleanup job...');
                 try {

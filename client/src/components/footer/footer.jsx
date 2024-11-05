@@ -1,8 +1,27 @@
-import logo from  "../../libs/images/logo.svg"
+import { useEffect, useState } from "react"
+import logo from "../../libs/images/logo.svg"
 import "./style.css"
+import { client } from "../../sanityClient"
+import { Link } from "react-router-dom"
 
-export default function Footer(){
-    return(
+export default function Footer() {
+    const [footerData, setFooterData] = useState()
+    useEffect(() => {
+        async function FooterLinks() {
+            client.fetch(
+                `
+                    *[_type == "footerLinks"]
+                `
+            ).then((data)=>{
+                setFooterData(data)
+
+            }).catch((err)=>{
+                console.log(err)
+            })
+        }
+        FooterLinks()
+    }, [])
+    return (
         <footer>
             <div className="logoFooter">
                 <div className="logoBox">
@@ -13,28 +32,55 @@ export default function Footer(){
             <div className="logoList">
                 <div className="lBox">
                     <h4>Quick Links</h4>
-                    <p>Home</p>
-                    <p>About</p>
-                    <p>Memberships</p>
-                    <p>Tournaments</p>
+                    <Link to="/">
+                        <p>Home</p>
+                    </Link>
+                    <Link to="/about">
+                        <p>About </p>
+                    </Link>
+                    <Link to="/tournaments">
+                    <p>Tournaments </p>
+                    </Link>
+                    <Link to="/coaching">
                     <p>Coaching</p>
-                    <p>Video Library</p>
-                    <p>Contact Us</p>
+                    </Link>
+                    <Link to="/contact">
+                        <p>Contact Us</p>
+                    </Link>
+                    {/* <p>Memberships</p> */}
+                    {/* <p>Video Library</p> */}
                 </div>
                 <div className="lBox">
                     <h4>Social Media</h4>
-                    <p>Facebook</p>
-                    <p>Instagram</p>
-                    <p>LinkedIn</p>
-                    <p>X (Twitter)</p>
-                    <p>YouTube</p>
+                    <a href={footerData?.facebookLink || "/"}>
+                        <p>Facebook</p>
+                    </a>
+                    <a href={footerData?.instagramLink || "/"}>
+                        <p>Instagram</p>
+                    </a>
+                    <a href={footerData?.linkedinLink || "/"}>
+                        <p>LinkedIn</p>
+                    </a>
+                    <a href={footerData?.xLink || "/"}>
+                        <p>X (Twitter)</p>
+                    </a>
+
+                    <a href={footerData?.YoyoutubeLinkuTube || "/"}>
+                        <p>YouTube</p>
+                    </a>
                 </div>
 
                 <div className="lBox">
                     <h4>Legal Information</h4>
-                    <p>Privacy Policy</p>
-                    <p>Terms of Service</p>
-                    <p>Cookie Policy</p>
+                    <a href={footerData?.privacyLink || "/"}>
+                        <p>Privacy Policy</p>
+                    </a>
+                    <a href={footerData?.termsLink || "/"}>
+                        <p>Terms of Service</p>
+                    </a>
+                    <a href={footerData?.cookieLink || "/"}>
+                        <p>Cookie Policy</p>
+                    </a>
                 </div>
                 <div className="lBox">
                     <h4>Additional Options</h4>

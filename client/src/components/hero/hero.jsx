@@ -1,16 +1,16 @@
 import Button from "../button/button";
 import "./style.css"
 import line from "../../libs/images/Line.png"
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 
-export default function Hero({ title, subTitle, text, noAction, altText, imageUrl, pos }) {
+export default function Hero({ title, subTitle, text, noAction, altText, imageUrl, pos, altLink }) {
     return (
-        <section className="hero" style={{ 
+        <section className="hero" style={{
             backgroundImage: `url(${imageUrl})`,
             backgroundPosition: pos || "center",
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat'
-          }}>
+        }}>
             <div className="heroWrap">
                 {
                     !subTitle ? null : (
@@ -37,7 +37,9 @@ export default function Hero({ title, subTitle, text, noAction, altText, imageUr
                             <Link to="/signup">
                                 <Button>Get Started</Button>
                             </Link>
-                            <Button alt>{altText ? altText : "Learn More"}</Button>
+                            <Link to={altLink ? altLink : "/about"}>
+                                <Button alt>{altText ? altText : "Learn More"}</Button>
+                            </Link>
                         </div>
                     )
                 }

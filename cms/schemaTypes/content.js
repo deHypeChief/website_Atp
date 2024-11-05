@@ -89,5 +89,51 @@ export const content = defineType({
         hotspot: true
       }
     }),
+    defineField({
+      title: 'Footer Image 1',
+      name: 'footerImg1',
+      type: 'image',
+      options: {
+        hotspot: true
+      }
+    }),
+    defineField({
+      title: 'Footer Image 2',
+      name: 'footerImg2',
+      type: 'image',
+      options: {
+        hotspot: true
+      }
+    }),defineField({
+      title: 'Footer Image 3',
+      name: 'footerImg3',
+      type: 'image',
+      options: {
+        hotspot: true
+      }
+    }),defineField({
+      title: 'Footer Image 4',
+      name: 'footerImg4',
+      type: 'image',
+      options: {
+        hotspot: true
+      }
+    }),
+    defineField({
+      title: 'Footer Image 5',
+      name: 'footerImg5',
+      type: 'image',
+      options: {
+        hotspot: true
+      }
+    }),
+    defineField({
+      title: 'Footer Image 6',
+      name: 'footerImg6',
+      type: 'image',
+      options: {
+        hotspot: true
+      }
+    }),
   ],
 })

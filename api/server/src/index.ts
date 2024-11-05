@@ -14,6 +14,7 @@ import coach from "./routes/coach/plugin";
 import notify from "./routes/notifications/plugin";
 import { membershipJob } from "./middleware/cronJob";
 import cron from "./routes/jobs/plugin";
+import leader from "./routes/leaderboards/plugin";
 
 // Connect to the database
 connectDb();
@@ -35,6 +36,7 @@ app
   .use(match)
   .use(coach)
   .use(notify)
+  .use(leader)
   .get("/", () => "Server is Up and running 🦊")
   .listen(Bun.env.PORT || 3002);
 

@@ -8,13 +8,33 @@ import Hero from "../components/hero/hero"
 import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { getTour } from "../libs/api/api.endpoints"
+import { client, urlFor } from "../sanityClient"
+import { useEffect, useState } from "react"
+import Reviews from "../components/reviews/review"
 
 export default function Home() {
+    const [content, setContent] = useState([])
+
     const toruOuery = useQuery({
         queryFn: getTour,
         queryKey: ["indexTour"]
     })
-    console.log(toruOuery.data)
+
+    useEffect(() => {
+        async function getContent() {
+            client
+                .fetch(`
+                    *[_type == "atpContent"]
+                `)
+                .then((data) => {
+                    console.log(data)
+                    setContent(data)
+                })
+                .catch(console.error)
+        }
+        getContent()
+    }, [])
+
     const plans = [
         {
             title: "Children's Plan",
@@ -32,9 +52,10 @@ export default function Home() {
             link: "/membership/combo"
         }
     ]
+
     return (
         <>
-            <Hero title={"Join a Community of Passionate Players"} subTitle={"Elevate Your Game"} text={"Find your perfect match, learn from experts, and compete in thrilling tournaments."} imageUrl={heroImg} />
+            <Hero title={content?.homePageTitle || "Join a Community of Passionate Players"} subTitle={"Elevate Your Game"} text={"Find your perfect match, learn from experts, and compete in thrilling tournaments."} imageUrl={heroImg} />
 
             <section className="about">
                 <div className="aboutWrap">
@@ -49,13 +70,13 @@ export default function Home() {
                             </div>
                         </div>
                         <h1>
-                            Quality Course, Confident Ball
+                            {content?.homePageAboutTitle || "Quality Course, Confident Ball"}
                         </h1>
                         <p>
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
+                            {content?.homePageAboutText || `Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
                             <br />
                             <br />
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
+                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.`}
                         </p>
                         <div className="aboutAction">
                             <Button>Learn More</Button>
@@ -158,12 +179,11 @@ export default function Home() {
                             </div>
                         </div>
                         <h1>
-                            Find Your Perfect Coach
+                            {content?.homePageCoachTitle || "Find Your Perfect Coach"}
                         </h1>
                         <p>
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                            <br /><br />
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
+                            {content?.homePageCoachText || `Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
+                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.`}
                         </p>
                         <div className="aboutAction">
                             <Button>Find a Coach</Button>
@@ -176,47 +196,7 @@ export default function Home() {
             </section>
 
 
-            <section className="pair">
-                <div className="aboutWrap">
-                    <div className="aboutImg">
-
-                    </div>
-                    <div className="testimoney">
-                        <div className="testInfo">
-                            <p>
-                                <i>
-                                    &quot;
-                                    Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                                    <br /><br />
-                                    Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
-                                    &quot;
-                                </i>
-                            </p>
-
-                            <div className="person">
-                                <h4>Stacy Ajebo</h4>
-                                <p>Bank Manager</p>
-                            </div>
-                        </div>
-                        <div className="aboutAction">
-                            <div className="tesAction">
-
-                            </div>
-                            <div className="tesDots">
-                                <div className="aDot active"></div>
-                                <div className="aDot"></div>
-                                <div className="aDot"></div>
-                                <div className="aDot"></div>
-                                <div className="aDot"></div>
-                            </div>
-                            <div className="tesAction">
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
+            <Reviews/>
 
             <section className="news">
                 <div className="secTop">
@@ -230,7 +210,7 @@ export default function Home() {
                         </div>
                     </div>
                     <h1>
-                        stay up to date on atp activities and events
+                        Stay up to date on atp activities and events
                     </h1>
                 </div>
 

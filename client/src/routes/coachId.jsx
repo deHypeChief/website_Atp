@@ -16,14 +16,6 @@ export default function CoachInfo() {
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
                     </p>
                 </div>
-
-                <div className="actVids">
-                    <VideoCard/>
-                    <VideoCard/>
-                    <VideoCard/>
-                    <VideoCard/>
-                    <VideoCard/>
-                </div>
             </section>
         </>
     )

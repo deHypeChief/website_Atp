@@ -37,45 +37,26 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DataTablePagination } from "../components/pageination"
 import { useState } from "react"
 import "../../style/tables.css"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import api from "@/lib/axios"
-import axios from "axios"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { createLeaders } from "@/apis/endpoints"
+import { toast } from "@/hooks/use-toast"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -93,7 +74,7 @@ export function MatchTable<TData, TValue>({
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
     const [sorting, setSorting] = useState<SortingState>([])
-
+    const queryClient = useQueryClient()
 
     const table = useReactTable({
         data,
@@ -113,6 +94,42 @@ export function MatchTable<TData, TValue>({
             sorting,
         },
     })
+
+
+    const { mutate, isPending } = useMutation({
+		mutationFn: (data) => createLeaders(data),
+		onSuccess: (data) => {
+			console.log(data)
+			toast({
+				variant: "default",
+				title: "Winners Created Valid",
+				description: data.message,
+			})
+			queryClient.invalidateQueries({ queryKey: ['winners'] })
+		},
+		onError: (err) => {
+			console.error(err)
+			toast({
+				variant: "destructive",
+				title: "Winners Assigment Error",
+				description: err.response.data.message,
+			})
+		}
+	})
+    const FormSchema = z.object({
+        goldToken: z.string().min(6, {
+			message: "The token for gold is needed",
+		}),
+        silverToken: z.string().min(6, {
+			message: "The token for gold is needed",
+		}),
+        bronzeToken: z.string().min(6, {
+			message: "The token for gold is needed",
+		}),
+    })
+    const form = useForm<z.infer<typeof FormSchema>>({
+		resolver: zodResolver(FormSchema)
+	})
 
 
     return (
@@ -173,137 +190,55 @@ export function MatchTable<TData, TValue>({
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
-                                {/* <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(mutation.mutate)} className="space-y-4">
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(mutate)} className="space-y-4">
 
                                         <FormField
                                             control={form.control}
-                                            name="name"
+                                            name="goldToken"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
-                                                        <Input placeholder="Tournament Title" {...field} />
+                                                        <Input placeholder="Gold Token" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="silverToken"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder="Silver Token" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name="bronzeToken"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder="Bronze Token" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
 
-                                        <div className="fromWrapTour">
-                                            <FormField
-                                                control={form.control}
-                                                name="category"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl>
-                                                                <SelectTrigger>
-                                                                    <SelectValue placeholder="Select a category" />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectItem value="kids amatuer">Kids Amatuer</SelectItem>
-                                                                <SelectItem value="kids mid-level">Kids Mid-level</SelectItem>
-                                                                <SelectItem value="kids professional">Kids Professional</SelectItem>
-                                                                <SelectItem value="adult amatuer">Adult Amatuer</SelectItem>
-                                                                <SelectItem value="adult mid-level">Adult Mid-level</SelectItem>
-                                                                <SelectItem value="adult professional">Adult Professional</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <FormField
-                                                control={form.control}
-                                                name="price"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <Input placeholder="Price" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-
-                                        <div className="fromWrapTour">
-                                            <FormField
-                                                control={form.control}
-                                                name="location"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <Input placeholder="Location" {...field} />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-
-                                            <FormField
-                                                control={form.control}
-                                                name="date"
-                                                render={({ field }) => (
-                                                    <FormItem className="">
-                                                        <Popover>
-                                                            <PopoverTrigger asChild>
-                                                                <FormControl>
-                                                                    <Button
-                                                                        variant={"outline"}
-                                                                        className={cn(
-                                                                            "w-full pl-3 text-left font-normal",
-                                                                            !field.value && "text-muted-foreground"
-                                                                        )}
-                                                                    >
-                                                                        {field.value ? (
-                                                                            format(field.value, "PPP")
-                                                                        ) : (
-                                                                            <span>Pick a date</span>
-                                                                        )}
-                                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                                    </Button>
-                                                                </FormControl>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-auto p-0" align="start">
-                                                                <Calendar
-                                                                    mode="single"
-                                                                    selected={field.value}
-                                                                    onSelect={field.onChange}
-                                                                    initialFocus
-                                                                />
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
-
-                                        <FormItem>
-                                            <FormLabel>Upload Image</FormLabel>
-                                            <Input type="file" onChange={handleFileChange} />
-                                            <FormDescription>
-                                                Upload an image for the tournament.
-                                            </FormDescription>
-                                        </FormItem>
-
                                         <div className="bttnWrap">
-                                            <Button type="submit" disabled={mutation.isPending}>
+                                            <Button type="submit" disabled={isPending}>
                                                 {
-                                                    mutation.isPending ? "Uploading..." : "Create Tournament"
+                                                    isPending ? "Creating Winners..." : "Done"
                                                 }
                                             </Button>
-                                            <DialogFooter className="sm:justify-start">
-                                                <DialogClose asChild>
-                                                    <Button type="button">Close</Button>
-                                                </DialogClose>
-                                            </DialogFooter>
                                         </div>
                                     </form>
-                                </Form> */}
+                                </Form>
                             </div>
                         </DialogContent>
                     </Dialog>

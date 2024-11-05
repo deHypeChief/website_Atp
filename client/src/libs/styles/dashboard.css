@@ -337,10 +337,18 @@ button {
     width: 380px;
     background: red;
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    img{
+        width: 115%;
+    }
 }
 
 .boxStar {
-    margin: 20px 0 20px;
+    margin: 0px 0 20px;
     display: flex;
     gap: 10px;
 
@@ -348,6 +356,12 @@ button {
         height: 20px;
         width: 20px;
         background: red;
+    }
+}
+
+.coachText{
+    p{
+        padding-bottom: 30px;
     }
 }
 
@@ -360,7 +374,7 @@ button {
     }
 
     .commentBoxWrap {
-        height: 160px;
+        height: 210px;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
@@ -372,65 +386,80 @@ button {
         /* width: 20px; */
         display: none;
     }
+}
 
-    .commentBox {
-        display: flex;
-        gap: 10px;
-        background: #dfdfdf47;
-        padding: 10px;
-        border-radius: 10px;
 
-        .profileBox {
-            .imgBoxP {
-                height: 38px;
-                width: 38px;
-                background: red;
-                border-radius: 100px;
+.commentBox {
+    display: flex;
+    gap: 10px;
+    background: #dfdfdf47;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+
+    .profileBox {
+        .imgBoxP {
+            height: 38px;
+            width: 38px;
+            background: var(--color-blue);
+            border-radius: 100px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            h2{
+                color: white;
             }
         }
+    }
 
-        .contText {
-            width: 100%;
+    .contText {
+        width: 100%;
+
+        p {
+            font-size: .9rem;
+        }
+
+    }
+
+    .starSec {
+        display: flex;
+        margin-bottom: 3px;
+        justify-content: space-between;
+        gap: 5px;
+
+        p {
+            font-weight: 600;
+        }
+
+        .sec {
+            display: flex;
+            gap: 5px;
 
             p {
                 font-size: .9rem;
             }
 
-        }
-
-        .starSec {
-            display: flex;
-            margin-bottom: 3px;
-            justify-content: space-between;
-            gap: 5px;
-
-            p {
-                font-weight: 600;
-            }
-
-            .sec {
-                display: flex;
-                gap: 5px;
-
-                p {
-                    font-size: .9rem;
-                }
-
-                .starBox {
-                    height: 18px;
-                    width: 18px;
-                    background: red;
-                }
+            .starBox {
+                height: 18px;
+                width: 18px;
             }
         }
     }
 }
 
+
 .textAreaReview {
     width: 100%;
-    height: 200px;
+    height: 180px;
     padding: 10px;
     resize: none;
+}
+.textInput{
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 100%;
 }
 
 .coachInfo {
@@ -532,6 +561,7 @@ button {
     .textAreaReview {
         height: 160px;
     }
+    
 
     .borderWrap {
         display: flex;

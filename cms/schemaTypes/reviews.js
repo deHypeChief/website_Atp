@@ -1,8 +1,8 @@
 import {defineField, defineType} from 'sanity'
 
-export const comments = defineType({
-  name: 'comments',
-  title: 'Comments',
+export const reviews = defineType({
+  name: 'reviews',
+  title: 'Reviews',
   type: 'document',
   fields: [
     defineField({
@@ -11,18 +11,18 @@ export const comments = defineType({
       type: 'string',
     }),
     defineField({
-      title: 'Role or Position',
+      title: 'Role',
       name: 'role',
       type: 'string',
     }),
     defineField({
-      title: 'Comment',
-      name: 'comment',
+      title: 'Review Content',
+      name: 'reviewContent',
       type: 'text',
     }),
     defineField({
-      title: 'User Image',
-      name: 'userImage',
+      title: 'profile',
+      name: 'image',
       type: 'image',
       options: {
         hotspot: true

@@ -22,14 +22,14 @@ export default function Navbar() {
             name: "Coaching",
             link: "/coaching"
         },
-        {
-            name: "Resources",
-            link: "/resources"
-        },
-        {
-            name: "Video Library",
-            link: "/videos"
-        },
+        // {
+        //     name: "Resources",
+        //     link: "/resources"
+        // },
+        // {
+        //     name: "Video Library",
+        //     link: "/videos"
+        // },
         {
             name: "Contact Us",
             link: "/contact"

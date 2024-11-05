@@ -20,8 +20,8 @@ interface IUser extends Document {
     planId: ObjectId;
     planIntervalNumber: number;
     flutterwavePlanId: string;
-    planStartDate: string;
-    renewalDate: string;
+    planStartDate: Date;
+    renewalDate: Date;
   };
   comparePassword(candidatePin: string): Promise<boolean>;
 }
@@ -49,8 +49,8 @@ const userSchema = new mongoose.Schema<IUser>({
     planId: { type: Schema.Types.ObjectId, ref: 'Plan' },
     planIntervalNumber: { type: Number, default: 0 },
     flutterwavePlanId: { type: String, default: '' },
-    planStartDate: { type: String, default: '' },
-    renewalData: { type: String, default: '' },
+    planStartDate: { type: Date },
+    renewalDate: { type: Date }, 
   },
 });
 

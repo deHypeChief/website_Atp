@@ -18,6 +18,7 @@ const commentCoach = new Elysia()
                 };
             }
 
+            
             // Add new comment to the coach's comment array
             coach.comment.push({
                 userID: user._id,
