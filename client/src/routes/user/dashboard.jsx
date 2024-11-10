@@ -169,7 +169,7 @@ export default function Dashboard() {
                         <div className="actProf">
                             <h1>{userMutation.data?.fullName.split(" ")[0].split("")[0]}</h1>
                         </div>
-                        <h2 className="spec">Hello, {userData?.fullName}.</h2>
+                        <h2 className="spec">Hello, {userMutation.data?.fullName}.</h2>
                     </div>
                     <div className="actR">
                         {
