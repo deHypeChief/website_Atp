@@ -213,7 +213,7 @@ export default function Dashboard() {
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Assigned Coach</p>
-                        <p>{userMutation.data?.assignedCoach.coachName || "--"}</p>
+                        <p>{userMutation.data?.assignedCoach?.coachName || "--"}</p>
                     </div>
                 </div>
             </div>
