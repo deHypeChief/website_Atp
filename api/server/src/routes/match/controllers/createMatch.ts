@@ -12,7 +12,7 @@ const createMatch = new Elysia()
     .get("/getUserMatches", async ({ set, user }) => {
         try {
             // Find matches for the authenticated user
-            const matches = await Match.find({ user: user._id });
+            const matches = await Match.find({ user: user._id }).populate("tournament");
 
             // Count the number of matches the user has won
             let matchCount = 0;

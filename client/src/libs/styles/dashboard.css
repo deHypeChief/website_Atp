@@ -13,6 +13,7 @@ button {
     font-size: .9rem;
 }
 
+
 .profile,
 .track,
 .notify,
@@ -23,6 +24,8 @@ button {
     border-radius: 10px;
     background: white;
 }
+
+
 
 .profile {
     grid-area: aaa;

@@ -1,5 +1,6 @@
 .useNov{
     background: #F5F5F5 ;
+    position: relative;
 }
 
 .dashTopNav{
@@ -24,6 +25,108 @@
     }
 }
 
+
+.moreSection{
+    position: absolute;
+    top: 0;
+    margin-top: 12vh;
+    background: #F5F5F5;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    .moreWrap{
+        a{
+            button{
+                margin-bottom: 80px
+            }
+        }
+    }
+}
+.moreCard{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 20px;
+    width: 100%;
+    height: fit-content;
+    border-radius: 10px;
+    background: white;
+
+
+    .noMember{
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+.wrapTwin{
+    display: flex;
+    gap: 20px;
+    .moreWrap{
+    flex: 1;
+    }
+}
+.prof{
+    margin: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    width: fit-content;
+    margin-bottom: 40px;
+    .profCircle{
+        height: 160px;
+        width: 160px;
+        background: var(--color-blue);
+        border-radius: 1000px;
+    }
+}
+
+.ticks {
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .bonBox {
+        border: 1px solid #11385829;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-radius: 10px;
+        width: 300px;
+
+        .bonVor {
+            display: flex;
+            gap: 10px;
+
+            .bonboxN {
+                height: 20px;
+                width: 20px;
+
+                img {
+                    width: 80%;
+                }
+            }
+
+            p {
+                font-size: .9rem;
+            }
+        }
+
+
+    }
+}
+
+.ticks::-webkit-scrollbar {
+    display: none;
+}
 @media screen and (max-width: 600px) {
     .logoTop h2{
         display: none;
