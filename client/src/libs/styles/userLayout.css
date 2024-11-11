@@ -84,6 +84,13 @@
         width: 160px;
         background: var(--color-blue);
         border-radius: 1000px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        h1{
+            font-size: 4rem;
+        }
     }
 }
 

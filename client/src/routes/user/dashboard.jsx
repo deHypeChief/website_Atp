@@ -330,7 +330,7 @@ export default function Dashboard() {
                     )}
                 </div>
                 {/* <div className="calsAction">
-                    <Button>See all tournaments</Button>
+                    <Button>View Tickets</Button>
                 </div> */}
             </div>
 

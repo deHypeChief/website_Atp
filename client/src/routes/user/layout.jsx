@@ -82,7 +82,11 @@ export default function DashboardLayout() {
                         <div className="moreWrap">
                             <div className="prof">
                                 <div className="profCircle">
-                                    
+                                    {
+                                       data.user?.picture ? (
+                                            <img src={data.user.picture}/>
+                                        ) : <h1>{data.user?.fullName.split(" ")[0].split("")[0]}</h1>
+                                    }
                                 </div>
                                 <Button blue>
                                     Change Profile Image
