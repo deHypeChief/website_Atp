@@ -27,7 +27,6 @@ export default function Home() {
                     *[_type == "atpContent"]
                 `)
                 .then((data) => {
-                    console.log(data)
                     setContent(data)
                 })
                 .catch(console.error)

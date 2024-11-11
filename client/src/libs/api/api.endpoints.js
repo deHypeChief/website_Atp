@@ -13,7 +13,6 @@ export const register = async (payload) => {
 export const getTour = async () => {
   try {
     const response = await api.get("/tour/admin/getTournaments");
-    console.log( response.data.tours.reverse())
     return response.data.tours.reverse(); // Return only the tours array if that is the relevant data
   } catch (error) {
     console.error("Error fetching tournaments:", error);
@@ -142,7 +141,7 @@ export const validateBilling = async(billingQuery)=>{
 export const getMe = async()=>{
   try{
     const response = await api.get(`/me`);
-    console.log(response.data.userData);
+    // console.log(response.data.userData);
     return response.data.userData
   }catch (error) {
     console.error("Error fetching user:", error);

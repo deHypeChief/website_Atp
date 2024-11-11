@@ -30,6 +30,7 @@ export default function Dashboard() {
     const [userData, setUserData] = useState()
     const sliderRef = useRef(null);
     const isCalled = useRef(false);
+    const [billingLoading, setBillingLoading] = useState(false)
 
     // const [payQuery, setPayQuery] = useState("")
 
@@ -41,9 +42,11 @@ export default function Dashboard() {
 
             try {
                 const flwLink = await getMembershPayLink(query);
+                setBillingLoading(true)
                 console.log(flwLink); // Logs the resolved payment link
 
                 if (flwLink === undefined) {
+                    setBillingLoading(false)
                     alert("Network error during payment. Try reloading the page.");
                     return;
                 }
@@ -156,6 +159,13 @@ export default function Dashboard() {
 
     return (
         <section className="borderWrap">
+            {
+                billingLoading && (
+                    <div className="billScreen">
+                        <h2>Proccessing Payment...</h2>
+                    </div>
+                )
+            }
             {
                 type.type !== null ?
                     <ActionOverflow payload={type} typeAction={setType} /> :

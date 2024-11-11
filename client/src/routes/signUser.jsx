@@ -178,7 +178,7 @@ export function SignUp() {
         async function checkAuth() {
             const auth = await isAuthenticated()
 
-            console.log(auth)
+            // console.log(auth)
 
             if (auth) {
                 navigate("/u")

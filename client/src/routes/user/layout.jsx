@@ -20,7 +20,6 @@ export default function DashboardLayout() {
         async function checkAuth() {
             const auth = await isAuthenticated()
 
-            console.log(auth)
 
             if (!auth) {
                 navigate("/login")
@@ -43,7 +42,7 @@ export default function DashboardLayout() {
                         document.getElementsByTagName("nav")[0].style.display = "block"
                         document.getElementsByTagName("footer")[0].style.display = "block"
                     }}>
-                        <Button >Logout</Button>
+                        <Button >Logout</Button> 
                     </Link>
                 </div>
             </div>
