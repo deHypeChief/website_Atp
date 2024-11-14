@@ -54,10 +54,10 @@ export const getNotify = async () => {
   try {
     const response = await api.get("/notifications");
     const notifications = response.data.notifications;
-    
+
     // Ensure notifications exist and are in an array format
     if (Array.isArray(notifications)) {
-      return notifications.slice().reverse();  // Clone and reverse
+      return notifications.slice().reverse(); // Clone and reverse
     } else {
       console.warn("No notifications found or data format incorrect.");
       return [];
@@ -72,91 +72,97 @@ export const getTourPayLink = async (tornamentId) => {
   try {
     const response = await api.get(`/tour/register/${tornamentId}`);
     console.log(response.data);
-    return response.data.flwResponse.data.link
+    return response.data.flwResponse.data.link;
   } catch (error) {
     console.error("Error fetching payment link:", error);
   }
 };
 
-
-export const validateMatch = async(id, matchQuery)=>{
-  try{
+export const validateMatch = async (id, matchQuery) => {
+  try {
     const response = await api.get(`/match/${id}/matchCallback${matchQuery}`);
     console.log(response.data);
-    return response.data
-  }catch (error) {
+    return response.data;
+  } catch (error) {
     console.error("Error fetching validating tour payment:", error);
     throw new Error(error.response.data.message);
   }
-}
+};
 
-
-export const getPlans = async(type)=>{
-  try{
+export const getPlans = async (type) => {
+  try {
     const response = await api.get(`/plan/getPlans/${type}`);
     console.log(response.data.plans);
-    return response.data.plans
-  }catch (error) {
+    return response.data.plans;
+  } catch (error) {
     console.error("Error fetching plans", error);
     throw new Error(error.response.data.message);
   }
-}
+};
 
-
-export const getCoaches = async()=>{
-  try{
+export const getCoaches = async () => {
+  try {
     const response = await api.get(`/coach/getCoaches/all`);
     console.log(response.data.coaches);
-    return response.data.coaches
-  }catch (error) {
+    return response.data.coaches;
+  } catch (error) {
     console.error("Error fetching plans", error);
     throw new Error(error.response.data.message);
   }
-}
+};
 
-
-
-export const getMembershPayLink = async(query)=>{
-  try{
+export const getMembershPayLink = async (query) => {
+  try {
     const response = await api.get(`/plan/user/pay${query}`);
     console.log(response.data.flwResponse.data.link);
-    return response.data.flwResponse.data.link
-  }catch (error) {
+    return response.data.flwResponse.data.link;
+  } catch (error) {
     console.error("Error fetching pay link", error);
   }
-} 
+};
 
-
-export const validateBilling = async(billingQuery)=>{
-  try{
+export const validateBilling = async (billingQuery) => {
+  try {
     const response = await api.get(`/plan/user${billingQuery}`);
     console.log(response.data);
-    return response.data
-  }catch (error) {
+    return response.data;
+  } catch (error) {
     console.error("Error fetching validating billing payment:", error);
     throw new Error(error.response.data.message);
   }
-}
+};
 
-export const getMe = async()=>{
-  try{
+export const getMe = async () => {
+  try {
     const response = await api.get(`/me`);
     // console.log(response.data.userData);
-    return response.data.userData
-  }catch (error) {
+    return response.data.userData;
+  } catch (error) {
     console.error("Error fetching user:", error);
     throw new Error(error.response.data.message);
   }
-}
+};
 
-
-export const postComment = async(data)=>{
-  try{
+export const postComment = async (data) => {
+  try {
     const response = await api.post(`/coach/user/comment`, data);
     console.log(response.data);
-    return response.data
-  }catch (error) {
+    return response.data;
+  } catch (error) {
     console.error("Error posting comment:", error);
     throw new Error(error.response.data.message);
   }
-}
+};
+
+export const uploadProfile = async (data) => {
+  try {
+    const response = await api.post(`/uploadProfile`, {
+       profileImage: data
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw new Error(error.response.data.message);
+  }
+};

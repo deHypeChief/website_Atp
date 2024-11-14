@@ -1,9 +1,9 @@
-.useNov{
-    background: #F5F5F5 ;
+.useNov {
+    background: #F5F5F5;
     position: relative;
 }
 
-.dashTopNav{
+.dashTopNav {
     padding: var(--set-spacing);
     padding-top: 20px;
     padding-bottom: 20px;
@@ -11,13 +11,13 @@
     justify-content: space-between;
     align-items: center;
 
-    .logoTop{
+    .logoTop {
         display: flex;
         align-items: center;
         gap: 20px;
     }
 
-    .logoc{
+    .logoc {
         width: 100px;
         height: fit-content;
         display: flex;
@@ -26,7 +26,7 @@
 }
 
 
-.moreSection{
+.moreSection {
     position: absolute;
     top: 0;
     margin-top: 12vh;
@@ -37,26 +37,28 @@
     flex-direction: column;
     padding-top: 30px;
     padding-bottom: 30px;
-    .moreWrap{
-        a{
-            button{
+
+    .moreWrap {
+        a {
+            button {
                 margin-bottom: 80px
             }
         }
     }
 }
-.moreCard{
+
+.moreCard {
     margin-top: 30px;
     margin-bottom: 30px;
     padding: 20px;
     width: 100%;
-    height: fit-content;
+    height: 240px;
     border-radius: 10px;
     background: white;
 
 
-    .noMember{
-        height: 200px;
+    .noMember {
+        height: 220px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -64,14 +66,69 @@
         gap: 15px;
     }
 }
-.wrapTwin{
+
+.wrapTwin {
     display: flex;
     gap: 20px;
-    .moreWrap{
-    flex: 1;
+
+    .moreWrap {
+        flex: 1;
     }
 }
-.prof{
+
+.medFound {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .topMemImage {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .imgMem {
+            height: 100px;
+            width: 100px;
+            background: var(--color-blue);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .topMemHold {
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+                margin-top: -10px;
+            }
+        }
+    }
+
+    height: 200px;
+
+    .memContent {
+        display: flex;
+
+        .leftMem {
+            width: 260px;
+
+            .memHold {
+                h3 {
+                    font-size: 1rem;
+                }
+
+                p {
+                    font-size: 0.9rem;
+                    margin-top: -12px;
+                }
+            }
+        }
+    }
+}
+
+.prof {
     margin: auto;
     display: flex;
     align-items: center;
@@ -79,7 +136,8 @@
     gap: 20px;
     width: fit-content;
     margin-bottom: 40px;
-    .profCircle{
+
+    .profCircle {
         height: 160px;
         width: 160px;
         background: var(--color-blue);
@@ -88,19 +146,27 @@
         align-items: center;
         justify-content: center;
         color: white;
-        h1{
+        overflow: hidden;
+
+        h1 {
             font-size: 4rem;
+
         }
     }
 }
 
 .ticks {
-    overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
+    overflow-x: scroll;
     gap: 20px;
 
+    .ticWrap {
+        display: flex;
+        width: fit-content;
+        gap: 12px;
+    }
+
     .bonBox {
+        flex: 1;
         border: 1px solid #11385829;
         padding: 20px;
         display: flex;
@@ -134,8 +200,161 @@
 .ticks::-webkit-scrollbar {
     display: none;
 }
+
+.winWrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0 0;
+
+    .winBox {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        margin: auto;
+        gap: 10px;
+        /* background: pink; */
+    }
+
+    .winImg {
+        height: 150px;
+        width: 150px;
+        background: rgba(128, 128, 128, 0.098);
+        overflow: hidden;
+        border-radius: 1000px;
+        display: flex;
+        border: var(--set-border);
+        justify-content: center;
+        place-items: center;
+
+        img {
+            width: 80%;
+        }
+    }
+}
+
+
+
 @media screen and (max-width: 600px) {
-    .logoTop h2{
+    .logoTop h2 {
         display: none;
+    }
+
+    .wrapTwin {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .moreWrap {
+            flex: 1;
+        }
+    }
+
+
+    .medFound {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .topMemImage {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+
+            .imgMem {
+                height: 100px;
+                width: 100px;
+                background: var(--color-blue);
+                border-radius: 100px;
+                overflow: hidden;
+            }
+
+            .topMemHold {
+                h2 {
+                    font-size: 1.4rem;
+                }
+
+                p {
+                    font-size: 0.9rem;
+                    margin-top: 0px;
+                }
+            }
+        }
+
+        height: fit-content;
+
+        .memContent {
+            display: flex;
+
+            .leftMem {
+                width: 260px;
+
+                .memHold {
+                    h3 {
+                        font-size: 1rem;
+                    }
+
+                    p {
+                        font-size: 0.9rem;
+                        margin-top: -12px;
+                    }
+                }
+            }
+        }
+    }
+
+    .moreCard {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        padding: 20px;
+        width: 100%;
+        height: fit-content;
+        border-radius: 10px;
+        background: white;
+
+
+        .noMember {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 15px;
+        }
+    }
+
+    .winWrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0 0;
+
+        .winBox {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin: auto;
+            gap: 10px;
+            /* background: pink; */
+        }
+
+        .winImg {
+            height: 70px;
+            width: 70px;
+            background: rgba(128, 128, 128, 0.098);
+            overflow: hidden;
+            border-radius: 1000px;
+            display: flex;
+            border: var(--set-border);
+            justify-content: center;
+            place-items: center;
+
+            img {
+                width: 80%;
+            }
+        }
     }
 }

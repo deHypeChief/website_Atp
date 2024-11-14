@@ -13,23 +13,39 @@ const createMatch = new Elysia()
         try {
             // Find matches for the authenticated user
             const matches = await Match.find({ user: user._id }).populate("tournament");
-
-            // Count the number of matches the user has won
+    
+            // Initialize counters for match wins and each medal type
             let matchCount = 0;
-            if (matches.length > 0) {
-                matches.forEach((item) => {
-                    if (item.won) {
-                        matchCount += 1;
-                    }
-                });
-            }
-
-            // Send successful response with match data
+            let goldCount = 0;
+            let silverCount = 0;
+            let bronzeCount = 0;
+    
+            // Loop through each match to count wins and each medal type
+            matches.forEach((item) => {
+                if (item.won) {
+                    matchCount += 1;
+                }
+                // Count each medal type
+                if (item.medal === "gold") {
+                    goldCount += 1;
+                } else if (item.medal === "silver") {
+                    silverCount += 1;
+                } else if (item.medal === "bronze") {
+                    bronzeCount += 1;
+                }
+            });
+    
+            // Send successful response with match data and medal counts
             set.status = 200;
             return {
                 message: "Matches found",
                 matches,
-                matchesWon: matchCount // Fixed semicolon issue
+                matchesWon: matchCount,
+                medals: {
+                    gold: goldCount,
+                    silver: silverCount,
+                    bronze: bronzeCount
+                }
             };
         } catch (err) {
             console.log(err);

@@ -30,6 +30,30 @@ const getUser = new Elysia()
                 err
             };
         }
-    });
+    })
+    .post("/uploadProfile", async ({set, user, body})=>{
+        const {profileImage} = body
+        const {_id} = user
+        try{
+            const userData = await User.findByIdAndUpdate(
+                {_id},
+                {
+                    picture: profileImage
+                },
+                {new: true}
+            )
+            set.status = 200; // Status 200 on success
+            return {
+                message: "User updated",
+                userData
+            };
+        }catch(err){
+            set.status = 500;
+            return {
+                message: "Error updating user profile",
+                err
+            };
+        }
+    })
 
 export default getUser;

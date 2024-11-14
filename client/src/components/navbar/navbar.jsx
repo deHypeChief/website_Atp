@@ -6,9 +6,11 @@ import logo2 from "../../libs/images/logoColor.svg"
 import { Icon } from "@iconify/react"
 
 import { useEffect, useState } from "react"
+import useScrollToTop from "../../libs/hooks/use-scrollTop"
 
 export default function Navbar() {
     const [open, setOpen] = useState(false)
+    useScrollToTop()
     const link = [
         {
             name: "About",

@@ -177,7 +177,11 @@ export default function Dashboard() {
                     <div className="actL">
                         <h2>Profile Overview</h2>
                         <div className="actProf">
-                            <h1>{userMutation.data?.fullName.split(" ")[0].split("")[0]}</h1>
+                        {
+                                        userMutation.data?.picture ? (
+                                            <img src={userMutation.data.picture} />
+                                        ) : <h1>{userMutation.data?.fullName.split(" ")[0].split("")[0]}</h1>
+                                    }
                         </div>
                         <h2 className="spec">Hello, {userMutation.data?.fullName}.</h2>
                     </div>
@@ -219,7 +223,7 @@ export default function Dashboard() {
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Medals Won</p>
-                        <p>0</p>
+                        <p>{matchMutation?.data?.matchesWon || "--"}</p>
                     </div>
                     <div className="infoMo">
                         <p className="nHead">Assigned Coach</p>
