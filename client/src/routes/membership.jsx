@@ -3,7 +3,7 @@ import Button from "../components/button/button";
 import Hero from "../components/hero/hero";
 import '../libs/styles/membership.css'
 import Card from "../components/card/card";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useQuery } from "@tanstack/react-query"
 import { getCoaches, getPlans } from "../libs/api/api.endpoints";
@@ -12,6 +12,7 @@ import { getCoaches, getPlans } from "../libs/api/api.endpoints";
 // eslint-disable-next-line react/prop-types
 export function MembershipAction({ planData = [] }) {
     const navigate = useNavigate()
+    const location = useLocation();
     const pickCoach = useRef();
     const plansBox = useRef();
     const pickDur = useRef();
@@ -36,7 +37,15 @@ export function MembershipAction({ planData = [] }) {
 
 
     function handleSubmit() {
+        const queryParams = new URLSearchParams(location.search);
         const params = new URLSearchParams(planId).toString();
+
+        const userSigned = queryParams.get('userSigned');
+        console.log(userSigned)
+        if (userSigned == "true") {
+            navigate(`/u?${params}`);
+            return
+        }
 
         console.log(params, planId);
         navigate(`/signup?${params}`);
@@ -53,7 +62,7 @@ export function MembershipAction({ planData = [] }) {
         }
     }, []);
 
-    
+
 
     function handleSelection(e, planId, index, item) {
         e.preventDefault()

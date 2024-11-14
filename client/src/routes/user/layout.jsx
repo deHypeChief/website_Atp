@@ -26,6 +26,7 @@ dayjs.extend(relativeTime);
 
 
 export default function DashboardLayout() {
+    const [handleMem, setHandleMem] = useState(false)
     const [loading, setLoading] = useState(false)
     const [openMore, setOpenMore] = useState(false)
     const [showTicket, setShowTicket] = useState(null)
@@ -98,6 +99,11 @@ export default function DashboardLayout() {
             console.error(err, "Error uploading image")  // Throw the error so it can be handled upstream
         }
     };
+
+    function navReset() {
+        document.getElementsByTagName("nav")[0].style.display = "block"
+        document.getElementsByTagName("footer")[0].style.display = "block"
+    }
 
 
     useEffect(() => {
@@ -186,7 +192,48 @@ export default function DashboardLayout() {
                                         data.user?.plan.planIntervalNumber ? null : (
                                             <div className="noMember">
                                                 <h2>No Membership Plan</h2>
-                                                <Button>Become A Member</Button>
+                                                <Button onClick={() => { setHandleMem(true) }}>Become A Member</Button>
+                                            </div>
+                                        )
+                                    }
+
+                                    {
+                                        handleMem && (
+                                            <div className="overlayPage">
+                                                <div className="overWrap">
+                                                    <div className="absClose">
+                                                        <div className="closeIcon" onClick={() => {
+                                                            setHandleMem(null)
+                                                        }}>
+                                                            <Icon icon="si:close-duotone" width="40px" height="40px" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="tourCenter">
+
+                                                        <div className="pickPlan">
+                                                            <h1>Membership Plans</h1>
+                                                            <p>Select a plan that works best for you</p>
+                                                        </div>
+                                                        <Link to={"/membership/children?userSigned=true"} onClick={navReset}>
+                                                            <div className="memLinks">
+                                                                <h2>Children Plan</h2>
+                                                                <p></p>
+                                                            </div>
+                                                        </Link>
+                                                        <Link to={"/membership/adult?userSigned=true"} onClick={navReset}>
+                                                            <div className="memLinks">
+                                                                <h2>Adult Plan</h2>
+                                                                <p></p>
+                                                            </div>
+                                                        </Link>
+                                                        <Link to={"/membership/combo?userSigned=true"} onClick={navReset}>
+                                                            <div className="memLinks">
+                                                                <h2>Combo Plan</h2>
+                                                                <p></p>
+                                                            </div>
+                                                        </Link>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )
                                     }
@@ -228,6 +275,8 @@ export default function DashboardLayout() {
                                             </div>
                                         ) : null
                                     }
+
+
                                 </div>
                             </div>
                             <div className="moreWrap">

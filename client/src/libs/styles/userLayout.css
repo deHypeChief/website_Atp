@@ -234,7 +234,15 @@
     }
 }
 
-
+.pickPlan{
+    margin-bottom: 30px;
+}
+.memLinks{
+    padding: 20px;
+    margin: 10px 0;
+    background-color: rgba(128, 128, 128, 0.172);
+    border-radius: 10px;
+}
 
 @media screen and (max-width: 600px) {
     .logoTop h2 {
