@@ -11,9 +11,6 @@ export const jwtAdmin = new Elysia({
     })
 );
 
-
-
-
 export const jwtUser = new Elysia({
     name: "userJwt",
 }).use(
