@@ -80,7 +80,7 @@
         .medRound {
             height: 150px;
             width: 150px;
-            background: var(--color-main);
+            background: #FFD700;
             border-radius: 1000px;
             overflow: hidden;
             border: 3px solid #FFD700;
@@ -88,7 +88,7 @@
         .medRound2 {
             height: 150px;
             width: 150px;
-            background: var(--color-main);
+            background: #C0C0C0;
             border-radius: 1000px;
             overflow: hidden;
             border: 3px solid #C0C0C0;

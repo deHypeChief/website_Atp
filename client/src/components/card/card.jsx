@@ -25,8 +25,14 @@ export default function Card({ altCard, payload, teamCard, onClick }) {
 
     return (
         <div className="cardBox" onClick={onClick}>
-            <div className="cardImg">
-                <img src={payload?.tournamentImgURL || payload?.imageUrl} alt="" />
+            <div className="cardImg"
+                style={{
+                    background: `url${payload?.tournamentImgURL || payload?.imageUrl}`,
+                    backgroundSize: 'cover',
+                    backgroundPositionX: 'center'
+                }}
+            >
+                {/* <img src={payload?.tournamentImgURL || payload?.imageUrl} alt="" /> */}
             </div>
             <div className="cardInfo">
                 {
