@@ -1,6 +1,6 @@
 import Button from "../button/button";
 import "./style.css"
-import line from "../../libs/images/Line.png"
+import line from "../../libs/images/Line.png";
 import { Link } from "react-router-dom"
 
 export default function Hero({ title, subTitle, text, noAction, altText, imageUrl, pos, altLink }) {

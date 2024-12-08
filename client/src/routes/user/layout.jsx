@@ -143,9 +143,9 @@ export default function DashboardLayout() {
                             <div className="prof">
                                 <div className="profCircle">
                                     {
-                                        data.user?.picture ? (
+                                        data?.user?.picture ? (
                                             <img src={data.user.picture} />
-                                        ) : <h1>{data.user?.fullName.split(" ")[0].split("")[0]}</h1>
+                                        ) : <h1>{data?.user?.fullName.split(" ")[0].split("")[0]}</h1>
                                     }
                                 </div>
                                 <Button blue onClick={() => { setImageUpload(!openImageUpload) }}>
@@ -390,8 +390,8 @@ export default function DashboardLayout() {
                                                                 token: showTicket.token,
                                                                 name: data.user?.fullName,
                                                                 email: data.user?.email,
-                                                                tourName: showTicket.tournament.name,
-                                                                tourId: showTicket.tournament._id
+                                                                tourName: showTicket?.tournament?.name,
+                                                                tourId: showTicket?.tournament?._id
                                                             }} size={200} level={"H"} />
                                                         </div>
                                                         {/* Add tournament image here */}
@@ -401,7 +401,7 @@ export default function DashboardLayout() {
                                                         <h2 className="cetText">{showTicket.token}</h2>
 
                                                         <p>
-                                                            You have succesfully registered for the <span className="tourtextMain">{showTicket.tournament.name}</span>
+                                                            You have succesfully registered for the <span className="tourtextMain">{showTicket?.tournament.name}</span>
                                                         </p>
 
                                                         <p className="regInfo">

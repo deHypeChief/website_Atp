@@ -127,7 +127,8 @@
 
         .authRight {
             flex: 1;
-            background: red;
+            background: url(../images/main/IMG_3302.jpg);
+            background-size: cover;
             height: 100%;
             top: 0;
             right: 0;

@@ -84,13 +84,13 @@ export default function Card({ altCard, payload, teamCard, onClick }) {
 
                 {
                     teamCard ? (
-                        <Link to={`/coaching/${payload.id}`}>
+                        <Link to={`/coaching/${payload?.id}`}>
                             <Button alt full blue>View Coach Profile</Button>
                         </Link>
                     ) : (
                         altCard ? (
                             <div className="altCard">
-                                <Link to={`/coaching/${payload.id}`}>
+                                <Link to={`/coaching/${payload?.id}`}>
                                     <Button alt full blue>View Coach Profile</Button>
                                 </Link>
                                 {/* {

@@ -7,7 +7,8 @@
         gap: 10px;
         margin: 20px 0;
     }
-    .spBoxes{
+
+    .spBoxes {
         display: grid;
         gap: 30px;
         grid-template-columns: 1fr 1fr 1fr;
@@ -26,7 +27,7 @@
     row-gap: 40px;
     padding-bottom: 20px;
 
-    button{
+    button {
         display: none;
     }
 }
@@ -42,7 +43,9 @@
 .meds {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 20px;
+
     .medBox {
         text-align: center;
         width: fit-content;
@@ -52,6 +55,7 @@
 
 .medCatGroup {
     display: flex;
+    gap: 20px;
     margin-top: 10px;
 
     .medCat {
@@ -63,7 +67,14 @@
         .medIcon {
             height: 40px;
             width: 40px;
-            background: blue;
+            background: #FFD700;
+            margin-bottom: -20px;
+        }
+        .medIcon2 {
+            height: 40px;
+            width: 40px;
+            margin-bottom: -20px;
+            background: #C0C0C0;
         }
 
         .medRound {
@@ -71,13 +82,17 @@
             width: 150px;
             background: var(--color-main);
             border-radius: 1000px;
+            overflow: hidden;
+            border: 3px solid #FFD700;
         }
-    }
-
-    .medCat:nth-child(2) {
-        z-index: 30;
-        margin: 0px -40px 0;
-        padding-top: 0;
+        .medRound2 {
+            height: 150px;
+            width: 150px;
+            background: var(--color-main);
+            border-radius: 1000px;
+            overflow: hidden;
+            border: 3px solid #C0C0C0;
+        }
     }
 }
 
@@ -116,46 +131,38 @@
 }
 
 
-@media screen and (max-width: 700px){
+@media screen and (max-width: 700px) {
     .meds {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 20px;
         row-gap: 0px;
+
         .medBox {
             text-align: center;
             width: fit-content;
             margin-top: 20px;
         }
     }
+
     .medCatGroup {
         display: flex;
         margin-top: 10px;
-    
+
         .medCat {
             display: flex;
             align-items: center;
             flex-direction: column;
             padding-top: 20px;
-    
+
             .medIcon {
                 height: 40px;
                 width: 40px;
-                background: blue;
             }
-    
-            .medRound {
-                height: 75px;
-                width: 75px;
-            }
+
         }
-    
-        .medCat:nth-child(2) {
-            z-index: 30;
-            margin: 0px -40px 0;
-            padding-top: 0;
-        }
+
     }
 
     .regWrap {
@@ -165,13 +172,13 @@
         justify-content: space-between;
         gap: 10px;
         border-radius: 10px;
-    
+
         .regBox {
             flex: 1;
             padding: 20px;
             width: 100%;
             background: var(--color-alt);
-    
+
             .regText {
                 text-align: center;
             }
@@ -179,10 +186,10 @@
     }
 
     .upcomings {
-    .spBoxes{
-        display: grid;
-        grid-template-columns: 1fr;
-    }
+        .spBoxes {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
 
-}
+    }
 }

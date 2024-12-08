@@ -262,6 +262,10 @@ export function MembershipAction({ planData = [] }) {
     )
 }
 
+import mem1 from "../libs/images/main/IMG_2963.jpg"
+import mem2 from "../libs/images/imgUpdate/IMG-20241208-WA0071.jpg"
+import mem3 from "../libs/images/main/IMG_2800.jpg"
+
 export function ChildrenMembership() {
 
     const planData = useQuery({
@@ -271,7 +275,7 @@ export function ChildrenMembership() {
 
     return (
         <>
-            <Hero title={"Children's Plan"} noAction subTitle={""} />
+            <Hero title={"Children's Plan"} imageUrl={mem1} noAction subTitle={""} />
             <MembershipAction planData={planData?.data} />
         </>
     );
@@ -284,7 +288,7 @@ export function AdultMembership() {
     })
     return (
         <>
-            <Hero title={"Adult Plan"} noAction subTitle={""} />
+            <Hero title={"Adult Plan"} imageUrl={mem2} noAction subTitle={""} />
             <MembershipAction planData={planData?.data} />
         </>
     )
@@ -298,7 +302,7 @@ export function ComboMembership() {
 
     return (
         <>
-            <Hero title={"Special Combo"} noAction subTitle={""} />
+            <Hero title={"Special Combo"} imageUrl={mem3} noAction subTitle={""} />
             <MembershipAction planData={planData?.data} />
         </>
     )
