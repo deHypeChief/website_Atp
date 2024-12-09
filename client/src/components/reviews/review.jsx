@@ -4,52 +4,54 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function Reviews() {
 	const [currentView, setCurrentView] = useState(0);
-	const [review, setReviews] = useState([]);
+	const [reviews, setReviews] = useState([]);
+	const [loading, setLoading] = useState(true); // Loading state
+	const [error, setError] = useState(null); // Error state
 
-	const reviews = [
-		{
-			text: "a",
-		},
-		{
-			text: "b",
-		},
-		{
-			text: "c",
-		},
-		{
-			text: "d",
-		},
-		{
-			text: "e",
-		},
-	]
-
+	// Fetch reviews once on component mount
 	useEffect(() => {
 		async function getReviews() {
-			client
-				.fetch(
-					`
-                		*[_type == "reviews"]
-            		`
-				)
-				.then((data) => {
-					// console.log(data);
-					setReviews(data);
-				})
-				.catch(console.error);
+			setLoading(true); // Set loading state to true
+			try {
+				const data = await client.fetch(`
+					*[_type == "reviews"]
+				`);
+				setReviews(data);
+			} catch () {
+				setError("Failed to load reviews");
+			} finally {
+				setLoading(false); // Set loading state to false after fetching is done
+			}
 		}
 		getReviews();
-	}, []);
+	}, []); // Empty dependency array ensures it runs only once
 
+	// Go to the next review
 	function countUp() {
-		if (currentView < (review.length -= 1)) {
-			setCurrentView((prev) => (prev += 1));
+		if (currentView < reviews.length - 1) {
+			setCurrentView((prev) => prev + 1);
 		}
 	}
+
+	// Go to the previous review
 	function countDown() {
 		if (currentView > 0) {
-			setCurrentView((prev) => (prev -= 1));
+			setCurrentView((prev) => prev - 1);
 		}
+	}
+
+	// Handle the case when reviews are loading or failed to load
+	if (loading) {
+		return <p>Loading reviews...</p>;
+	}
+
+	if (error) {
+		return <p>{error}</p>;
+	}
+
+	// Handle the case when there are no reviews
+	if (reviews.length === 0) {
+		return <p>No reviews available.</p>;
 	}
 
 	return (
@@ -58,14 +60,14 @@ export default function Reviews() {
 				<div className="aboutImgRe">
 					<img
 						src={
-							review[currentView]?.image?.asset?._ref
-								? urlFor(review[currentView].image.asset._ref).url()
-								: "" // Set a default image path
+							reviews[currentView]?.image?.asset?._ref
+								? urlFor(reviews[currentView].image.asset._ref).url()
+								: "" // Default image path if no image
 						}
 						style={{
 							height: '100%',
 							width: '100%',
-							objectFit: 'cover'
+							objectFit: 'cover',
 						}}
 						alt="Review Image"
 					/>
@@ -75,14 +77,14 @@ export default function Reviews() {
 						<p>
 							<i>
 								&quot;
-								{review[currentView]?.reviewContent}
+								{reviews[currentView]?.reviewContent}
 								&quot;
 							</i>
 						</p>
 
 						<div className="person">
-							<h4>{review[currentView]?.name}</h4>
-							<p>{review[currentView]?.role}</p>
+							<h4>{reviews[currentView]?.name}</h4>
+							<p>{reviews[currentView]?.role}</p>
 						</div>
 					</div>
 
@@ -91,10 +93,12 @@ export default function Reviews() {
 							<Icon icon="ic:round-arrow-left" width="20px" height="20px" />
 						</div>
 						<div className="tesDots">
-							<div className={`aDot ${currentView == 0 ? "active" : ""}`}></div>
-							<div className={`aDot ${currentView == 1 ? "active" : ""}`}></div>
-							<div className={`aDot ${currentView == 2 ? "active" : ""}`}></div>
-							<div className={`aDot ${currentView >= 3 ? "active" : ""}`}></div>
+							{reviews.map((_, index) => (
+								<div
+									key={index}
+									className={`aDot ${currentView === index ? "active" : ""}`}
+								></div>
+							))}
 						</div>
 						<div className="tesAction" onClick={countUp}>
 							<Icon icon="ic:round-arrow-right" width="20px" height="20px" />
