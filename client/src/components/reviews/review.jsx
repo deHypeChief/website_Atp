@@ -42,7 +42,7 @@ export default function Reviews() {
 	}, []);
 
 	function countUp() {
-		if (currentView < (reviews.length -= 1)) {
+		if (currentView < (review.length -= 1)) {
 			setCurrentView((prev) => (prev += 1));
 		}
 	}
@@ -62,6 +62,11 @@ export default function Reviews() {
 								? urlFor(review[currentView].image.asset._ref).url()
 								: "" // Set a default image path
 						}
+						style={{
+							height: '100%',
+							width: '100%',
+							objectFit: 'cover'
+						}}
 						alt="Review Image"
 					/>
 				</div>
@@ -70,7 +75,7 @@ export default function Reviews() {
 						<p>
 							<i>
 								&quot;
-								{review[currentView]?.homePageAboutText}
+								{review[currentView]?.reviewContent}
 								&quot;
 							</i>
 						</p>
