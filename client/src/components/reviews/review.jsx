@@ -17,7 +17,7 @@ export default function Reviews() {
 					*[_type == "reviews"]
 				`);
 				setReviews(data);
-			} catch () {
+			} catch (err) {
 				setError("Failed to load reviews");
 			} finally {
 				setLoading(false); // Set loading state to false after fetching is done
