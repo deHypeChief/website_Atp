@@ -27,15 +27,13 @@ export default function About() {
                     <div className="storyText">
                         <h1>Our Story</h1>
                         <p>
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                            <br /><br />
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
+                        At ATP, we believe tennis is more than just a sport; it’s a lifestyle and a lifelong pursuit of mastery. That’s why we offer high-quality training tailored to each player’s unique level and goals. Whether you’re a complete beginner discovering the thrill of tennis for the first time, or an experienced player looking to polish your technique, ATP provides the guidance, resources, and community support to help you reach new heights.
+
                         </p>
                         <br /><br />
                         <p>
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                            <br /><br />
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
+                        What makes ATP special is our inclusive, welcoming community. Here, anyone—male or female, young or seasoned—can experience the joy of tennis. We are proud to serve players at our premium training locations, including Transcorp Hilton, Rockview Hotels (Royale), and the Moshood Abiola National Stadium, providing state-of-the-art facilities for training and recreation.
+
                         </p>
                     </div>
                     <div className="storyImg">

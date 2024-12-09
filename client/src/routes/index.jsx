@@ -69,13 +69,10 @@ export default function Home() {
                             </div>
                         </div>
                         <h1>
-                            {content?.homePageAboutTitle || "Quality Course, Confident Ball"}
+                            Welcome to Amateur Tennis Pro (ATP)
                         </h1>
                         <p>
-                            {content?.homePageAboutText || `Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                            <br />
-                            <br />
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.`}
+                            Where passion for tennis meets professional training. Founded with the vision of making tennis accessible and enjoyable for everyone, ATP is dedicated to helping players of all skill levels fall in love with the game, refine their skills, and even reach their dreams of going pro.
                         </p>
                         <div className="aboutAction">
                             <Button>Learn More</Button>
@@ -181,8 +178,8 @@ export default function Home() {
                             {content?.homePageCoachTitle || "Find Your Perfect Coach"}
                         </h1>
                         <p>
-                            {content?.homePageCoachText || `Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                            Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.`}
+                            Our skilled coaches specialize in training amateur players to elevate their game and build confidence on the court. For those with professional ambitions, we offer specialized programs and connections with international tennis organizations, giving talented players the platform to compete and succeed on a global stage.
+
                         </p>
                         <div className="aboutAction">
                             <Button>Find a Coach</Button>
