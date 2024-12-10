@@ -73,25 +73,38 @@ export async function getPlans() {
 }
 
 
-export async function getLeaders(){
-	try{
+export async function getLeaders() {
+	try {
 		const response = await api.get(`/leader/getLeaders`);
 		console.log(response.data.leaders)
 		return response.data.leaders.reverse();
-	} catch (error){
+	} catch (error) {
 		console.error("Error getting leaders:", error);
 		throw error;
 	}
 }
 
 
-export async function createLeaders(payload){
-	try{
+export async function createLeaders(payload) {
+	try {
 		const response = await api.post(`/leader/createLeaders`, payload);
 		console.log(response.data)
 		return response.data.leaders;
-	} catch (error){
+	} catch (error) {
 		console.error("Error creating leaders:", error);
 		throw error;
 	}
+}
+
+
+export async function delTour(id) {
+	try {
+		const response = await api.post(`/tour/admin/delTournament/${id}`);
+		console.log(response.data)
+		// return response.data.leaders;
+	} catch (error) {
+		console.error("Error deleting Tout:", error);
+		throw error;
+	}
+
 }

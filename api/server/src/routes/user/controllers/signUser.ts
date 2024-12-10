@@ -78,7 +78,7 @@ const signUser = new Elysia()
 
         try {
             // Verify the token using the secret key
-            const decoded = userJwt.verify(token);
+            const decoded = await userJwt.verify(token);
 
             if (!decoded) {
                 set.status = 401; // Unauthorized

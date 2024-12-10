@@ -17,19 +17,19 @@ const handleTour = new Elysia({
     })
     .use(isAdmin_Authenticated)
     .post("/delTournament/:id", async ({ set, params: { id } }) => {
-            const tour = await Tournament.findByIdAndDelete(id);
-
-            if (!tour) {
-                set.status = 404;
-                return { message: 'Tournament not found' };
-            }
-            
             // check if the tour is in use
             const getMatch = await Match.findOne({tournament: id})
 
             if(getMatch){
                 set.status = 404;
                 return { message: "This tournament is already in use and can't be deleted" };
+            }
+
+            const tour = await Tournament.findByIdAndDelete(id);
+
+            if (!tour) {
+                set.status = 404;
+                return { message: 'Tournament not found' };
             }
             
 

@@ -57,13 +57,14 @@ const signAdmin = new Elysia()
 
         try {
             // Verify the token using the secret key
-            const decoded = adminJwt.verify(token);
+            const decoded = await adminJwt.verify(token);
 
             if (!decoded) {
                 set.status = 401
                 return {
                     isValid: false,
                     message: "Invalid or expired token",
+                    decoded
                 };
             }
 
@@ -74,7 +75,7 @@ const signAdmin = new Elysia()
                 
                 return {
                     isValid: false,
-                    message: "Invalid or expired token",
+                    message: "Admin not found",
                 };
             }
 
