@@ -27,7 +27,6 @@ export const useAuth = () => {
         }
         try {
             const data = await verify({ token: await JSON.parse(storedPayload)?.auth.token })
-            console.log(data)
             if (data.isValid) {
                 // Token is valid, return the admin details
                 return JSON.parse(storedPayload);

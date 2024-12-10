@@ -82,6 +82,18 @@ const signUser = new Elysia()
 
             if (!decoded) {
                 set.status = 401; // Unauthorized
+                
+                return {
+                    isValid: false,
+                    message: "Invalid or expired token",
+                };
+            }
+
+            const isUser = await User.findById(decoded.userId)
+
+            if(!isUser){
+                set.status = 401; // Unauthorized
+                
                 return {
                     isValid: false,
                     message: "Invalid or expired token",

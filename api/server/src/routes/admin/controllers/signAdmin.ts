@@ -64,7 +64,17 @@ const signAdmin = new Elysia()
                 return {
                     isValid: false,
                     message: "Invalid or expired token",
-                    admin: decoded, // Optionally return decoded admin data
+                };
+            }
+
+            const isAdmin = await Admin.findById(decoded.adminId)
+
+            if(!isAdmin){
+                set.status = 401; // Unauthorized
+                
+                return {
+                    isValid: false,
+                    message: "Invalid or expired token",
                 };
             }
 
