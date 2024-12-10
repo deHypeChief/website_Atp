@@ -7,6 +7,26 @@ import heroImg from "../libs/images/main/IMG_2800.jpg"
 import heroImg2 from "../libs/images/main/IMG_2809.jpg"
 
 export default function About() {
+	const [about, setAbout] = useState([]);
+    const [loading, setLoading] = useState(true); // Loading state
+	const [error, setError] = useState(null);
+
+    useEffect(() => {
+		async function getReviews() {
+			setLoading(true); // Set loading state to true
+			try {
+				const data = await client.fetch(`
+					*[_type == "atpContent"]
+				`);
+				setAbout(data);
+			} catch (err) {
+				setError("Failed to load reviews");
+			} finally {
+				setLoading(false); // Set loading state to false after fetching is done
+			}
+		}
+		getReviews();
+	}, []);
     return (
         <>
             <Hero title={"About us"} subTitle={"Who and what we are"} imageUrl={heroImg} noAction />
@@ -44,32 +64,12 @@ export default function About() {
 
             <section className="aims">
                 <div className="aimfBox">
-                    <h1>Our vision</h1>
-                    <p>
-                        Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                        <br /><br />
-                        Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
-                    </p>
-                    <br /><br />
-                    <p>
-                        Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                        <br /><br />
-                        Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
-                    </p>
+                    <h1>Our Vision</h1>
+                    {about?.aboutVisionText || ""}
                 </div>
                 <div className="aimfBox">
                     <h1>Our Mission</h1>
-                    <p>
-                        Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                        <br /><br />
-                        Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
-                    </p>
-                    <br /><br />
-                    <p>
-                        Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat.
-                        <br /><br />
-                        Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.
-                    </p>
+                    {about?.aboutMissionText || ""}
                 </div>
             </section>
 
@@ -77,7 +77,7 @@ export default function About() {
             <section className="teams">
                 <div className="teamText">
                     <h1>Our Team</h1>
-                    <p>Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.</p>
+                    {about?.teamText || ""}
                 </div>
 
                 <div className="teamCards">
