@@ -90,15 +90,6 @@ function AdminLayout() {
                     </g>
                 </svg>
             )
-        },
-        {
-            name: "Memberships",
-            link: "/billings",
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
-                    <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m7.5 8l1-.5v4m9-2.125A5.502 5.502 0 0 1 15.5 20c-1.796 0-3.39-.86-4.395-2.192M14 9.5a5.5 5.5 0 1 1-11 0a5.5 5.5 0 0 1 11 0"></path>
-                </svg>
-            )
         }
     ]
     const [open, setOpen] = useState(false)

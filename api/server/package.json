@@ -36,5 +36,8 @@
     "bun-types": "latest",
     "@types/validator": "^13.12.0"
   },
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "trustedDependencies": [
+    "aws-sdk"
+  ]
 }

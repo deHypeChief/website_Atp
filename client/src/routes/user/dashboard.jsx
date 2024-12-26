@@ -471,9 +471,10 @@ export function SelectedTourPayPage({ payload, action }) {
 
 
 function Ticket({ payload }) {
-    const { token, user, tournament } = payload.payload.payload.match
+    console.log(payload.payload?.match)
+    const { token, user, tournament } = payload?.payload?.match
     useEffect(() => {
-        console.log(payload.payload.payload.match)
+        console.log(payload?.payload?.match)
     }, [])
     return (
         <div className="tourCenter">

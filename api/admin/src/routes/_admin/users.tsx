@@ -18,6 +18,8 @@ export const Route = createFileRoute('/_admin/users')({
 function Users() {
   const users = useQuery({ queryKey: ['user'], queryFn: getUsers })
 
+  console.log(users.data)
+
   return (
     <div className="users">
       <Header title='Users' subText='Your users and their activity overview'></Header>
@@ -28,7 +30,7 @@ function Users() {
           <InfoCard title='Total Users' info={users?.data?.length || 0} extraInfo='Currently signed up'>
             <User className="h-4 w-4 text-muted-foreground" />
           </InfoCard>
-          <InfoCard title='User Registerd Matches' info="0" extraInfo='For current tournament'>
+          {/* <InfoCard title='User Registerd Matches' info="0" extraInfo='For current tournament'>
             <User className="h-4 w-4 text-muted-foreground" />
           </InfoCard>
           <InfoCard title='Winners' info="5" extraInfo='For Current Tournament'>
@@ -36,7 +38,7 @@ function Users() {
           </InfoCard>
           <InfoCard title='Total Losers' info="0" extraInfo='For Current Tournament'>
             <User className="h-4 w-4 text-muted-foreground" />
-          </InfoCard>
+          </InfoCard> */}
         </div>
 
         <div className="userData">

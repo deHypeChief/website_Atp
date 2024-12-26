@@ -21,6 +21,7 @@ export type Users = {
   phoneNumber: string
   membership: string
   fullName: string
+  picture: string
 }
 
 export const columns: ColumnDef<Users>[] = [
@@ -82,7 +83,6 @@ export const columns: ColumnDef<Users>[] = [
     id: "actions",
     cell: ({ row }) => {
       const user = row.original
-      console.log(user)
 
       return (
         <div className="dropRight float-right">
@@ -101,8 +101,19 @@ export const columns: ColumnDef<Users>[] = [
               </DialogHeader>
 
               <div className="profileContent">
-                <div className="userImage">
-
+                <div className="userImage" style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden"
+                }}>
+                  {
+                    user.picture !== "" ? <img src={user.picture} alt="user" /> : <h2 style={{
+                      fontSize: "3rem",
+                      fontWeight: "bold",
+                      textTransform: "uppercase",
+                    }}>{user.fullName.split("")[0]}</h2>
+                  }
                 </div>
 
                 <div className="profileContentList">

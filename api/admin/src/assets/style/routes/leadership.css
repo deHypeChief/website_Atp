@@ -20,24 +20,47 @@
         display: flex;
         justify-content: space-between;
 
-        .tinyFaces {
-            display: flex;
+        
+    }
+}
 
-            .faces {
-                height: 40px;
-                width: 40px;
-                background: pink;
-                border-radius: 100px;
-                border: 2px solid black;
-            }
-            .faces:nth-child(2){
-                margin-right: -10px;
-                z-index: 1;
-            }
-            .faces:nth-child(1){
-                margin-right: -10px;
-                z-index: 2;
-            }
-        }
+.mHeader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.tinyFaces {
+    display: flex;
+    gap: 10px;
+
+    .faces {
+        height: 50px;
+        width: 50px;
+        background: rgb(51, 51, 51);
+        border-radius: 100px;
+        border: 2px solid brown;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: capitalize;
+        opacity: .6;
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+    .faces:nth-child(2){
+        /* background: silver; */
+        border: 2px solid grey;
+
+        opacity: .8;
+        z-index: 1;
+    }
+    .faces:nth-child(1){
+        /* background: gold; */
+        border: 2px solid gold;
+
+        opacity: 1;
+        z-index: 2;
     }
 }

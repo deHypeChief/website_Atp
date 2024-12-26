@@ -105,6 +105,8 @@ export default function DashboardLayout() {
         document.getElementsByTagName("footer")[0].style.display = "block"
     }
 
+    console.log(data?.user?.plan)
+
 
     useEffect(() => {
         async function checkAuth() {
@@ -189,7 +191,7 @@ export default function DashboardLayout() {
                                 <h2>Membership Plan</h2>
                                 <div className="moreCard">
                                     {
-                                        data.user?.plan.planIntervalNumber ? null : (
+                                        data.user?.membership !== "" ? null : (
                                             <div className="noMember">
                                                 <h2>No Membership Plan</h2>
                                                 <Button onClick={() => { setHandleMem(true) }}>Become A Member</Button>
@@ -239,7 +241,7 @@ export default function DashboardLayout() {
                                     }
 
                                     {
-                                        data.user?.plan?.planIntervalNumber ? (
+                                        data.user?.membership !== "" && (
                                             <div className="medFound">
                                                 <div className="topMemImage">
                                                     <div className="imgMem">
@@ -273,7 +275,7 @@ export default function DashboardLayout() {
                                                     </div>
                                                 </div>
                                             </div>
-                                        ) : null
+                                        ) 
                                     }
 
 

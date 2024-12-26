@@ -14,17 +14,21 @@ const adminHandleUsers = new Elysia()
     const { gold, silver, bronze } = body;
     try {
       const [goldToken, silverToken, bronzeToken] = await Promise.all([
-        Match.findOne({ token: gold }),
-        Match.findOne({ token: silver }),
-        Match.findOne({ token: bronze }),
+        Match.findOne({ token: gold, won: false }),
+        Match.findOne({ token: silver,  won: false }),
+        Match.findOne({ token: bronze,  won: false }),
       ]);
+
 
       if (!goldToken || !silverToken || !bronzeToken) {
         set.status = 400;
-        return { message: "Invalid token(s) provided" };
+        return { message: "Invalid token(s) provided or medals has been assigned to this tokens" };
       }
 
-      const tour = await Tournament.findOne({ id: goldToken.tournament });
+      console.log(gold, silver, bronze, "\n ", goldToken, silverToken, bronzeToken)
+
+
+      const tour = await Tournament.findOne({ _id: goldToken.tournament });
       const [goldUser, silverUser, bronzeUser] = await Promise.all([
         User.findById(goldToken.user),
         User.findById(silverToken.user),
@@ -115,6 +119,7 @@ const adminHandleUsers = new Elysia()
       await Promise.all(updateMatchPromises);
 
       // Add to leaderboard
+      console.log(tour)
       const newLeader = new Leader({
         tour: tour?._id,
         gold: goldToken.user,
@@ -126,6 +131,7 @@ const adminHandleUsers = new Elysia()
       return { message: "Leaders created successfully!" };
     } catch (err) {
       set.status = 500;
+      console.log(err)
       return { message: "Error while creating leaders", error: err };
     }
   });

@@ -103,7 +103,6 @@ export function MatchTable<TData, TValue>({
 			toast({
 				variant: "default",
 				title: "Winners Created Valid",
-				description: data.message,
 			})
 			queryClient.invalidateQueries({ queryKey: ['winners'] })
 		},
@@ -117,13 +116,13 @@ export function MatchTable<TData, TValue>({
 		}
 	})
     const FormSchema = z.object({
-        goldToken: z.string().min(6, {
+        gold: z.string().min(6, {
 			message: "The token for gold is needed",
 		}),
-        silverToken: z.string().min(6, {
+        silver: z.string().min(6, {
 			message: "The token for gold is needed",
 		}),
-        bronzeToken: z.string().min(6, {
+        bronze: z.string().min(6, {
 			message: "The token for gold is needed",
 		}),
     })
@@ -195,7 +194,7 @@ export function MatchTable<TData, TValue>({
 
                                         <FormField
                                             control={form.control}
-                                            name="goldToken"
+                                            name="gold"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
@@ -207,7 +206,7 @@ export function MatchTable<TData, TValue>({
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="silverToken"
+                                            name="silver"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
@@ -219,7 +218,7 @@ export function MatchTable<TData, TValue>({
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="bronzeToken"
+                                            name="bronze"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormControl>
