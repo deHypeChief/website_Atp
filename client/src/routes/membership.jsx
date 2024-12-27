@@ -35,6 +35,8 @@ export function MembershipAction({ planData = [] }) {
         queryKey: ["coachesMem"]
     });
 
+    console.log(planData)
+
 
     function handleSubmit() {
         const queryParams = new URLSearchParams(location.search);
