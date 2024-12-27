@@ -233,15 +233,20 @@ export function MembershipAction({ planData = [] }) {
                         <div className="durationWrap" ref={pickDur}>
                             {
                                 planData[selectedPlanIndex].billingPlans.map((item, index) => {
-                                    const discountFactor = 1 - (item.discountPercentage / 100);
-                                    const payAmount = selectedCoach.price * item.interval * discountFactor;
+                                    const discountFactor =  (item.discountPercentage / 100);
+                                    const membershipPrice = planData[selectedPlanIndex].planPrice * item.interval * discountFactor
+                                    const coachPrice = (selectedCoach?.price || 0) * item.interval
+                                    const payAmount = membershipPrice + coachPrice;
+
+                                    // console.log(discountFactor, membershipPrice, coachPrice, payAmount)
+
                                     return (
                                         <div
                                             key={"in" + index}
                                             className={`durBox ${index === 0 ? "durBox-selected" : ""}`}
                                             onClick={(e) => handleDurationSelection(e, index)}>
                                             <div className="durInfo">
-                                                <h1>NGN {payAmount}</h1>
+                                                <h1>NGN {payAmount.toFixed(0)}</h1>
                                                 <h2>for {item.interval} months</h2>
                                             </div>
                                         </div>
