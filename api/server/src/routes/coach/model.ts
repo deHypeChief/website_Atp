@@ -7,7 +7,6 @@ interface ICoach extends Document {
     email: string;
     bioInfo: string;
     imageUrl: string;
-    price: number;
     avgRate: number; // Better to use 'number' instead of 'string' for rates
     comment: {
         userID: Schema.Types.ObjectId;
@@ -36,10 +35,6 @@ const coachSchema = new mongoose.Schema<ICoach>({
     },
     imageUrl: {
         type: String,
-        required: true,
-    },
-    price: {
-        type: Number,
         required: true,
     },
     avgRate: {

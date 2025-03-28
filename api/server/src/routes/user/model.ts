@@ -14,15 +14,7 @@ interface IUser extends Document {
   socialAuth: boolean;
   socialToken: string;
   socialType: string;
-  membership: string;
   assignedCoach: ObjectId;
-  plan: {
-    planId: ObjectId;
-    planIntervalNumber: number;
-    flutterwavePlanId: string;
-    planStartDate: Date;
-    renewalDate: Date;
-  };
   comparePassword(candidatePin: string): Promise<boolean>;
 }
 
@@ -34,7 +26,6 @@ const userSchema = new mongoose.Schema<IUser>({
   phoneNumber: { type: String, default: '' },
   dob: { type: Date, default: Date.now() },
   level: { type: String, default: '' },
-  membership: { type: String, default: '' },
   socialAuth: { type: Boolean, default: false },
   socialToken: { type: String },
   socialType: { type: String },
@@ -43,14 +34,6 @@ const userSchema = new mongoose.Schema<IUser>({
   assignedCoach: {
     type: Schema.Types.ObjectId,
     ref: 'Coach',
-  },
-
-  plan: {
-    planId: { type: Schema.Types.ObjectId, ref: 'Plan' },
-    planIntervalNumber: { type: Number, default: 0 },
-    flutterwavePlanId: { type: String, default: '' },
-    planStartDate: { type: Date },
-    renewalDate: { type: Date }, 
   },
 });
 

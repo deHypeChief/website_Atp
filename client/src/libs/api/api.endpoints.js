@@ -72,7 +72,7 @@ export const getTourPayLink = async (tornamentId) => {
   try {
     const response = await api.get(`/tour/register/${tornamentId}`);
     console.log(response.data);
-    return response.data.flwResponse.data.link;
+    return response.data.paystackResponse.data.authorization_url;
   } catch (error) {
     console.error("Error fetching payment link:", error);
   }
@@ -123,7 +123,7 @@ export const getMembershPayLink = async (query) => {
 
 export const validateBilling = async (billingQuery) => {
   try {
-    const response = await api.get(`/plan/user${billingQuery}`);
+    const response = await api.get(`/pay/callback${billingQuery}`);
     console.log(response.data);
     return response.data;
   } catch (error) {

@@ -42,7 +42,7 @@ export default function App() {
                     <Route path="/u" element={<DashboardLayout/>}>
                         <Route index element={<Dashboard/>}/>
                         <Route path="/u/ticket/:tournamentID" element={<YourTicket/>}/>
-                        <Route path="/u/billing/:planID/:billingType/:coachId/planCallback" element={<Billing/>}/>
+                        <Route path="/u/bills/:type/:subType/:duration" element={<Billing/>}/>
                     </Route>
                 </Routes>
                 <Footer/>

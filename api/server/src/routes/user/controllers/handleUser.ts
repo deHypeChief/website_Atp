@@ -16,8 +16,7 @@ const getUser = new Elysia()
                         select: "-password"
                     }
                 })
-                .populate("plan.planId"); // Ensure nested population for plan ID
-
+                
             set.status = 200; // Status 200 on success
             return {
                 message: "User found",

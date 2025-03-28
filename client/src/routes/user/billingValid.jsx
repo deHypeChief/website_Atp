@@ -6,9 +6,9 @@ import { validateBilling } from "../../libs/api/api.endpoints";
 
 
 export default function Billing() {
-    const location = useLocation();
-    const { planID, billingType, coachId } = useParams();
-    const [isValid, setIsValid] = useState(false)
+    // const location = useLocation();
+    const { type, subType, duration } = useParams();
+    // const [isValid, setIsValid] = useState(false)
     const hasRunRef = useRef(false);
 
 
@@ -21,10 +21,12 @@ export default function Billing() {
 
             hasRunRef.current = true;
             const url = new URL(window.location.href);
-            const billingUrl = `/${planID}/${billingType}/${coachId}/planCallback${url.search}`;
+            const tx_ref = url.searchParams.get('txref') || null;
+
+            const billingUrl = `/${type}/${subType}/${duration}?tx_ref=${tx_ref}`;
             return validateBilling(billingUrl);
         },
-        queryKey: ["validateTicket", planID, billingType, coachId],
+        queryKey: ["validateBilling"],
         retry: false,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
@@ -39,11 +41,11 @@ export default function Billing() {
                 billingQuery.isSuccess && (
                     <div className="ticketplaceValid">
                         <h1>{billingQuery.data.message}</h1>
-                        <p>The membership has been added, check your mail for more info</p>
+                        <p>Your payment was successful, check your mail for update</p>
                         <Link to="/u">
                             <Button>Back to dashboard</Button>
                         </Link>
-                        <p>Note: Ticket code would be needed at the tournament</p>
+                        <p>Note: Goto billings on your dashboard</p>
                     </div>
                 )
             }
@@ -51,7 +53,7 @@ export default function Billing() {
                 billingQuery.isError && (
                     <div className="ticketplaceValid">
                         <h1>{billingQuery.error.message}</h1>
-                        <p>Mebership payment error</p>
+                        <p>Error why processing your payment, Please contact support.</p>
                         <Link to="/u">
                             <Button>Back to Dashboard</Button>
                         </Link>
@@ -66,7 +68,8 @@ export default function Billing() {
                             <p>Processing payment...</p>
                         </div>
                     </div>
-                )}
+                )
+            }
         </div>
     )
 }

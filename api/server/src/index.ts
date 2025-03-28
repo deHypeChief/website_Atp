@@ -5,9 +5,7 @@ import admin from "./routes/admin/plugin";
 import swagger from "@elysiajs/swagger";
 import cors from "@elysiajs/cors";
 import { allowedOrigins } from "./config/origin.config";
-import plan from "./routes/plans/plugin";
 import user from "./routes/user/plugin";
-import video from "./routes/video/plugin";
 import tour from "./routes/tournament/plugin";
 import match from "./routes/match/plugin";
 import coach from "./routes/coach/plugin";
@@ -15,6 +13,7 @@ import notify from "./routes/notifications/plugin";
 import { membershipJob } from "./middleware/cronJob";
 import cron from "./routes/jobs/plugin";
 import leader from "./routes/leaderboards/plugin";
+import billing from "./routes/billings/plugin";
 
 // Connect to the database
 connectDb();
@@ -29,13 +28,12 @@ app
   .use(membershipJob)
   .use(cron)
   .use(admin)
-  .use(plan)
   .use(user)
-  .use(video)
   .use(tour)
   .use(match)
   .use(coach)
   .use(notify)
+  .use(billing)
   .use(leader)
   .get("/", () => "Server is Up and running 🦊")
   .listen(Bun.env.PORT || 3002);

@@ -3,23 +3,24 @@ import Match from "../model";
 import { isUser_Authenticated } from "../../../middleware/isUserAuth";
 import Tournament from "../../tournament/model";
 import Notify from "../../notifications/model";
-import flw from "../../../config/flutterwave.config";
 import { sendMail } from "../../../middleware/sendMail";
+import { paystack } from "../../../middleware/paystack";
 
 const createMatch = new Elysia()
+    .use(paystack)
     .use(isUser_Authenticated)
     .use(sendMail)
     .get("/getUserMatches", async ({ set, user }) => {
         try {
             // Find matches for the authenticated user
             const matches = await Match.find({ user: user._id }).populate("tournament");
-    
+
             // Initialize counters for match wins and each medal type
             let matchCount = 0;
             let goldCount = 0;
             let silverCount = 0;
             let bronzeCount = 0;
-    
+
             // Loop through each match to count wins and each medal type
             matches.forEach((item) => {
                 if (item.won) {
@@ -34,7 +35,7 @@ const createMatch = new Elysia()
                     bronzeCount += 1;
                 }
             });
-    
+
             // Send successful response with match data and medal counts
             set.status = 200;
             return {
@@ -55,33 +56,46 @@ const createMatch = new Elysia()
             };
         }
     })
-    .get("/:tournament/matchCallback", async ({ generateAtpEmail, mailConfig, set, user, query, params: { tournament } }) => {
+    .get("/:tournament/matchCallback", async ({
+        paystack_VerifyTransaction,
+        generateAtpEmail,
+        mailConfig,
+        set,
+        user,
+        query,
+        params: { tournament }
+    }) => {
         try {
-            console.log(query.status)
-            if (query.status !== "completed") {
-                set.status = 400;
-                return { message: "Payment transaction error" };
-            }
-    
             const existingMatch = await Match.findOne({ tournament, user: user._id });
             const tour = await Tournament.findById(tournament);
-    
+
             if (existingMatch) {
                 set.status = 200;
                 return { message: "You have already registered for the tournament" };
             }
-    
+
             if (!tour) {
                 set.status = 404;
                 return { message: "Tournament not found" };
             }
-    
+
+            if (!query.tx_ref) {
+                set.status = 400;
+                return { message: "Transaction reference is missing" };
+            }
+            const paystackResponse = await paystack_VerifyTransaction(query.tx_ref);
+
+            if (!paystackResponse.status) {
+                set.status = 400;
+                return { message: "Payment transaction error" };
+            }
+
             const match = new Match({
                 tournament,
                 user,
-                flutterPaymentId: query.transaction_id,
+                flutterPaymentId: query.tx_ref,
             });
-    
+
             await match.save();
             await Notify.create({
                 userID: user._id,
@@ -89,7 +103,7 @@ const createMatch = new Elysia()
                 message: `Hey ${user.fullName}, you've successfully registered for the ${tour?.name}! Your unique registration code is: ${match.token}. Keep this code safe as it will be required to participate. Best of luck in the tournament! 🏆`,
                 type: "info"
             });
-    
+
             mailConfig(
                 user.email,
                 `The ATP Tournament! 🏅: ${tour?.name}`,
@@ -111,7 +125,7 @@ const createMatch = new Elysia()
                     `
                 })
             );
-    
+
             set.status = 201;
             return {
                 message: "Ticket registration successfully",
@@ -119,7 +133,7 @@ const createMatch = new Elysia()
                 tournament: tour,
                 user
             };
-    
+
         } catch (err) {
             console.error("Error creating match:", err);
             set.status = 500;
@@ -128,12 +142,12 @@ const createMatch = new Elysia()
     })
     .post("/matchCheck", async ({ set, body }) => {
         const { tournament, user } = body;
-    
+
         try {
             const existingMatch = await Match.findOne({ tournament, user })
                 .populate("user")
                 .populate("tournament");
-    
+
             if (existingMatch) {
                 set.status = 200;
                 return {
@@ -141,10 +155,10 @@ const createMatch = new Elysia()
                     match: existingMatch
                 };
             }
-    
+
             set.status = 200;
             return { message: "User not found" };
-    
+
         } catch (err) {
             console.error("Error checking match:", err);
             set.status = 500;

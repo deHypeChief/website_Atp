@@ -9,7 +9,7 @@ button{
 }
 
 .alt{
-    background: none;
+    background: grey;
     color: white;
     border: var(--set-border);
 }

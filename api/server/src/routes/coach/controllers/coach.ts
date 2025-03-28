@@ -10,7 +10,6 @@ const createCoach = new Elysia()
             email,
             bioInfo,
             imageUrl,
-            price,
             level
         } = body;
 
@@ -30,7 +29,6 @@ const createCoach = new Elysia()
                 email,
                 bioInfo,
                 imageUrl,
-                price: parseInt(price),
                 level
             });
             await coach.save();
@@ -46,6 +44,17 @@ const createCoach = new Elysia()
             console.log(err);
             return {
                 message: "Error creating coach"
+            };
+        }
+    })
+    .get("/assignCoach", async ({ }) => {
+        try {
+            
+        } catch (err) {
+            set.status = 500;
+            console.log(err);
+            return {
+                message: "Error assigning coach"
             };
         }
     })

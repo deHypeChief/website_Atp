@@ -1,15 +1,15 @@
 import Elysia from "elysia";
 import { isUser_Authenticated } from "../../../middleware/isUserAuth";
 import Tournament from "../model";
-import flw from "../../../config/flutterwave.config";
-import { flutterwave } from "../../../middleware/flutterwave";
+import { paystack } from "../../../middleware/paystack";
 
 const registerTour = new Elysia()
     .use(isUser_Authenticated)
-    .use(flutterwave)
-    .get("/register/:tourId", async ({flwPay, set, user, params: { tourId } }) => {
+    .use(paystack)
+    .get("/register/:tourId", async ({ paystack_Transaction, set, user, params: { tourId } }) => {
         try {
             const tour = await Tournament.findById(tourId);
+            console.log(tour)
 
             if (!tour) {
                 set.status = 400;
@@ -18,25 +18,18 @@ const registerTour = new Elysia()
                 };
             }
 
-            const flwResponse = await flwPay({
-                tx_ref: `${user.username}-${Date.now()}`,
-                amount: parseFloat(tour.price),
+            const paystackResponse = await paystack_Transaction({
+                reference: `${user.username}-${Date.now()}`,
+                amount: (Number(tour.price) * 100).toString(),
                 currency: "NGN",
-                redirect_url: `${process.env.ACTIVE_ORIGIN}/u/ticket/${tourId}`,
-                customer: {
-                    email: user.email,
-                    name: user.fullName,
-                    phonenumber: user.phoneNumber
-                },
-                customizations: {
-                    title: tour.name.toUpperCase(),
-                }
+                callback_url: `${process.env.ACTIVE_ORIGIN}/u/ticket/${tourId}`,
+                email: user.email,
             })
 
             // Returning the response to the client
             set.status = 200;
             return {
-                flwResponse
+                paystackResponse
             };
 
         } catch (err) {

@@ -15,22 +15,12 @@ export const membershipJob = new Elysia({
                 try {
                     // Call the existing endpoint to remove expired memberships
                     const response = await axios.post(`${process.env.ACTIVE_API_ORIGIN}/jobs/removeExpiredMemberships`);
-
+                    
+                    console.log('Membership Cleanup')
                     console.log(response.data.message);
                 } catch (err) {
                     console.error("Error while calling the removeExpiredMemberships endpoint:", err);
                 }
-            }
-        })
-    );
-
-export const cronTest = new Elysia()
-    .use(
-        cron({
-            name: 'CronTesting',
-            pattern: Patterns.everyMinutes(),
-            run() {
-                console.log('CronTesting')
             }
         })
     );

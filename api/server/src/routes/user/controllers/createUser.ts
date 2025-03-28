@@ -3,6 +3,7 @@ import User from "../model";
 import { userSchemas } from "../setup";
 import Notify from "../../notifications/model";
 import { sendMail } from "../../../middleware/sendMail";
+import Billing from "../../billings/model";
 
 const createUser = new Elysia()
     .use(userSchemas)
@@ -47,6 +48,9 @@ const createUser = new Elysia()
                 message: `Welcome to ATP, ${fullName}`,
                 type: "info"
             });
+            await Billing.create({
+                user: user._id,
+            })
             console.log(user)
             mailConfig(
                 email,
@@ -79,7 +83,6 @@ const createUser = new Elysia()
                         phoneNumber: user.phoneNumber,
                         dob: user.dob,
                         level: user.level,
-                        membership: user.membership,
                         socialAuth: user.socialAuth
                     },
                     auth: {

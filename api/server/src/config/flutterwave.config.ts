@@ -4,7 +4,7 @@ import axios from 'axios';
 const flw = axios.create({
   baseURL: 'https://api.flutterwave.com/v3', // Base URL for the API
   headers: {
-    'Content-Type': 'application/json', // Default content-type header
+    'Content-Type': 'application/json', 
   },
 });
 

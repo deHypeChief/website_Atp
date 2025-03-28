@@ -15,7 +15,7 @@ export default function YourTicket() {
         queryFn: () => {
             const params = new URLSearchParams(location.search);
 
-            const matchQueryString = `?status=${params.get('status')}&tx_ref=${params.get('tx_ref')}&transaction_id=${params.get('transaction_id')}`;
+            const matchQueryString = `?tx_ref=${params.get('trxref')}&reference=${params.get('reference')}`;
             return validateMatch(tournamentID, matchQueryString)
         },
         queryKey: ["validateTicket"],
