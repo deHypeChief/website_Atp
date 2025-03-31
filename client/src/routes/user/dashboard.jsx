@@ -744,6 +744,8 @@ function TrainingList({ data, action }) {
     const [loading, setLoading] = useState(false)
     const [planType, setPlanType] = useState(0)
 
+    console.log(data)
+
     async function handlePayment(type) {
         setLoading(true)
         await payTraining(type, planType == 0 ? "1month" : "3months")
@@ -782,7 +784,14 @@ function TrainingList({ data, action }) {
                                     <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
                                     <p className="plText">{data.packages?.regular.info || "--"}</p>
                                 </div>
+                                <p className="fni" style={{
+                                    margin: "20px 0",
+                                    fontSize: ".8rem"
+                                }}>
+                                    *All on a membership plan would recive a discount during checkout*
+                                </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("regular") }}>Make Payment</Button>
+                                
                             </div>
                             <div className="planBox">
                                 <div className="pBoxContent">
@@ -794,6 +803,12 @@ function TrainingList({ data, action }) {
                                     <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
                                     <p className="plText">{data.packages?.standard.info}</p>
                                 </div>
+                                <p className="fni" style={{
+                                    margin: "20px 0",
+                                    fontSize: ".8rem"
+                                }}>
+                                    *All on a membership plan would recive a discount during checkout*
+                                </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("standard") }}>Make Payment</Button>
                             </div>
                             <div className="planBox">
@@ -806,7 +821,14 @@ function TrainingList({ data, action }) {
                                     <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
                                     <p className="plText">{data.packages?.premium.info}</p>
                                 </div>
+                                <p className="fni" style={{
+                                    margin: "20px 0",
+                                    fontSize: ".8rem"
+                                }}>
+                                    *All on a membership plan would recive a discount during checkout*
+                                </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("premium") }}>Make Payment</Button>
+                                
                             </div>
                         </div>
                     </div>
@@ -823,7 +845,14 @@ function TrainingList({ data, action }) {
                                     <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
                                     <p className="plText">{data.packages?.family.info}</p>
                                 </div>
+                                <p className="fni" style={{
+                                    margin: "20px 0",
+                                    fontSize: ".8rem"
+                                }}>
+                                    *All on a membership plan would recive a discount during checkout*
+                                </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("family") }}>Make Payment</Button>
+                                
                             </div>
                             <div className="planBox">
                                 <div className="pBoxContent">
@@ -835,7 +864,15 @@ function TrainingList({ data, action }) {
                                     <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
                                     <p className="plText">{data.packages?.couples.info}</p>
                                 </div>
+
+                                <p className="fni" style={{
+                                    margin: "20px 0",
+                                    fontSize: ".8rem"
+                                }}>
+                                    *All on a membership plan would recive a discount during checkout*
+                                </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("couples") }}>Make Payment</Button>
+                                
                             </div>
                         </div>
                     </div>

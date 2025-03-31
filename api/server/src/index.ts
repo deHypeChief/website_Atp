@@ -14,6 +14,7 @@ import { membershipJob } from "./middleware/cronJob";
 import cron from "./routes/jobs/plugin";
 import leader from "./routes/leaderboards/plugin";
 import billing from "./routes/billings/plugin";
+import webhook from "./routes/webhook.";
 
 // Connect to the database
 connectDb();
@@ -35,6 +36,7 @@ app
   .use(notify)
   .use(billing)
   .use(leader)
+  .use(webhook)
   .get("/", () => "Server is Up and running 🦊")
   .listen(Bun.env.PORT || 3002);
 
