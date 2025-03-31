@@ -31,6 +31,7 @@ interface IBilling {
         date: Date;
         amount: number;
         status: string;
+        transactionRef: string;
     }[]
 }
 
@@ -71,6 +72,7 @@ const billingSchema = new mongoose.Schema<IBilling>({
             date: { type: Date, required: true },
             amount: { type: Number, required: true },
             status: { type: String, required: true },
+            transactionRef: { type: String, required: true },
         },
     ],
 });

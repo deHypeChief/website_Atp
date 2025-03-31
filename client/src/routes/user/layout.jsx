@@ -6,7 +6,7 @@ import "../../libs/styles/userLayout.css"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../libs/hooks/use-auth"
 import { useQuery } from "@tanstack/react-query"
-import { getMatches, getMe, uploadProfile } from "../../libs/api/api.endpoints";
+import { getMatches, getMe, getPayMe, uploadProfile } from "../../libs/api/api.endpoints";
 
 import raIcon1 from "../../libs/images/Group 1.svg";
 import raIcon2 from "../../libs/images/Vector-1.svg";
@@ -28,6 +28,7 @@ dayjs.extend(relativeTime);
 export default function DashboardLayout() {
     const [handleMem, setHandleMem] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [open, setOpen] = useState(false)
     const navigate = useNavigate()
     const { isAuthenticated, userLogout } = useAuth()
 
@@ -36,7 +37,7 @@ export default function DashboardLayout() {
         document.getElementsByTagName("nav")[0].style.display = "none"
         document.getElementsByTagName("footer")[0].style.display = "none"
     }, [])
-    
+
 
 
     const { data } = useQuery({
@@ -45,6 +46,7 @@ export default function DashboardLayout() {
                 const payload = {
                     user: await getMe(),
                     matches: await getMatches(),
+                    billing: await getPayMe(),
                     leaderboard: []
                 }
                 console.log(payload);
@@ -55,9 +57,9 @@ export default function DashboardLayout() {
         queryKey: ["moreData"]
     })
 
-    function navReset() {
-        document.getElementsByTagName("nav")[0].style.display = "block"
-        document.getElementsByTagName("footer")[0].style.display = "block"
+    function hamFunction(){
+        document.getElementById("hamSide").style.display = open ? "flex" : null
+        setOpen(!open)
     }
 
 
@@ -70,6 +72,7 @@ export default function DashboardLayout() {
         }
         checkAuth()
     }, [isAuthenticated, navigate])
+
     return (
         <div className="useNov">
             <div className="dashTopNav">
@@ -87,8 +90,12 @@ export default function DashboardLayout() {
                         }
                     </div>
                     <div className="membershipPill">
-                        <p>No Traning Plan</p>
+                        <p style={{textTransform: "capitalize"}}>{`${data?.billing?.data.bills?.trainingBill?.trainingType || " No"} Traning Plan`}</p>
                     </div>
+                </div>
+
+                <div className="ham" onClick={hamFunction}>
+                    m
                 </div>
             </div>
             <Outlet />

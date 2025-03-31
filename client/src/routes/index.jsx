@@ -117,7 +117,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="membership">
+            {/* <section className="membership">
                 <div className="secTop">
                     <div className="heroSubTop">
                         <div className="rArrow rL">
@@ -160,7 +160,7 @@ export default function Home() {
                         })
                     }
                 </div>
-            </section>
+            </section> */}
 
             <section className="pair">
                 <div className="aboutWrap">

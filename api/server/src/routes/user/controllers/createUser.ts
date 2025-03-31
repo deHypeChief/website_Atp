@@ -42,16 +42,16 @@ const createUser = new Elysia()
                 level,
             });
             await user.save();
+            await Billing.create({
+                user: user._id,
+            })
             await Notify.create({
                 userID: user._id,
                 title: "New account created",
                 message: `Welcome to ATP, ${fullName}`,
                 type: "info"
             });
-            await Billing.create({
-                user: user._id,
-            })
-            console.log(user)
+            
             mailConfig(
                 email,
                 `Hello welcome to ATP`,

@@ -487,8 +487,11 @@
         .billImage {
             height: 80px;
             width: 80px;
-            background: red;
+            background: var(--color-blue);
             border-radius: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .billcontent {
@@ -537,12 +540,23 @@
         padding: 40px;
         background: white;
         border-radius: 10px;
-        max-width: 400px;
+        max-width: 450px;
+        max-height: 80vh;
+        overflow: auto;
+        border: 20px white solid;
 
         .baseAction {
             display: flex;
             justify-content: space-between;
             padding: 20px 0 0;
+        }
+
+        &.layoutExpand {
+            max-width: fit-content;
+        }
+
+        &::-webkit-scrollbar {
+            display: none;
         }
     }
 
@@ -592,6 +606,334 @@
         }
     }
 }
+
+.pHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .basec {
+        display: flex;
+        gap: 20px;
+    }
+}
+
+.plansWrap:nth-child(3) {
+    margin-top: 50px;
+}
+
+.planList {
+    display: flex;
+    gap: 20px;
+
+
+    .planBox {
+        padding: 20px;
+        border: 1px solid var(--color-blue);
+        border-radius: 10px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .planImage {
+            height: 120px;
+            width: 230px;
+        }
+
+        p {
+            font-size: .9rem;
+            width: 100%;
+        }
+
+        h2 {
+            padding-bottom: 5px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        .plText {
+            padding-top: 8px;
+        }
+    }
+}
+
+.ham{
+    display: none;
+}
+
+
+@media screen and (max-width: 600px) {
+    .ham{
+        display: block;
+    }
+    .pHeader{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        h3{
+            text-align: left;
+        }
+    }
+    .plansWrap{
+        padding-top: 20px;
+        h2{
+            padding-bottom: 20px;
+        }
+    }
+    .plansWrap:nth-child(3) {
+        margin-top: 10px;
+    }
+
+    .dashTopNav {
+        padding: 20px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        background: white;
+
+
+        .upUserInfo {
+            display: none;
+        }
+    }
+
+    .dashboardSection {
+        margin: 20px 20px 0;
+        /* background: pink; */
+        height: 85vh;
+        display: flex;
+        gap: 20px;
+
+        .sideContent {
+            display: none;
+            position: fixed;
+            background: white;
+            height: calc(100vh - 74px);
+            top: 0;
+            left: 0;
+            padding: 10px 20px 20px;
+            margin-top: 74px;
+            z-index: 10;
+        }
+
+        .dashboardContent {
+
+            .eWrap {
+
+                .ebound {
+                    background: white;
+                    width: initial;
+                    padding: 20px 30px;
+                }
+            }
+
+            .noContent {
+                .ebound {
+                    background: white;
+                    padding: 20px 30px;
+                    width: initial;
+
+                    .cleft {
+                        button {
+                            margin-top: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    .layoutOverlay {
+
+        .layoutBase {
+            padding: 0px;
+            background: white;
+            border-radius: 10px;
+            max-width: 450px;
+            max-height: 80vh;
+            overflow: auto;
+            border: 20px white solid;
+            margin: 20px;
+
+
+            .baseAction {
+                display: flex;
+                justify-content: space-between;
+                flex-direction: column-reverse;
+                gap: 10px;
+            }
+
+            &.layoutExpand {
+                max-width: fit-content;
+            }
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        .oneSection {
+            .onImage {
+                height: 200px;
+                background: blue;
+                margin-bottom: 20px;
+            }
+
+            p {
+                text-align: center;
+            }
+        }
+
+
+        /* ticket */
+        .tickeCode {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 0 0 20px;
+
+            .imgCode {
+                height: 200px;
+                width: 200px;
+                background: red;
+
+            }
+        }
+
+        h3 {
+            text-align: left;
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+        }
+
+        .ticketInfo {
+            padding: 10px 0;
+
+            .tContent {
+                padding-top: 5px;
+                display: flex;
+                gap: 10px;
+
+                p {
+                    font-size: 1rem;
+                }
+            }
+        }
+    }
+
+    .overviewGroup {
+        display: block;
+    }
+
+    .planList {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+
+        .planBox {
+            padding: 20px;
+            border: 1px solid var(--color-blue);
+            border-radius: 10px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .planImage {
+                height: 120px;
+                width: 230px;
+            }
+
+            p {
+                font-size: .9rem;
+                width: 100%;
+            }
+
+            h2 {
+                padding-bottom: 5px;
+            }
+
+            button {
+                margin-top: 10px;
+            }
+
+            .plText {
+                padding-top: 8px;
+            }
+        }
+    }
+
+    .billBox {
+        .billOne {
+            display: flex;
+            flex-direction: column;
+            /* align-items: ; */
+            text-align: center;
+            padding: 20px;
+
+            .billcontent {
+                width: 100%;
+
+                button {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .notiBoxi {
+        & .notiB {
+            padding: 10px 20px;
+            background: white;
+            border-radius: 10px;
+
+            .titNotiB {
+                display: block;
+            }
+        }
+    }
+
+    .tourDiv {
+        display: block;
+    }
+
+    .eWrap {
+
+        .ebound {
+            height: 100%;
+
+            &.eSplit {
+                align-items: initial;
+            }
+        }
+
+        &:nth-child(2) {
+            flex: 1;
+        }
+
+        &:nth-child(1) {
+            flex: 2;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

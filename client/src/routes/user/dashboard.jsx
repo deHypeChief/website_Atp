@@ -9,7 +9,7 @@ import raIcon3 from "../../libs/images/Vector.svg";
 import raIcon4 from "../../libs/images/Group.svg";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { checkMatch, getMatches, getNotify, getTour, getTourPayLink, getMembershPayLink, getMe, postComment } from "../../libs/api/api.endpoints";
+import { checkMatch, getMatches, getNotify, getTour, getTourPayLink, getMembershPayLink, getMe, postComment, getPayMe, payRegistration, billingInfo, payTraining, payDues } from "../../libs/api/api.endpoints";
 import { useEffect, useRef, useState } from "react";
 // import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import dayjs from 'dayjs';
@@ -28,6 +28,7 @@ export default function Dashboard() {
     const { user, userLogout } = useAuth();
     const [slide, setSlide] = useState(0)
     const [userData, setUserData] = useState()
+    const [registred, setRegistred] = useState(false)
 
     // const isCalled = useRef(false);
     // const [billingLoading, setBillingLoading] = useState(false)
@@ -70,6 +71,19 @@ export default function Dashboard() {
 
     useEffect(() => {
         setUserData(user())
+        async function billInfo() {
+            await getPayMe()
+                .then((res) => {
+                    const hasPaid = res.data.bills.registrationBill.status == "Not Paid" ? true : false
+                    console.log(hasPaid)
+                    setRegistred(hasPaid)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+
+        billInfo()
     }, [])
 
     const userMutation = useQuery({
@@ -84,12 +98,16 @@ export default function Dashboard() {
         queryKey: ["tour"],
         queryFn: () => getTour()
     })
+    const billMutation = useQuery({
+        queryKey: ["billingDataM"],
+        queryFn: () => getPayMe()
+    })
 
 
     return (
         <div className="dashboardSection">
 
-            <div className="sideContent">
+            <div className="sideContent" id="hamSide">
 
                 <div className="sdeTopContent">
                     <div className={`sideContent_Bttn ${slide != 0 && "sc_BttnClosed"}`} onClick={() => { setSlide(0) }}>
@@ -129,12 +147,12 @@ export default function Dashboard() {
             </div>
 
             <div className="dashboardContent">
-                {/* <OneTimeFee /> */}
+                {registred && <OneTimeFee action={()=>{setRegistred(false)}} price={25000}/>}
                 {/* display section */}
                 {slide == 0 && <YourOverview user={userData} matchMutation={matchMutation} />}
                 {slide == 1 && <Tickets matchMutation={matchMutation} />}
-                {slide == 2 && <YourCoach setAction={setSlide} user={userMutation.data}/>}
-                {slide == 3 && <Tournaments tour={tourMunation} matchMutation={matchMutation} user={userMutation?.data}/>}
+                {slide == 2 && <YourCoach setAction={setSlide} user={userMutation.data} />}
+                {slide == 3 && <Tournaments tour={tourMunation} matchMutation={matchMutation} user={userMutation?.data} />}
                 {slide == 4 && <Notifications />}
                 {slide == 5 && <Billings />}
             </div>
@@ -319,7 +337,7 @@ function Tickets({ matchMutation }) {
             {alert && <PayAlert />}
 
             {
-                matchMutation?.data?.matches.length < 0  ? (
+                matchMutation?.data?.matches.length == 0 ? (
                     <div className="noContent">
                         <div className="ebound ">
                             <div className="cleft">
@@ -563,31 +581,31 @@ function TourPayAlert({ alert, setAlert, userID }) {
         <div className="layoutOverlay">
             {!status ? (
                 <div className="layoutBase">
-                <h3>Confirm Payment</h3>
-                <p>
-                    You are about to make a payment for <b>{alert.name}</b>
-                    for <b>NGN {alert.price}</b>.
-                </p>
+                    <h3>Confirm Payment</h3>
+                    <p>
+                        You are about to make a payment for <b>{alert.name}</b>
+                        for <b>NGN {alert.price}</b>.
+                    </p>
 
-                <div className="baseAction">
-                    <Button alt onClick={() => { setAlert(false) }}>Cancel</Button>
-                    <Button onClick={() => { makePayment(alert._id) }} disabled={loading}>
-                        {loading ? "Processing Link..." : "Make Payment"}
-                    </Button>
+                    <div className="baseAction">
+                        <Button alt onClick={() => { setAlert(false) }}>Cancel</Button>
+                        <Button onClick={() => { makePayment(alert._id) }} disabled={loading}>
+                            {loading ? "Processing Link..." : "Make Payment"}
+                        </Button>
+                    </div>
                 </div>
-            </div>
-            ): (
+            ) : (
                 <div className="layoutBase">
-                <h3>You have Paid</h3>
-                <p>
-                    You have made payment for <b>{alert.name}</b>
-                    at <b>NGN {alert.price}</b>.
-                </p>
+                    <h3>You have Paid</h3>
+                    <p>
+                        You have made payment for <b>{alert.name}</b>
+                        at <b>NGN {alert.price}</b>.
+                    </p>
 
-                <div className="baseAction">
-                    <Button alt full onClick={() => { setAlert(false) }}>Go Back</Button>
+                    <div className="baseAction">
+                        <Button alt full onClick={() => { setAlert(false) }}>Go Back</Button>
+                    </div>
                 </div>
-            </div>
             )}
         </div>
     )
@@ -598,7 +616,7 @@ function Tournaments({ tour, matchMutation, user }) {
 
     return (
         <>
-            {alert && <TourPayAlert setAlert={setAlert} alert={alert}/>}
+            {alert && <TourPayAlert setAlert={setAlert} alert={alert} />}
             <div className="tourDiv">
                 <div className="eWrap">
                     <div className="ebound ">
@@ -620,7 +638,7 @@ function Tournaments({ tour, matchMutation, user }) {
 
             <div className="toursBox">
                 {
-                    tour.data?.length < 0 ? (
+                    tour.data?.length <= 0 ? (
                         <div className="noContent">
                             <div className="ebound ">
                                 <div className="cleft">
@@ -656,10 +674,10 @@ function Tournaments({ tour, matchMutation, user }) {
                                                 <p>Price:</p>
                                                 <p>NGN {item.price}</p>
                                             </div>
-                                            <Button 
+                                            <Button
                                                 full
                                                 onClick={() => {
-                                                    setAlert({...item, userData: user})
+                                                    setAlert({ ...item, userData: user })
                                                 }}
                                             >Buy Ticket</Button>
                                         </div>
@@ -683,7 +701,7 @@ function Notifications() {
     return (
         <>
             {
-                notifyMutation.data?.length < 0 ? (
+                notifyMutation.data?.length <= 0 ? (
                     <div className="noContent">
                         <div className="ebound ">
                             <div className="cleft">
@@ -719,71 +737,304 @@ function Notifications() {
     )
 }
 
-function Billings() {
-    const [data, setData] = useState(true)
+
+// billing section
+
+function TrainingList({ data, action }) {
+    const [loading, setLoading] = useState(false)
+    const [planType, setPlanType] = useState(0)
+
+    async function handlePayment(type) {
+        setLoading(true)
+        await payTraining(type, planType == 0 ? "1month" : "3months")
+            .then((payLink) => {
+                setLoading(false)
+                window.location.href = payLink.paystackResponse.data.authorization_url
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
     return (
         <>
-            {
-                data != true ? (
-                    <div className="noContent">
-                        <div className="ebound ">
-                            <div className="cleft">
-                                <h1>No Transactions Yet</h1>
-                                <p>Join a plan or tranning program and keep track here</p>
-                                <Button>Get a ticket</Button>
+            <div className="layoutOverlay">
+                <div className="layoutBase layoutExpand">
+                    <div className="pHeader">
+                        <h3>Select Package</h3>
+                        <div className="basec">
+                            <Button onClick={() => {
+                                setPlanType(planType == 0 ? 1 : 0)
+                            }} disabled={loading}>Change Month</Button>
+                            <Button alt disabled={loading} onClick={action}>Close</Button>
+                        </div>
+                    </div>
+                    <div className="plansWrap">
+                        <h2>Training Plans</h2>
+                        <div className="planList">
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
+
+                                    </div>
+                                    <h2>{data.packages?.regular.name || "--"}</h2>
+                                    <p><b>Price: </b> NGN {data.packages?.regular.plans[planType].price || "--"}</p>
+                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
+                                    <p className="plText">{data.packages?.regular.info || "--"}</p>
+                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("regular") }}>Make Payment</Button>
+                            </div>
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
+
+                                    </div>
+                                    <h2>{data.packages?.standard.name}</h2>
+                                    <p><b>Price: </b> NGN {data.packages?.standard.plans[planType].price}</p>
+                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
+                                    <p className="plText">{data.packages?.standard.info}</p>
+                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("standard") }}>Make Payment</Button>
+                            </div>
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
+
+                                    </div>
+                                    <h2>{data.packages?.premium.name}</h2>
+                                    <p><b>Price: </b> NGN {data.packages?.premium.plans[planType].price}</p>
+                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
+                                    <p className="plText">{data.packages?.premium.info}</p>
+                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("premium") }}>Make Payment</Button>
                             </div>
                         </div>
                     </div>
-                ) : (
-                    <div className="coContent">
-                        <div className="header">
-                            <h1>Billings</h1>
-                        </div>
+                    <div className="plansWrap">
+                        <h2>Special Training Plans</h2>
+                        <div className="planList">
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
 
-                        <div className="billBox">
-                            <div className="billOne">
-                                <div className="billImage"></div>
-                                <div className="billcontent">
-                                    <h1>Reg One time Payment</h1>
-                                    <p>Due Date: None</p>
+                                    </div>
+                                    <h2>{data.packages?.family.name}</h2>
+                                    <p><b>Price: </b> NGN {data.packages?.family.plans[planType].price}</p>
+                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
+                                    <p className="plText">{data.packages?.family.info}</p>
                                 </div>
-                                <div className="billStatusPill">
-                                    <p>Completed</p>
-                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("family") }}>Make Payment</Button>
                             </div>
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
 
-                            <div className="billOne">
-                                <div className="billImage"></div>
-                                <div className="billcontent">
-                                    <h1>Membership Dues Payment</h1>
-                                    <p>Due Date: 26th June 2025</p>
-                                    <Button>Cancel Payment</Button>
+                                    </div>
+                                    <h2>{data.packages?.couples.name}</h2>
+                                    <p><b>Price: </b> NGN {data.packages?.couples.plans[planType].price}</p>
+                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
+                                    <p className="plText">{data.packages?.couples.info}</p>
                                 </div>
-                                <div className="billStatusPill">
-                                    <p>OnGoing</p>
-                                </div>
-                            </div>
-
-                            <div className="billOne">
-                                <div className="billImage"></div>
-                                <div className="billcontent">
-                                    <h1>Regular Traning Package</h1>
-                                    <p>Due Date: 23rd June 2025</p>
-                                    <Button>Renew Payment</Button>
-                                </div>
-                                <div className="billStatusPill">
-                                    <p>Paid</p>
-                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("couples") }}>Make Payment</Button>
                             </div>
                         </div>
                     </div>
-                )
-            }
+
+
+                </div>
+            </div>
         </>
     )
 }
 
-function OneTimeFee() {
+function MembershipList({ data, action }) {
+    const [loading, setLoading] = useState(false)
+
+    async function handlePayment(type) {
+        setLoading(true)
+        await payDues(type)
+            .then((payLink) => {
+                setLoading(false)
+                window.location.href = payLink.paystackResponse.data.authorization_url
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+    return (
+        <>
+            <div className="layoutOverlay">
+                <div className="layoutBase layoutExpand">
+                    <div className="pHeader">
+                        <h3>Select Duration</h3>
+                        <div className="basec">
+                            <Button alt disabled={loading} onClick={action}>Close</Button>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div className="plansWrap">
+                        <div className="planList">
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
+
+                                    </div>
+                                    <h2>Monthly</h2>
+                                    <p><b>Price: </b> NGN {data.dues?.monthly.price || "--"}</p>
+                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("monthly") }}>Make Payment</Button>
+                            </div>
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
+
+                                    </div>
+                                    <h2>Quarterly</h2>
+                                    <p><b>Price: </b> NGN {data.dues?.quarterly.price || "--"}</p>
+                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("quarterly") }}>Make Payment</Button>
+                            </div>
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
+
+                                    </div>
+                                    <h2>Bi Annually</h2>
+                                    <p><b>Price: </b> NGN {data.dues?.biAnnually.price || "--"}</p>
+                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("biAnnually") }}>Make Payment</Button>
+                            </div>
+                            <div className="planBox">
+                                <div className="pBoxContent">
+                                    <div className="planImage">
+
+                                    </div>
+                                    <h2>Yearly</h2>
+                                    <p><b>Price: </b> NGN {data.dues?.yearly.price || "--"}</p>
+                                </div>
+                                <Button full disabled={loading} onClick={() => { handlePayment("yearly") }}>Make Payment</Button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+function Billings() {
+    const [otPay, setOTPay] = useState(false)
+    const [memData, setMemData] = useState(false)
+    const [trainingData, setTrainingData] = useState(false)
+
+    const { data } = useQuery({
+        queryKey: ["billingData"],
+        queryFn: () => getPayMe()
+    })
+    const payInfo = useQuery({
+        queryKey: ["payInfo"],
+        queryFn: () => billingInfo()
+    })
+
+    console.log(data)
+
+    return (
+        <>
+            {otPay && <OneTimeFee action={() => { setOTPay(false) }} price={payInfo.data.registration.price || 0.00} />}
+            {trainingData && <TrainingList data={payInfo.data} action={() => { setTrainingData(false) }} />}
+            {memData && <MembershipList data={payInfo.data} action={() => { setMemData(false) }} />}
+
+            <div className="coContent">
+                <div className="header">
+                    <h1>Billings</h1>
+                </div>
+
+                <div className="billBox">
+                    <div className="billOne">
+                        <div className="billImage">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
+                                <path fill="#fff" d="m17.5 16.82l2.44 1.41l-.75 1.3L16 17.69V14h1.5zM24 17c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-.34.03-.67.08-1H2V4h18v6.68c2.36 1.13 4 3.53 4 6.32m-13.32-3c.18-.36.37-.7.6-1.03c-.09.03-.18.03-.28.03c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3c0 .25-.04.5-.1.73c.94-.46 1.99-.73 3.1-.73c.34 0 .67.03 1 .08V8a2 2 0 0 1-2-2H6c0 1.11-.89 2-2 2v4a2 2 0 0 1 2 2zM22 17c0-2.76-2.24-5-5-5s-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5" />
+                            </svg>
+                        </div>
+                        <div className="billcontent">
+                            <h1>One Time Payment</h1>
+                            <p><b>Price:</b> NGN {payInfo.data?.registration?.price || 0.00}</p>
+                            {
+                                data?.data?.bills?.registrationBill?.status == "Not Paid" && <Button onClick={() => { setOTPay(true) }}>Make Payment</Button>
+                            }
+                        </div>
+                        <div className="billStatusPill">
+                            <p>{data?.data?.bills?.registrationBill?.status}</p>
+                        </div>
+                    </div>
+
+                    <div className="billOne">
+                        <div className="billImage">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
+                                <path fill="#fff" d="M14.005 2.003a8 8 0 0 1 3.292 15.293A8 8 0 1 1 6.711 6.71a8 8 0 0 1 7.294-4.707m-3 7h-2v1a2.5 2.5 0 0 0-.164 4.995l.164.005h2l.09.008a.5.5 0 0 1 0 .984l-.09.008h-4v2h2v1h2v-1a2.5 2.5 0 0 0 .164-4.995l-.164-.005h-2l-.09-.008a.5.5 0 0 1 0-.984l.09-.008h4v-2h-2zm3-5A6 6 0 0 0 9.52 6.016a8 8 0 0 1 8.47 8.471a6 6 0 0 0-3.986-10.484" />
+                            </svg>
+                        </div>
+                        <div className="billcontent">
+                            <h1>Membership Dues Payment</h1>
+                            {data?.data?.bills?.membershipBill?.renewAt && <p><b>Due Date: </b> {dayjs(data?.data?.bills?.membershipBill?.renewAt).format("MMMM DD, YYYY")}</p>}
+                            {data?.data?.bills?.membershipBill?.amount && <p><b>Amount Paid: </b> NGN {data?.data?.bills?.membershipBill?.amount}</p>}
+                            {
+                                data?.data?.bills?.membershipBill?.status == "Not Paid" && <Button onClick={() => { setMemData(true) }}>Make Payment</Button>
+                            }
+                        </div>
+                        <div className="billStatusPill">
+                            <p>{data?.data?.bills?.membershipBill?.status}</p>
+                        </div>
+                    </div>
+
+                    <div className="billOne">
+                        <div className="billImage">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">
+                                <g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3">
+                                    <path d="M10.7 4.7c3-3 7.4-3.6 9.8-1.2s1.8 6.8-1.2 9.8a9.5 9.5 0 0 1-4.3 2.5c-2.1.5-4.1.1-5.5-1.3S7.7 11.1 8.2 9a9.5 9.5 0 0 1 2.5-4.3" />
+                                    <path d="M8.2 9L6 18l9-2.2M2 22l4-4" />
+                                    <circle cx="20" cy="20" r="2" />
+                                </g>
+                            </svg>
+                        </div>
+                        <div className="billcontent">
+                            <h1>{data?.data?.bills?.trainingBill?.trainingType || ""} Traning Package</h1>
+                            {data?.data?.bills?.trainingBill?.renewAt && <p><b>Due Date: </b> {dayjs(data?.data?.bills?.trainingBill?.renewAt).format("MMMM DD, YYYY")}</p>}
+                            {data?.data?.bills?.trainingBill?.amount && <p><b>Amount Paid: </b> NGN {data?.data?.bills?.trainingBill?.amount}</p>}
+                            {
+                                data?.data?.bills?.trainingBill?.status == "Not Paid" && <Button onClick={() => { setTrainingData(true) }}>Make Payment</Button>
+                            }
+                        </div>
+                        <div className="billStatusPill">
+                            <p>{data?.data?.bills?.trainingBill?.status}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+// billing end
+
+
+
+function OneTimeFee({ action, price }) {
+    const [loading, setLoading] = useState(false)
+    async function generatePaymentLink() {
+        setLoading(true)
+        await payRegistration()
+            .then((payLink) => {
+                // setLoading(false)
+                window.location.href = payLink.paystackResponse.data.authorization_url
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
     return (
         <div className="layoutOverlay">
             <div className="layoutBase">
@@ -797,7 +1048,8 @@ function OneTimeFee() {
                     <p>New members are to pay a one time fee to join the club</p>
                 </div>
                 <div className="baseAction">
-                    <Button full>Pay NGN 20000</Button>
+                    <Button alt onClick={action} disabled={loading}>Close</Button>
+                    <Button onClick={generatePaymentLink} disabled={loading}>{loading ? "Processing..." : ` Pay NGN ${price}`}</Button>
                 </div>
             </div>
         </div>

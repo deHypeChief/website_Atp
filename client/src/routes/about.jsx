@@ -82,7 +82,7 @@ export default function About() {
             </section>
 
 
-            <section className="teams">
+            {/* <section className="teams">
                 <div className="teamText">
                     <h1>Our Team</h1>
                     <p>
@@ -96,7 +96,7 @@ export default function About() {
                     <Card teamCard />
                     <Card teamCard />
                 </div>
-            </section>
+            </section> */}
 
             <Hero
                 title={"Don’t just think, just do it."}

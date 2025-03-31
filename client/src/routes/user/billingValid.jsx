@@ -21,7 +21,7 @@ export default function Billing() {
 
             hasRunRef.current = true;
             const url = new URL(window.location.href);
-            const tx_ref = url.searchParams.get('txref') || null;
+            const tx_ref = url.searchParams.get('trxref') || null;
 
             const billingUrl = `/${type}/${subType}/${duration}?tx_ref=${tx_ref}`;
             return validateBilling(billingUrl);
@@ -45,7 +45,6 @@ export default function Billing() {
                         <Link to="/u">
                             <Button>Back to dashboard</Button>
                         </Link>
-                        <p>Note: Goto billings on your dashboard</p>
                     </div>
                 )
             }

@@ -123,7 +123,7 @@ export const getMembershPayLink = async (query) => {
 
 export const validateBilling = async (billingQuery) => {
   try {
-    const response = await api.get(`/pay/callback${billingQuery}`);
+    const response = await api.get(`/billing/pay/callback${billingQuery}`);
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -157,7 +157,7 @@ export const postComment = async (data) => {
 export const uploadProfile = async (data) => {
   try {
     const response = await api.post(`/uploadProfile`, {
-       profileImage: data
+      profileImage: data
     });
     console.log(response.data);
     return response.data;
@@ -166,3 +166,56 @@ export const uploadProfile = async (data) => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const getPayMe = async () => {
+  try {
+    const response = await api.get(`/billing/pay/me`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching billing info:", error);
+    throw new Error(error.response.data.message);
+  }
+}
+
+// /pay/registration
+export const payRegistration = async () => {
+  try {
+    const response = await api.post(`/billing/pay/registration`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching billing info:", error);
+    throw new Error(error.response.data.message);
+  }
+}
+
+export const payDues = async (type ) => {
+  try {
+    const response = await api.post(`/billing/pay/membership/${type}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching billing info:", error);
+    throw new Error(error.response.data.message);
+  }
+}
+
+export const payTraining = async (type, duration) => {
+  try {
+    const response = await api.post(`/billing/pay/training/${type}/${duration}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching billing info:", error);
+    throw new Error(error.response.data.message);
+  }
+}
+
+
+export const billingInfo = async () => {
+  try {
+    const response = await api.get(`/billing/pay/info`);
+    console.log(response)
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching billing info:", error);
+    throw new Error(error.response.data.message);
+  }
+}
