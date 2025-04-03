@@ -147,7 +147,7 @@ export default function Dashboard() {
             </div>
 
             <div className="dashboardContent">
-                {registred && <OneTimeFee action={()=>{setRegistred(false)}} price={25000}/>}
+                {registred && <OneTimeFee action={() => { setRegistred(false) }} price={25000} />}
                 {/* display section */}
                 {slide == 0 && <YourOverview user={userData} matchMutation={matchMutation} />}
                 {slide == 1 && <Tickets matchMutation={matchMutation} />}
@@ -738,7 +738,7 @@ function Notifications() {
 }
 
 
-// billing section
+// billing section  add images
 
 function TrainingList({ data, action }) {
     const [loading, setLoading] = useState(false)
@@ -776,7 +776,12 @@ function TrainingList({ data, action }) {
                         <div className="planList">
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                        width: "100%"
+                                    }}>
 
                                     </div>
                                     <h2>{data.packages?.regular.name || "--"}</h2>
@@ -791,11 +796,16 @@ function TrainingList({ data, action }) {
                                     *All on a membership plan would recive a discount during checkout*
                                 </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("regular") }}>Make Payment</Button>
-                                
+
                             </div>
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                        width: "100%"
+                                    }}>
 
                                     </div>
                                     <h2>{data.packages?.standard.name}</h2>
@@ -813,7 +823,12 @@ function TrainingList({ data, action }) {
                             </div>
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                        width: "100%"
+                                    }}>
 
                                     </div>
                                     <h2>{data.packages?.premium.name}</h2>
@@ -828,7 +843,7 @@ function TrainingList({ data, action }) {
                                     *All on a membership plan would recive a discount during checkout*
                                 </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("premium") }}>Make Payment</Button>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -837,7 +852,12 @@ function TrainingList({ data, action }) {
                         <div className="planList">
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/fd/c3/eb/fdc3eb1f8fa99c664e32e0bf27238816.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                        width: "100%"
+                                    }}>
 
                                     </div>
                                     <h2>{data.packages?.family.name}</h2>
@@ -852,11 +872,16 @@ function TrainingList({ data, action }) {
                                     *All on a membership plan would recive a discount during checkout*
                                 </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("family") }}>Make Payment</Button>
-                                
+
                             </div>
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/4c/f8/1d/4cf81db6a2def537f469df3ec69350e4.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center",
+                                        width: "100%"
+                                    }}>
 
                                     </div>
                                     <h2>{data.packages?.couples.name}</h2>
@@ -872,7 +897,7 @@ function TrainingList({ data, action }) {
                                     *All on a membership plan would recive a discount during checkout*
                                 </p>
                                 <Button full disabled={loading} onClick={() => { handlePayment("couples") }}>Make Payment</Button>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -915,7 +940,11 @@ function MembershipList({ data, action }) {
                         <div className="planList">
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/aa/1c/5e/aa1c5e114431810730dac8dfda067344.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center"
+                                    }}>
 
                                     </div>
                                     <h2>Monthly</h2>
@@ -925,7 +954,11 @@ function MembershipList({ data, action }) {
                             </div>
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/ab/b3/ab/abb3ab998d570e986206df345ec4ba17.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center"
+                                    }}>
 
                                     </div>
                                     <h2>Quarterly</h2>
@@ -935,7 +968,11 @@ function MembershipList({ data, action }) {
                             </div>
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/33/98/a0/3398a0b98f296bc764533fd96b12fc18.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center"
+                                    }}>
 
                                     </div>
                                     <h2>Bi Annually</h2>
@@ -945,7 +982,11 @@ function MembershipList({ data, action }) {
                             </div>
                             <div className="planBox">
                                 <div className="pBoxContent">
-                                    <div className="planImage">
+                                    <div className="planImage" style={{
+                                        background: `url(https://i.pinimg.com/736x/e2/7f/00/e27f001e63b2f8f1153c9bc3c193d525.jpg)`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition: "center"
+                                    }}>
 
                                     </div>
                                     <h2>Yearly</h2>
@@ -1076,7 +1117,11 @@ function OneTimeFee({ action, price }) {
         <div className="layoutOverlay">
             <div className="layoutBase">
                 <div className="oneSection">
-                    <div className="onImage">
+                    <div className="onImage" style={{
+                        background: `url(https://i.pinimg.com/736x/25/6b/67/256b679d72535df5cb4b31656d6f3f3d.jpg)`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"
+                    }}>
 
                     </div>
                     <h3>

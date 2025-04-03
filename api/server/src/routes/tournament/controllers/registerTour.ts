@@ -19,7 +19,7 @@ const registerTour = new Elysia()
             }
 
             const paystackResponse = await paystack_Transaction({
-                reference: `${user.username}-${Date.now()}`,
+                reference: `${user.username}-ticket-${Date.now()}`,
                 amount: (Number(tour.price) * 100).toString(),
                 currency: "NGN",
                 callback_url: `${process.env.ACTIVE_ORIGIN}/u/ticket/${tourId}`,
