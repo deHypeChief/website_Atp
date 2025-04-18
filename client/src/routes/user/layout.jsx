@@ -20,6 +20,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from 'axios';
 
 
+
 dayjs.extend(relativeTime);
 
 
@@ -57,7 +58,7 @@ export default function DashboardLayout() {
         queryKey: ["moreData"]
     })
 
-    function hamFunction(){
+    function hamFunction() {
         document.getElementById("hamSide").style.display = open ? "flex" : null
         setOpen(!open)
     }
@@ -90,12 +91,12 @@ export default function DashboardLayout() {
                         }
                     </div>
                     <div className="membershipPill">
-                        <p style={{textTransform: "capitalize"}}>{`${data?.billing?.data.bills?.trainingBill?.trainingType || " No"} Traning Plan`}</p>
+                        <p style={{ textTransform: "capitalize" }}>{`${data?.billing?.data.bills?.trainingBill?.trainingType || " No"} Traning Plan`}</p>
                     </div>
                 </div>
 
                 <div className="ham" onClick={hamFunction}>
-                    m
+                    <Icon icon="gg:menu" width="40px" height="40px" style={{ color: "black"}} />
                 </div>
             </div>
             <Outlet />

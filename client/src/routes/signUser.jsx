@@ -76,7 +76,6 @@ export function Login() {
         }
         setError("")
         await createUserMu(payload)
-        console.log(payload)
     }
     return (
         <section className="auth">
@@ -250,6 +249,8 @@ export function SignUp() {
                                     value={payload.username}
                                     onChange={handleChange}
                                     type="text"
+                                    pattern='^[a-zA-Z0-9_]+$'
+                                    title='Only letters, numbers, underscores allowed'
                                     required
                                     placeholder="Enter your username" />
                             </div>

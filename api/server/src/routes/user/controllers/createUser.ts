@@ -20,6 +20,7 @@ const createUser = new Elysia()
         } = body
 
         try {
+            
             const usernameExists = await User.findOne({ username })
             const userEmailExists = await User.findOne({ email })
 
