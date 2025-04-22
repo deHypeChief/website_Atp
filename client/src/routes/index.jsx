@@ -63,7 +63,7 @@ export default function Home() {
                             <div className="rArrow rL">
                                 <img src={line} alt="" />
                             </div>
-                            <h2>ABOUT AMATUER TENNIS PRO</h2>
+                            <h2>ABOUT AMATEUR TENNIS PRO</h2>
                             <div className="rArrow rR">
                                 <img src={line} alt="" />
                             </div>
@@ -90,7 +90,7 @@ export default function Home() {
                         <div className="rArrow rL">
                             <img src={line} alt="" />
                         </div>
-                        <h2>ABOUT AMATUER TENNIS PRO</h2>
+                        <h2>ABOUT AMATEUR TENNIS PRO</h2>
                         <div className="rArrow rR">
                             <img src={line} alt="" />
                         </div>
@@ -169,7 +169,7 @@ export default function Home() {
                             <div className="rArrow rL">
                                 <img src={line} alt="" />
                             </div>
-                            <h2>Student-Teacher Pairing</h2>
+                            <h2>Student-Coaches Pairing</h2>
                             <div className="rArrow rR">
                                 <img src={line} alt="" />
                             </div>

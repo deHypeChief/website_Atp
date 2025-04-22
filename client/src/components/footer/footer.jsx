@@ -52,20 +52,20 @@ export default function Footer() {
                 </div>
                 <div className="lBox">
                     <h4>Social Media</h4>
-                    <a href={footerData?.facebookLink || "/"}>
+                    <a href="https://www.facebook.com/share/1AMAxGUvo7/?mibextid=wwXIfr">
                         <p>Facebook</p>
                     </a>
-                    <a href={footerData?.instagramLink || "/"}>
+                    <a href="https://www.instagram.com/amateurtennispro?igsh=MXRtY2IzczRvMW41dg==">
                         <p>Instagram</p>
                     </a>
-                    <a href={footerData?.linkedinLink || "/"}>
+                    {/* <a href={footerData?.linkedinLink || "/"}>
                         <p>LinkedIn</p>
-                    </a>
-                    <a href={footerData?.xLink || "/"}>
+                    </a> */}
+                    {/* <a href={footerData?.xLink || "/"}>
                         <p>X (Twitter)</p>
-                    </a>
+                    </a> */}
 
-                    <a href={footerData?.YoyoutubeLinkuTube || "/"}>
+                    <a href="https://youtube.com/@afropowerent?si=K7f88Fwa_se3vakr">
                         <p>YouTube</p>
                     </a>
                 </div>
