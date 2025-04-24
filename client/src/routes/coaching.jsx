@@ -20,11 +20,11 @@ export default function Coaching() {
         <div className="heroCoach">
             
         </div>
-            <Hero title={"Student-Teacher Pairing System"} subTitle={"GET trained by the best of the best"} imageUrl={img} />
+            <Hero title={"Student-Coach Pairing System"} subTitle={"Get trained by the best of the best"} imageUrl={img} />
 
             <section className="upcomings">
                 <div className="upComs">
-                    <h1>Our Teachers</h1>
+                    <h1>Our Coaches</h1>
                 </div>
 
                 <div className="conBox">
