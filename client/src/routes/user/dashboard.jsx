@@ -104,6 +104,7 @@ export default function Dashboard() {
     })
 
 
+
     return (
         <div className="dashboardSection">
 
@@ -146,12 +147,12 @@ export default function Dashboard() {
 
             </div>
 
-            <div className="dashboardContent">
+            <div className="dashboardContent" id="dContent">
                 {registred && <OneTimeFee action={() => { setRegistred(false) }} price={25000} />}
                 {/* display section */}
                 {slide == 0 && <YourOverview user={userData} matchMutation={matchMutation} />}
-                {slide == 1 && <Tickets matchMutation={matchMutation} />}
-                {slide == 2 && <YourCoach setAction={setSlide} user={userMutation.data} />}
+                {slide == 1 && <Tickets matchMutation={matchMutation} actions={() => { setSlide(3) }}/>}
+                {slide == 2 && <YourCoach setAction={setSlide} user={userMutation.data} actions={() => { setSlide(5) }}/>}
                 {slide == 3 && <Tournaments tour={tourMunation} matchMutation={matchMutation} user={userMutation?.data} />}
                 {slide == 4 && <Notifications />}
                 {slide == 5 && <Billings />}
@@ -294,7 +295,7 @@ function YourOverview({ matchMutation, user }) {
     )
 }
 
-function Tickets({ matchMutation }) {
+function Tickets({ matchMutation, actions }) {
     const [alert, setAlert] = useState(false)
 
     function PayAlert() {
@@ -324,8 +325,7 @@ function Tickets({ matchMutation }) {
                     <p>This would be needed for joining the tournament</p>
 
                     <div className="baseAction">
-                        <Button alt onClick={() => { setAlert(false) }}>Close</Button>
-                        <Button>Get Ticket</Button>
+                        <Button alt full onClick={() => { setAlert(false) }}>Close</Button>
                     </div>
                 </div>
             </div>
@@ -343,7 +343,7 @@ function Tickets({ matchMutation }) {
                             <div className="cleft">
                                 <h1>Tounament tickets</h1>
                                 <p>Nothing here yet, try getting a ticket</p>
-                                <Button>Buy a ticket</Button>
+                                <Button onClick={actions}>Buy a ticket</Button>
                             </div>
                         </div>
                     </div>
@@ -469,7 +469,7 @@ const ReviewCard = ({ name, rating, comment }) => (
     </div>
 );
 
-const YourCoach = ({ setAction, user }) => {
+const YourCoach = ({ setAction, user, actions }) => {
     // const [isCoachAssigned, setIsCoachAssigned] = useState(true);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [reviews, setReviews] = useState([
@@ -497,7 +497,8 @@ const YourCoach = ({ setAction, user }) => {
                     <div className="cleft">
                         <h1>No Coach Yet</h1>
                         <p>Join a training plan and a coach would be assigned to you</p>
-                        <Button>See Plans</Button>
+
+                        <Button onClick={actions}>See Plans</Button>
                     </div>
                 </div>
             </div>

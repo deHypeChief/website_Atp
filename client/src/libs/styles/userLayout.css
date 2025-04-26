@@ -805,7 +805,7 @@
         }
 
         h3 {
-            text-align: left;
+            text-align: center;
             font-size: 1.5rem;
             line-height: 1.5rem;
         }
@@ -1277,6 +1277,15 @@
             img {
                 width: 80%;
             }
+        }
+    }
+
+    .toursBox {
+        margin: 10px;
+    
+        .tGrid {
+            display: flex;
+            flex-direction: column;
         }
     }
 }

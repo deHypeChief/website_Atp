@@ -309,12 +309,14 @@ export function SignUp() {
                                 <div className="text">
                                     <p>Role</p>
                                 </div>
-                                <input
-                                    name="role"
+                                <select name="role"
                                     value={payload.role}
-                                    onChange={handleChange}
-                                    required
-                                    type="text" placeholder="Your current role" />
+                                    onChange={handleChange}>
+
+                                    <option value="">-Select current role-</option>
+                                    <option value="kids amatuer">Student</option>
+                                    <option value="kids amatuer">Coach</option>
+                                </select>
                             </div>
                             <div className="authInputWrap">
                                 <div className="text">

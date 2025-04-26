@@ -63,6 +63,13 @@ export default function DashboardLayout() {
         setOpen(!open)
     }
 
+    useEffect(() => {
+        document.getElementById("dContent").addEventListener('click', () => {
+            document.getElementById("hamSide").style.display = open ? "flex" : null
+            setOpen(!open)
+        })
+    }, [])
+
 
     useEffect(() => {
         async function checkAuth() {
@@ -96,7 +103,7 @@ export default function DashboardLayout() {
                 </div>
 
                 <div className="ham" onClick={hamFunction}>
-                    <Icon icon="gg:menu" width="40px" height="40px" style={{ color: "black"}} />
+                    <Icon icon="gg:menu" width="40px" height="40px" style={{ color: "black" }} />
                 </div>
             </div>
             <Outlet />

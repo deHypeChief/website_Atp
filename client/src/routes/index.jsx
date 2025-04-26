@@ -75,7 +75,9 @@ export default function Home() {
                             Where passion for tennis meets professional training. Founded with the vision of making tennis accessible and enjoyable for everyone, ATP is dedicated to helping players of all skill levels fall in love with the game, refine their skills, and even reach their dreams of going pro.
                         </p>
                         <div className="aboutAction">
+                            <Link to="/about">
                             <Button>Learn More</Button>
+                            </Link>
                         </div>
                     </div>
                     <div className="aboutImg">
@@ -182,7 +184,10 @@ export default function Home() {
 
                         </p>
                         <div className="aboutAction">
+                            <Link to="/coaching">
+
                             <Button>Find a Coach</Button>
+                            </Link>
                         </div>
                     </div>
                     <div className="aboutImg pairImg">
