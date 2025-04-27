@@ -43,7 +43,6 @@ export default function Coaching() {
                             )
                         })
                     }
-
                 </div>
             </section>
 
