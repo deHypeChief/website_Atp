@@ -108,3 +108,16 @@ export async function delTour(id) {
 		throw error;
 	}
 }
+
+export const deleteCoach = async (id) => {
+  try {
+	
+	const response = await api.get(`/coach/removeCoach/${id}`);
+	alert("Coach Deleted Successfully") 
+	window.location.reload()
+	return response.data.coach;
+  } catch (error) {
+	// console.error("Error deleting coach", error);
+	throw new Error(error.response.data.message);
+  }
+}

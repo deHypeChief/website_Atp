@@ -78,18 +78,6 @@ function AdminLayout() {
                     <path fill="currentColor" d="M12 7a8 8 0 1 1 0 16a8 8 0 0 1 0-16m0 3.5l-1.322 2.68l-2.958.43l2.14 2.085l-.505 2.946L12 17.25l2.645 1.39l-.505-2.945l2.14-2.086l-2.958-.43zm1-8.501L18 2v3l-1.363 1.138A9.9 9.9 0 0 0 13 5.05zm-2 0v3.05a9.9 9.9 0 0 0-3.636 1.088L6 5V2z"></path>
                 </svg>
             )
-        },
-        {
-            name: "Plans",
-            link: "/plan",
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
-                    <g fill="none" stroke="currentColor" strokeWidth={1.5}>
-                        <path d="M2 12c0-3.771 0-5.657 1.172-6.828S6.229 4 10 4h4c3.771 0 5.657 0 6.828 1.172S22 8.229 22 12s0 5.657-1.172 6.828S17.771 20 14 20h-4c-3.771 0-5.657 0-6.828-1.172S2 15.771 2 12Z"></path>
-                        <path strokeLinecap="round" d="M10 16H6m8 0h-1.5M2 10h20"></path>
-                    </g>
-                </svg>
-            )
         }
     ]
     const [open, setOpen] = useState(false)

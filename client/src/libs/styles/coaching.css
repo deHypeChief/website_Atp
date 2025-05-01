@@ -2,15 +2,29 @@
     margin-top: 40px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    row-gap: 60px;
+    /* justify-content: init; */
+    gap: 60px;
 }
 
 .mo{
     padding-top:18vh;
 }
+.mo{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
 .imgInfo{
-    height: 65vh;
+    height: 250px;
+    width: 250px;
+    border-radius: 50px;
+    overflow: hidden;
+    background: #113858;
+
+    img{
+        width: 100%;
+    }
 }
 .actTop{
     display: flex;

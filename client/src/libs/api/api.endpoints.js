@@ -111,6 +111,17 @@ export const getCoaches = async () => {
   }
 };
 
+export const getCoach = async (id) => {
+  try {
+    const response = await api.get(`/coach/getCoach/${id}`);
+    console.log(response.data.coach);
+    return response.data.coach;
+  } catch (error) {
+    console.error("Error fetching coach data", error);
+    throw new Error(error.response.data.message);
+  }
+};
+
 export const getMembershPayLink = async (query) => {
   try {
     const response = await api.get(`/plan/user/pay${query}`);
@@ -188,7 +199,7 @@ export const payRegistration = async () => {
   }
 }
 
-export const payDues = async (type ) => {
+export const payDues = async (type) => {
   try {
     const response = await api.post(`/billing/pay/membership/${type}`);
     return response.data;

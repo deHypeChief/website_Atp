@@ -4,7 +4,7 @@ import Coach from "../model";
 const handleCoach = new Elysia()
     .get("/getCoach/:id", async ({ set, params: { id } }) => {
         try {
-            const coach = await Coach.findById({ id })
+            const coach = await Coach.findById(id)
 
             set.status = 200
             return {

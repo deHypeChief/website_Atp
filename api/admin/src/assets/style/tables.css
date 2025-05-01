@@ -60,3 +60,26 @@
         flex: 1;
     }
 }
+.coachAction{
+    display: flex;
+    gap: 15px;
+
+    .coachActions{
+        padding: 8px;
+        background: rgba(128, 128, 128, 0.283);
+        border-radius: 10px;
+    }
+}
+.coachData{
+    position: fixed;
+    top: 10dvh;
+    left: 40dvw;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0, 0, 0);
+    z-index: 100;
+
+    padding: 30px;
+    border: 1px solid gray;
+    border-radius: 10px;
+}
