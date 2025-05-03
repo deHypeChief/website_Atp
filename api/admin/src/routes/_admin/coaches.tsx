@@ -195,8 +195,8 @@ function Coaches() {
 														{/* kids, regular,amateur, pro */}
 														<SelectItem value="kids">Kids</SelectItem>
 														<SelectItem value="regular">Regular</SelectItem>
-														<SelectItem value="amateur">Amateur </SelectItem>
-														<SelectItem value="professional">Professional</SelectItem>
+														<SelectItem value="standard">Standard </SelectItem>
+														<SelectItem value="premium">Premium</SelectItem>
 													</SelectContent>
 												</Select>
 												<FormMessage />
