@@ -1080,7 +1080,7 @@ function Billings() {
                             </svg>
                         </div>
                         <div className="billcontent">
-                            <h1>{data?.data?.bills?.trainingBill?.trainingType || ""} Traning Package</h1>
+                            <h1>{data?.data?.bills?.trainingBill?.trainingType || ""} Training Package</h1>
                             {data?.data?.bills?.trainingBill?.renewAt && <p><b>Due Date: </b> {dayjs(data?.data?.bills?.trainingBill?.renewAt).format("MMMM DD, YYYY")}</p>}
                             {data?.data?.bills?.trainingBill?.amount && <p><b>Amount Paid: </b> NGN {data?.data?.bills?.trainingBill?.amount}</p>}
                             {
