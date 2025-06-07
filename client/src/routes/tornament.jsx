@@ -270,19 +270,19 @@ export default function Tournament() {
                     <div className="regBox">
                         <div className="regText">
                             <h2>Step 2</h2>
-                            <p>Create Account</p>
+                            <p>Become a Member</p>
                         </div>
                     </div>
                     <div className="regBox">
                         <div className="regText">
                             <h2>Step 3</h2>
-                            <p>Create Account</p>
+                            <p>Buy Your Ticket</p>
                         </div>
                     </div>
                     <div className="regBox">
                         <div className="regText">
                             <h2>Step 4</h2>
-                            <p>Create Account</p>
+                            <p>Have Fun</p>
                         </div>
                     </div>
                 </div>
