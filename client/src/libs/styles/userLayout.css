@@ -114,11 +114,16 @@
             flex-direction: column;
             gap: 10px;
 
+            .nametopp {
+                padding-left: 20px;
+            }
+
             .ebound {
-                background: white;
+                /* background: white; */
                 padding: 40px 50px;
                 border-radius: 10px;
-                box-shadow: 0 0 10px 4px rgba(125, 125, 125, 0.084);
+                border: 2px rgba(128, 128, 128, 0.331) solid;
+                /* box-shadow: 0 0 10px 4px rgba(125, 125, 125, 0.084); */
                 margin: 10px 10px;
 
 
@@ -127,18 +132,59 @@
                     justify-content: space-between;
                     align-items: flex-end;
                 }
+
+                &.firste {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    padding: 20px;
+                    flex: 1;
+                    flex-wrap: wrap;
+
+                    .bcontent {
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+
+                        .bcont {
+                            flex: 1;
+
+                            .bName {
+                                margin-bottom: 10px;
+                            }
+                        }
+                    }
+
+                    .boundBase {
+                        display: flex;
+                        gap: 10px;
+                        width: 100%;
+                        margin-top: 20px;
+
+                        .baseImg {
+                            height: 20px;
+                            width: 20px;
+                        }
+
+
+                        p {
+                            font-size: .9rem;
+                        }
+                    }
+                }
             }
         }
 
         .noContent {
             .ebound {
-                background: white;
+                /* background: white; */
                 padding: 40px 50px;
                 border-radius: 10px;
                 display: flex;
                 justify-content: center;
                 text-align: center;
-                box-shadow: 0 0 30pxblack;
+                /* box-shadow: 0 0 30pxblack; */
 
                 .cleft {
                     button {
@@ -660,30 +706,34 @@
     }
 }
 
-.ham{
+.ham {
     display: none;
 }
 
 
 @media screen and (max-width: 600px) {
-    .ham{
+    .ham {
         display: block;
     }
-    .pHeader{
+
+    .pHeader {
         display: flex;
         flex-direction: column;
         gap: 20px;
 
-        h3{
+        h3 {
             text-align: left;
         }
     }
-    .plansWrap{
+
+    .plansWrap {
         padding-top: 20px;
-        h2{
+
+        h2 {
             padding-bottom: 20px;
         }
     }
+
     .plansWrap:nth-child(3) {
         margin-top: 10px;
     }
@@ -724,7 +774,7 @@
             .eWrap {
 
                 .ebound {
-                    background: white;
+                    /* background: white; */
                     width: initial;
                     padding: 20px 30px;
                 }
@@ -732,7 +782,7 @@
 
             .noContent {
                 .ebound {
-                    background: white;
+                    /* background: white; */
                     padding: 20px 30px;
                     width: initial;
 
@@ -1266,7 +1316,7 @@
 
     .toursBox {
         margin: 10px;
-    
+
         .tGrid {
             display: flex;
             flex-direction: column;

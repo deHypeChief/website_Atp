@@ -64,11 +64,11 @@ export default function DashboardLayout() {
     }
 
     useEffect(() => {
-        document.getElementById("dContent").addEventListener('click', () => {
+        document.getElementById("dContent")?.addEventListener('click', () => {
             document.getElementById("hamSide").style.display = open ? "flex" : null
             setOpen(!open)
         })
-    }, [])
+    }, [open])
 
 
     useEffect(() => {

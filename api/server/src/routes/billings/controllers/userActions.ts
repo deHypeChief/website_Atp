@@ -62,6 +62,7 @@ const userAction = new Elysia()
                 amount: (BillingConfig.registration.price * 100).toString(),
                 currency: "NGN",
                 callback_url: `${process.env.ACTIVE_ORIGIN}/u/bills/registration/none/none`,
+                // callback_url: `${process.env.ACTIVE_ORIGIN}/u/bills/registration`,
                 email: user.email,
             });
 

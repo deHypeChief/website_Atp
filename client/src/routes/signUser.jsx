@@ -77,6 +77,8 @@ export function Login() {
         setError("")
         await createUserMu(payload)
     }
+
+    
     return (
         <section className="auth">
             <div className="authLeft">

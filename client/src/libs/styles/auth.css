@@ -8,6 +8,7 @@
     .authInputWrap {
         position: relative;
         margin-bottom: 20px;
+        width: 100%;
 
         .text {
             background: #F5F5F5;

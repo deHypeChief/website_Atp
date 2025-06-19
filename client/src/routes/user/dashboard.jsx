@@ -20,7 +20,8 @@ import { QRCodeCanvas } from 'qrcode.react';
 // import { useMutation } from '@tanstack/react-query'
 import Chart from 'chart.js/auto'
 import { Link, useNavigate } from "react-router-dom";
-
+import iconBox from "/Icon.svg"
+import trend from "/ic-trending-up-24px.png"
 
 dayjs.extend(relativeTime);
 
@@ -29,45 +30,6 @@ export default function Dashboard() {
     const [slide, setSlide] = useState(0)
     const [userData, setUserData] = useState()
     const [registred, setRegistred] = useState(false)
-
-    // const isCalled = useRef(false);
-    // const [billingLoading, setBillingLoading] = useState(false)
-
-    // // const [payQuery, setPayQuery] = useState("")
-
-
-    // useEffect(() => {
-    //     async function fetchPayLink(query) {
-    //         if (isCalled.current) return; // Check if already called
-    //         isCalled.current = true; // Set flag to prevent re-runs
-
-    //         try {
-    //             const flwLink = await getMembershPayLink(query);
-    //             setBillingLoading(true)
-    //             console.log(flwLink); // Logs the resolved payment link
-
-    //             if (flwLink === undefined) {
-    //                 setBillingLoading(false)
-    //                 alert("Network error during payment. Try reloading the page.");
-    //                 return;
-    //             }
-    //             window.location.href = flwLink;
-    //         } catch (error) {
-    //             console.error("Error fetching payment link:", error);
-    //         }
-    //     }
-
-    //     const queryParams = new URLSearchParams(window.location.search);
-    //     const planId = queryParams.get('planId');
-
-    //     if (planId) {
-    //         fetchPayLink(window.location.search);
-    //     }
-    // }, []);
-
-    // useEffect(() => {
-    //     console.log(user())
-    // }, [])
 
     useEffect(() => {
         setUserData(user())
@@ -151,8 +113,8 @@ export default function Dashboard() {
                 {registred && <OneTimeFee action={() => { setRegistred(false) }} price={25000} />}
                 {/* display section */}
                 {slide == 0 && <YourOverview user={userData} matchMutation={matchMutation} />}
-                {slide == 1 && <Tickets matchMutation={matchMutation} actions={() => { setSlide(3) }}/>}
-                {slide == 2 && <YourCoach setAction={setSlide} user={userMutation.data} actions={() => { setSlide(5) }}/>}
+                {slide == 1 && <Tickets matchMutation={matchMutation} actions={() => { setSlide(3) }} />}
+                {slide == 2 && <YourCoach setAction={setSlide} user={userMutation.data} actions={() => { setSlide(5) }} />}
                 {slide == 3 && <Tournaments tour={tourMunation} matchMutation={matchMutation} user={userMutation?.data} />}
                 {slide == 4 && <Notifications />}
                 {slide == 5 && <Billings />}
@@ -215,17 +177,59 @@ function YourOverview({ matchMutation, user }) {
         );
         return () => chart.destroy();
     }, [matchMutation?.data?.matches?.length, matchMutation?.data?.matchesWon])
-
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 17) return "Good Afternoon";
+        return "Good Evening";
+    };
 
     return (
         <div className="eWrap">
-            <div className="ebound eSplit">
-                <div className="cleft">
-                    <p>Good Afternoon,</p>
-                    <h1>{user?.fullName || "No name found"}</h1>
+            <h2 className="nametopp">
+                {getGreeting()}, {user?.fullName || "No name found"}
+            </h2>
+            <div className="topWrapSec">
+                <div className="firste ebound eSplit ">
+                    <div className="bcontent">
+                        <div className="bcont">
+                            <p className="bName">Your Ranking</p>
+                            <h2>3rd</h2>
+                        </div>
+                        <div className="bextra">
+                            <img src={iconBox} alt="" className="imgcontent" />
+                        </div>
+                    </div>
+                    <div className="boundBase">
+                        <div className="baseImg">
+                            <img src={trend} alt="" className="iconBase" />
+                        </div>
+                        <p>You progressed from 7th position</p>
+                    </div>
                 </div>
-                <div className="cWins">
-                    {/* <p>0 wins so far</p> */}
+
+                <div className="firste ebound eSplit ">
+                    <div className="bcontent">
+                        <div className="bcont">
+                            <p className="bName">View Training Plans</p>
+                            <h2>You have 15% discount</h2>
+                        </div>
+                    </div>
+                    <div className="boundBase">
+                        <p>You are currently on the couples plan</p>
+                    </div>
+                </div>
+
+                <div className="firste ebound eSplit ">
+                    <div className="bcontent">
+                        <div className="bcont">
+                            <p className="bName">Join the Premium ATP Community</p>
+                            <p>Click the link below to join the premium WhatsApp group</p>
+                        </div>
+                    </div>
+                    <div className="boundBase">
+                        <Button full>Join Whatsapp</Button>
+                    </div>
                 </div>
             </div>
 
@@ -720,7 +724,7 @@ function Notifications() {
                         <div className="notiBoxi">
                             {
                                 notifyMutation.data?.map((item, index) => (
-                                    <div className="notiB">
+                                    <div className="notiB" key={item.title}>
                                         <div key={"noytif" + index} className="titNotiB">
                                             <h2>{item.title}</h2>
                                             <p>{dayjs(item.createdAt).format("MMMM D, YYYY h:mm A")}</p>
