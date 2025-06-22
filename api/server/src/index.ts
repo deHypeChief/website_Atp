@@ -44,3 +44,7 @@ console.log(
   `🦊 Elysia is running at ` +
   pc.yellow(`${app.server?.hostname}:${app.server?.port}`)
 );
+
+
+
+

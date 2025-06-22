@@ -46,7 +46,7 @@ export function Login() {
             }
         }
         checkAuth()
-    }, [isAuthenticated, navigate, payQuery])
+    }, [payQuery])
 
     const { mutateAsync: createUserMu, isPending } = useMutation({
         mutationFn: userLogin,
@@ -186,7 +186,7 @@ export function SignUp() {
             }
         }
         checkAuth()
-    }, [isAuthenticated, navigate])
+    }, [])
 
     const { mutateAsync: createUserMu, isPending } = useMutation({
         mutationFn: userRegister,

@@ -166,7 +166,7 @@ export default function Home() {
                             toruOuery.data.map((item, index) => {
                                 return (
                                     index < 3 ? (
-                                        <Card payload={item} />
+                                        <Card payload={item} key={"1"+item} />
                                     ) : null
                                 )
                             })

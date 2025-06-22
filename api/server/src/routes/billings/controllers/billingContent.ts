@@ -85,7 +85,7 @@ export const BillingConfig = {
         },
         family: {
             name: "Family Package",
-            info: `: This plan is for a family of four (4) – Two (2) parents and two (2) kids under the age of 19.`,
+            info: `This plan is for a family of four (4) – Two (2) parents and two (2) kids under the age of 19.`,
             priceInfo: `Price: N760,000 ($504) for one (1) month; N1,620,000 ($1,075) for three (3) months Each member of the family will get a free tennis balls and limited-edition ATP cap.`,
             plans: [
                 {

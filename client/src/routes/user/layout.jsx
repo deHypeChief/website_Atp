@@ -18,7 +18,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import { Icon } from "@iconify/react/dist/iconify.js";
 import axios from 'axios';
-
+import badge from "/shield.svg";
 
 
 dayjs.extend(relativeTime);
@@ -79,7 +79,7 @@ export default function DashboardLayout() {
             }
         }
         checkAuth()
-    }, [isAuthenticated, navigate])
+    }, [])
 
     return (
         <div className="useNov">
@@ -90,6 +90,14 @@ export default function DashboardLayout() {
                     </div>
                 </div>
                 <div className="upUserInfo">
+                    <div className="badge"
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginRight: "15px"
+                        }}>
+                        {/* <img src={badge} alt="" /> */}
+                    </div>
                     <div className="userRound">
                         {
                             data?.user?.picture ? (

@@ -3,50 +3,120 @@ import Button from "../../components/button/button";
 import { useAuth } from "../../libs/hooks/use-auth";
 import "../../libs/styles/dashboard.css";
 
-import raIcon1 from "../../libs/images/Group 1.svg";
-import raIcon2 from "../../libs/images/Vector-1.svg";
 import raIcon3 from "../../libs/images/Vector.svg";
-import raIcon4 from "../../libs/images/Group.svg";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { checkMatch, getMatches, getNotify, getTour, getTourPayLink, getMembershPayLink, getMe, postComment, getPayMe, payRegistration, billingInfo, payTraining, payDues } from "../../libs/api/api.endpoints";
+import { useQuery } from "@tanstack/react-query";
+import { checkMatch, getMatches, getNotify, getTour, getTourPayLink, getMe, getPayMe, billingInfo, payTraining } from "../../libs/api/api.endpoints";
 import { useEffect, useRef, useState } from "react";
 // import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import currency from 'currency.js'
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { QRCodeCanvas } from 'qrcode.react';
 // import { useMutation } from '@tanstack/react-query'
 import Chart from 'chart.js/auto'
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import iconBox from "/Icon.svg"
 import trend from "/ic-trending-up-24px.png"
+import round from "/round.svg"
+import ball from "/ball.png"
 
 dayjs.extend(relativeTime);
+const plans = [
+    {
+        title: "Free Plan",
+        priceNGN: 0,
+        priceUSD: 0,
+        duration: "",
+        extra: "",
+        content: [
+            "Access to Dashboard",
+            "Access to ATP Tournaments Page",
+            "Join Free WhatsApp Community",
+            "Join Premium WhatsApp Community",
+            "Access to Progress Tracker",
+            "Training / Coaching Discounts",
+            "1 Free Training / Quarter",
+            "Exclusive Social Events",
+            "Tournament Priority Access & 5% Discount",
+            "Premium Badge on Dashboard",
+        ],
+    },
+    {
+        title: "Premium Monthly",
+        extra: "",
+        priceNGN: 6000,
+        priceUSD: 5,
+        duration: "monthly",
+        content: [
+            "Access to Dashboard",
+            "Access to ATP Tournaments Page",
+            "Join Free WhatsApp Community",
+            "Join Premium WhatsApp Community",
+            "Access to Progress Tracker",
+            "Training / Coaching Discounts",
+            "1 Free Training / Quarter",
+            "Exclusive Social Events",
+            "Tournament Priority Access & 5% Discount",
+            "Premium Badge on Dashboard",
+        ],
+    },
+    {
+        title: "Premium Quarterly",
+        extra: "Save N25 if when you join",
+        priceNGN: 17000,
+        priceUSD: 10,
+        duration: "quarterly",
+        content: [
+            "Access to Dashboard",
+            "Access to ATP Tournaments Page",
+            "Join Free WhatsApp Community",
+            "Join Premium WhatsApp Community",
+            "Access to Progress Tracker",
+            "Training / Coaching Discounts",
+            "1 Free Training / Quarter",
+            "Exclusive Social Events",
+            "Tournament Priority Access & 5% Discount",
+            "Premium Badge on Dashboard",
+        ],
+    },
+    {
+        title: "Premium Yearly",
+        extra: "Save N25 if when you join",
+        priceNGN: 70000,
+        priceUSD: 50,
+        duration: "yearly",
+        content: [
+            "Access to Dashboard",
+            "Access to ATP Tournaments Page",
+            "Join Free WhatsApp Community",
+            "Join Premium WhatsApp Community",
+            "Access to Progress Tracker",
+            "Training / Coaching Discounts",
+            "1 Free Training / Quarter",
+            "Exclusive Social Events",
+            "Tournament Priority Access & 5% Discount",
+            "Premium Badge on Dashboard",
+        ],
+    },
+]
 
 export default function Dashboard() {
     const { user, userLogout } = useAuth();
     const [slide, setSlide] = useState(0)
     const [userData, setUserData] = useState()
-    const [registred, setRegistred] = useState(false)
+
+    const [openPayment, setOpenPayment] = useState(false)
 
     useEffect(() => {
         setUserData(user())
-        async function billInfo() {
-            await getPayMe()
-                .then((res) => {
-                    const hasPaid = res.data.bills.registrationBill.status == "Not Paid" ? true : false
-                    console.log(hasPaid)
-                    setRegistred(hasPaid)
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-        }
-
-        billInfo()
     }, [])
+
+
+    useEffect(() => {
+        console.log(openPayment)
+    }, [openPayment])
+
 
     const userMutation = useQuery({
         queryKey: ["user"],
@@ -60,11 +130,17 @@ export default function Dashboard() {
         queryKey: ["tour"],
         queryFn: () => getTour()
     })
-    const billMutation = useQuery({
-        queryKey: ["billingDataM"],
-        queryFn: () => getPayMe()
-    })
 
+
+    {/* 
+        DATA MODEL
+
+        {
+            planType: 
+            PlanName
+            message;
+        }
+    */}
 
 
     return (
@@ -110,14 +186,14 @@ export default function Dashboard() {
             </div>
 
             <div className="dashboardContent" id="dContent">
-                {registred && <OneTimeFee action={() => { setRegistred(false) }} price={25000} />}
+                {openPayment && <BillingSummary action={setOpenPayment} dataFn={openPayment} />}
                 {/* display section */}
                 {slide == 0 && <YourOverview user={userData} matchMutation={matchMutation} />}
                 {slide == 1 && <Tickets matchMutation={matchMutation} actions={() => { setSlide(3) }} />}
                 {slide == 2 && <YourCoach setAction={setSlide} user={userMutation.data} actions={() => { setSlide(5) }} />}
                 {slide == 3 && <Tournaments tour={tourMunation} matchMutation={matchMutation} user={userMutation?.data} />}
                 {slide == 4 && <Notifications />}
-                {slide == 5 && <Billings />}
+                {slide == 5 && <Billings setDataFn={setOpenPayment} />}
             </div>
         </div>
     );
@@ -228,7 +304,10 @@ function YourOverview({ matchMutation, user }) {
                         </div>
                     </div>
                     <div className="boundBase">
-                        <Button full>Join Whatsapp</Button>
+                        <Button full>
+                            <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
+                            <p>Join Whatsapp</p>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -298,7 +377,6 @@ function YourOverview({ matchMutation, user }) {
         </div>
     )
 }
-
 function Tickets({ matchMutation, actions }) {
     const [alert, setAlert] = useState(false)
 
@@ -342,7 +420,7 @@ function Tickets({ matchMutation, actions }) {
 
             {
                 matchMutation?.data?.matches.length == 0 ? (
-                    <div className="noContent">
+                    <div className="noContent eWrap">
                         <div className="ebound ">
                             <div className="cleft">
                                 <h1>Tounament tickets</h1>
@@ -393,6 +471,7 @@ function Tickets({ matchMutation, actions }) {
         </>
     )
 }
+
 
 // coach content
 const ReviewForm = ({ onClose, onSubmit }) => {
@@ -459,7 +538,6 @@ const ReviewForm = ({ onClose, onSubmit }) => {
         </div>
     );
 };
-
 const ReviewCard = ({ name, rating, comment }) => (
     <div className="coCBox">
         <div className="topCoHeader">
@@ -472,8 +550,7 @@ const ReviewCard = ({ name, rating, comment }) => (
         <p className="textList">{comment}</p>
     </div>
 );
-
-const YourCoach = ({ setAction, user, actions }) => {
+const YourCoach = ({ user, actions }) => {
     // const [isCoachAssigned, setIsCoachAssigned] = useState(true);
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [reviews, setReviews] = useState([
@@ -494,9 +571,26 @@ const YourCoach = ({ setAction, user, actions }) => {
     };
 
     // No coach assigned view
+    let a = 2
+    if (a === 1) {
+        return (
+            <div className="noContent eWrap">
+                <div className="ebound">
+                    <div className="cleft">
+                        <div className="boude">
+                            <img src={ball} alt="" />
+                        </div>
+                        <h1>Getting your Coach</h1>
+                        <p>Expect an email notification soon with details about your coach's.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (!user.assignedCoach) {
         return (
-            <div className="noContent">
+            <div className="noContent eWrap">
                 <div className="ebound">
                     <div className="cleft">
                         <h1>No Coach Yet</h1>
@@ -519,15 +613,21 @@ const YourCoach = ({ setAction, user, actions }) => {
             )}
 
             <div className="eWrap">
-                <div className="ebound eSplit">
+                <div className="ebound eSplit cce">
                     <div className="cleft">
-                        <p>Your Coach,</p>
-                        <h1>David Okoye A.</h1>
-                    </div>
-                    <div className="cWins">
-                        <Button onClick={() => setIsReviewModalOpen(true)}>
-                            Add a Review
-                        </Button>
+                        <div className="clefCont">
+                            <div className="imgWrap">
+                                <div className="imgCircel">
+                                    <Icon icon="solar:user-bold" width="44" height="44" />
+                                    {/* <img src={} alt="" /> */}
+                                </div>
+                            </div>
+                            <p>Your Coach,</p>
+                            <h1>David Okoye A.</h1>
+                            <Button onClick={() => setIsReviewModalOpen(true)}>
+                                Add a Review
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -553,7 +653,7 @@ const YourCoach = ({ setAction, user, actions }) => {
 // coach end
 
 
-function TourPayAlert({ alert, setAlert, userID }) {
+function TourPayAlert({ alert, setAlert }) {
     const [loading, setLoading] = useState(false)
     const [status, setStatus] = useState(false)
     useEffect(() => {
@@ -615,7 +715,6 @@ function TourPayAlert({ alert, setAlert, userID }) {
         </div>
     )
 }
-
 function Tournaments({ tour, matchMutation, user }) {
     const [alert, setAlert] = useState(false)
 
@@ -697,7 +796,6 @@ function Tournaments({ tour, matchMutation, user }) {
         </>
     )
 }
-
 function Notifications() {
     const notifyMutation = useQuery({
         queryKey: ["notify"],
@@ -743,272 +841,7 @@ function Notifications() {
 }
 
 
-// billing section  add images
-
-function TrainingList({ data, action }) {
-    const [loading, setLoading] = useState(false)
-    const [planType, setPlanType] = useState(0)
-
-    console.log(data)
-
-    async function handlePayment(type) {
-        setLoading(true)
-        await payTraining(type, planType == 0 ? "1month" : "3months")
-            .then((payLink) => {
-                setLoading(false)
-                window.location.href = payLink.paystackResponse.data.authorization_url
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
-
-    return (
-        <>
-            <div className="layoutOverlay">
-                <div className="layoutBase layoutExpand">
-                    <div className="pHeader">
-                        <h3>Select Package</h3>
-                        <div className="basec">
-                            <Button onClick={() => {
-                                setPlanType(planType == 0 ? 1 : 0)
-                            }} disabled={loading}>Change Month</Button>
-                            <Button alt disabled={loading} onClick={action}>Close</Button>
-                        </div>
-                    </div>
-                    <div className="plansWrap">
-                        <h2>Training Plans</h2>
-                        <div className="planList">
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center",
-                                        width: "100%"
-                                    }}>
-
-                                    </div>
-                                    <h2>{data.packages?.regular.name || "--"}</h2>
-                                    <p><b>Price: </b> NGN {data.packages?.regular.plans[planType].price || "--"}</p>
-                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
-                                    <p className="plText">{data.packages?.regular.info || "--"}</p>
-                                </div>
-                                <p className="fni" style={{
-                                    margin: "20px 0",
-                                    fontSize: ".8rem"
-                                }}>
-                                    *All on a membership plan would recive a discount during checkout*
-                                </p>
-                                <Button full disabled={loading} onClick={() => { handlePayment("regular") }}>Make Payment</Button>
-
-                            </div>
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center",
-                                        width: "100%"
-                                    }}>
-
-                                    </div>
-                                    <h2>{data.packages?.standard.name}</h2>
-                                    <p><b>Price: </b> NGN {data.packages?.standard.plans[planType].price}</p>
-                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
-                                    <p className="plText">{data.packages?.standard.info}</p>
-                                </div>
-                                <p className="fni" style={{
-                                    margin: "20px 0",
-                                    fontSize: ".8rem"
-                                }}>
-                                    *All on a membership plan would recive a discount during checkout*
-                                </p>
-                                <Button full disabled={loading} onClick={() => { handlePayment("standard") }}>Make Payment</Button>
-                            </div>
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center",
-                                        width: "100%"
-                                    }}>
-
-                                    </div>
-                                    <h2>{data.packages?.premium.name}</h2>
-                                    <p><b>Price: </b> NGN {data.packages?.premium.plans[planType].price}</p>
-                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
-                                    <p className="plText">{data.packages?.premium.info}</p>
-                                </div>
-                                <p className="fni" style={{
-                                    margin: "20px 0",
-                                    fontSize: ".8rem"
-                                }}>
-                                    *All on a membership plan would recive a discount during checkout*
-                                </p>
-                                <Button full disabled={loading} onClick={() => { handlePayment("premium") }}>Make Payment</Button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div className="plansWrap">
-                        <h2>Special Training Plans</h2>
-                        <div className="planList">
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/fd/c3/eb/fdc3eb1f8fa99c664e32e0bf27238816.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center",
-                                        width: "100%"
-                                    }}>
-
-                                    </div>
-                                    <h2>{data.packages?.family.name}</h2>
-                                    <p><b>Price: </b> NGN {data.packages?.family.plans[planType].price}</p>
-                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
-                                    <p className="plText">{data.packages?.family.info}</p>
-                                </div>
-                                <p className="fni" style={{
-                                    margin: "20px 0",
-                                    fontSize: ".8rem"
-                                }}>
-                                    *All on a membership plan would recive a discount during checkout*
-                                </p>
-                                <Button full disabled={loading} onClick={() => { handlePayment("family") }}>Make Payment</Button>
-
-                            </div>
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/4c/f8/1d/4cf81db6a2def537f469df3ec69350e4.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center",
-                                        width: "100%"
-                                    }}>
-
-                                    </div>
-                                    <h2>{data.packages?.couples.name}</h2>
-                                    <p><b>Price: </b> NGN {data.packages?.couples.plans[planType].price}</p>
-                                    <p><b>Duration: </b>{planType == 0 ? "1 Month" : "3 Months"}</p>
-                                    <p className="plText">{data.packages?.couples.info}</p>
-                                </div>
-
-                                <p className="fni" style={{
-                                    margin: "20px 0",
-                                    fontSize: ".8rem"
-                                }}>
-                                    *All on a membership plan would recive a discount during checkout*
-                                </p>
-                                <Button full disabled={loading} onClick={() => { handlePayment("couples") }}>Make Payment</Button>
-
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-        </>
-    )
-}
-
-function MembershipList({ data, action }) {
-    const [loading, setLoading] = useState(false)
-
-    async function handlePayment(type) {
-        setLoading(true)
-        await payDues(type)
-            .then((payLink) => {
-                setLoading(false)
-                window.location.href = payLink.paystackResponse.data.authorization_url
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
-
-    return (
-        <>
-            <div className="layoutOverlay">
-                <div className="layoutBase layoutExpand">
-                    <div className="pHeader">
-                        <h3>Select Duration</h3>
-                        <div className="basec">
-                            <Button alt disabled={loading} onClick={action}>Close</Button>
-                        </div>
-                    </div>
-                    <br />
-
-                    <div className="plansWrap">
-                        <div className="planList">
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/aa/1c/5e/aa1c5e114431810730dac8dfda067344.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center"
-                                    }}>
-
-                                    </div>
-                                    <h2>Monthly</h2>
-                                    <p><b>Price: </b> NGN {data.dues?.monthly.price || "--"}</p>
-                                </div>
-                                <Button full disabled={loading} onClick={() => { handlePayment("monthly") }}>Make Payment</Button>
-                            </div>
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/ab/b3/ab/abb3ab998d570e986206df345ec4ba17.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center"
-                                    }}>
-
-                                    </div>
-                                    <h2>Quarterly</h2>
-                                    <p><b>Price: </b> NGN {data.dues?.quarterly.price || "--"}</p>
-                                </div>
-                                <Button full disabled={loading} onClick={() => { handlePayment("quarterly") }}>Make Payment</Button>
-                            </div>
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/33/98/a0/3398a0b98f296bc764533fd96b12fc18.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center"
-                                    }}>
-
-                                    </div>
-                                    <h2>Bi Annually</h2>
-                                    <p><b>Price: </b> NGN {data.dues?.biAnnually.price || "--"}</p>
-                                </div>
-                                <Button full disabled={loading} onClick={() => { handlePayment("biAnnually") }}>Make Payment</Button>
-                            </div>
-                            <div className="planBox">
-                                <div className="pBoxContent">
-                                    <div className="planImage" style={{
-                                        background: `url(https://i.pinimg.com/736x/e2/7f/00/e27f001e63b2f8f1153c9bc3c193d525.jpg)`,
-                                        backgroundSize: "cover",
-                                        backgroundPosition: "center"
-                                    }}>
-
-                                    </div>
-                                    <h2>Yearly</h2>
-                                    <p><b>Price: </b> NGN {data.dues?.yearly.price || "--"}</p>
-                                </div>
-                                <Button full disabled={loading} onClick={() => { handlePayment("yearly") }}>Make Payment</Button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
-    )
-}
-
-function Billings() {
+function Billings({ setDataFn }) {
     const [otPay, setOTPay] = useState(false)
     const [memData, setMemData] = useState(false)
     const [trainingData, setTrainingData] = useState(false)
@@ -1022,77 +855,58 @@ function Billings() {
         queryFn: () => billingInfo()
     })
 
-    console.log(data)
 
     return (
         <>
-            {otPay && <OneTimeFee action={() => { setOTPay(false) }} price={payInfo.data.registration.price || 0.00} />}
-            {trainingData && <TrainingList data={payInfo.data} action={() => { setTrainingData(false) }} />}
-            {memData && <MembershipList data={payInfo.data} action={() => { setMemData(false) }} />}
+            {/* {otPay && <OneTimeFee action={() => { setOTPay(false) }} price={payInfo.data.registration.price || 0.00} />} */}
 
             <div className="coContent">
                 <div className="header">
                     <h1>Billings</h1>
+                    <p>Manage and renew your billings easily</p>
                 </div>
 
-                <div className="billBox">
-                    <div className="billOne">
-                        <div className="billImage">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
-                                <path fill="#fff" d="m17.5 16.82l2.44 1.41l-.75 1.3L16 17.69V14h1.5zM24 17c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-.34.03-.67.08-1H2V4h18v6.68c2.36 1.13 4 3.53 4 6.32m-13.32-3c.18-.36.37-.7.6-1.03c-.09.03-.18.03-.28.03c-1.66 0-3-1.34-3-3s1.34-3 3-3s3 1.34 3 3c0 .25-.04.5-.1.73c.94-.46 1.99-.73 3.1-.73c.34 0 .67.03 1 .08V8a2 2 0 0 1-2-2H6c0 1.11-.89 2-2 2v4a2 2 0 0 1 2 2zM22 17c0-2.76-2.24-5-5-5s-5 2.24-5 5s2.24 5 5 5s5-2.24 5-5" />
-                            </svg>
-                        </div>
-                        <div className="billcontent">
-                            <h1>One Time Payment</h1>
-                            <p><b>Price:</b> NGN {payInfo.data?.registration?.price || 0.00}</p>
-                            {
-                                data?.data?.bills?.registrationBill?.status == "Not Paid" && <Button onClick={() => { setOTPay(true) }}>Make Payment</Button>
-                            }
-                        </div>
-                        <div className="billStatusPill">
-                            <p>{data?.data?.bills?.registrationBill?.status}</p>
+
+                <div className="topWrapContent">
+                    <div className="topWrapContent">
+                        <div className="firste ebound eSplit">
+                            <div className="topVV">
+                                <div className="planWrap">
+                                    <p>Current Membership Package</p>
+                                    <h1>{data?.data?.bills?.membershipBill?.plan || "Free Plan"}</h1>
+                                    <p style={{
+                                        fontSize: ".8rem",
+                                        paddingTop: "10px",
+                                    }}>*Current Plan ends on 20/07/2028</p>
+
+                                </div>
+                                <div className="actionB">
+                                    <Button>Renew Plan</Button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <BillingContent setAction={setDataFn} />
+                    <BillingContent2 data={payInfo.data} setAction={setDataFn} />
+                    <div className="topWrapContent">
+                        <div className="firste ebound eSplit">
+                            <div className="topVV" style={{
+                                display: "flex",
+                                alignItems: "center"
+                            }}>
+                                <div className="planWrap">
+                                    <h2>Your Billing History</h2>
 
-                    <div className="billOne">
-                        <div className="billImage">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
-                                <path fill="#fff" d="M14.005 2.003a8 8 0 0 1 3.292 15.293A8 8 0 1 1 6.711 6.71a8 8 0 0 1 7.294-4.707m-3 7h-2v1a2.5 2.5 0 0 0-.164 4.995l.164.005h2l.09.008a.5.5 0 0 1 0 .984l-.09.008h-4v2h2v1h2v-1a2.5 2.5 0 0 0 .164-4.995l-.164-.005h-2l-.09-.008a.5.5 0 0 1 0-.984l.09-.008h4v-2h-2zm3-5A6 6 0 0 0 9.52 6.016a8 8 0 0 1 8.47 8.471a6 6 0 0 0-3.986-10.484" />
-                            </svg>
-                        </div>
-                        <div className="billcontent">
-                            <h1>Membership Dues Payment</h1>
-                            {data?.data?.bills?.membershipBill?.renewAt && <p><b>Due Date: </b> {dayjs(data?.data?.bills?.membershipBill?.renewAt).format("MMMM DD, YYYY")}</p>}
-                            {data?.data?.bills?.membershipBill?.amount && <p><b>Amount Paid: </b> NGN {data?.data?.bills?.membershipBill?.amount}</p>}
-                            {
-                                data?.data?.bills?.membershipBill?.status == "Not Paid" && <Button onClick={() => { setMemData(true) }}>Make Payment</Button>
-                            }
-                        </div>
-                        <div className="billStatusPill">
-                            <p>{data?.data?.bills?.membershipBill?.status}</p>
-                        </div>
-                    </div>
+                                    <p style={{
+                                        fontSize: ".8rem",
+                                        // paddingTop: "10px",
+                                    }}>List of all payments made on ATP</p>
 
-                    <div className="billOne">
-                        <div className="billImage">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">
-                                <g fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3">
-                                    <path d="M10.7 4.7c3-3 7.4-3.6 9.8-1.2s1.8 6.8-1.2 9.8a9.5 9.5 0 0 1-4.3 2.5c-2.1.5-4.1.1-5.5-1.3S7.7 11.1 8.2 9a9.5 9.5 0 0 1 2.5-4.3" />
-                                    <path d="M8.2 9L6 18l9-2.2M2 22l4-4" />
-                                    <circle cx="20" cy="20" r="2" />
-                                </g>
-                            </svg>
-                        </div>
-                        <div className="billcontent">
-                            <h1>{data?.data?.bills?.trainingBill?.trainingType || ""} Training Package</h1>
-                            {data?.data?.bills?.trainingBill?.renewAt && <p><b>Due Date: </b> {dayjs(data?.data?.bills?.trainingBill?.renewAt).format("MMMM DD, YYYY")}</p>}
-                            {data?.data?.bills?.trainingBill?.amount && <p><b>Amount Paid: </b> NGN {data?.data?.bills?.trainingBill?.amount}</p>}
-                            {
-                                data?.data?.bills?.trainingBill?.status == "Not Paid" && <Button onClick={() => { setTrainingData(true) }}>Make Payment</Button>
-                            }
-                        </div>
-                        <div className="billStatusPill">
-                            <p>{data?.data?.bills?.trainingBill?.status}</p>
+                                </div>
+                                <div className="actionB">
+                                    <Button>View History</Button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1100,44 +914,454 @@ function Billings() {
         </>
     )
 }
+function BillingContent({ setAction }) {
+    const [open, setOpen] = useState(false)
+    return (
+        <div className="topWrapContent">
+            <div className="firste ebound eSplit">
 
-// billing end
+                <div className="toHeader" onClick={() => { setOpen(!open) }}>
+                    <h2>Membership Package</h2>
+                    <Icon icon="iconamoon:arrow-down-2-bold" width="24" height="24" style={{
+                        transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "transform 0.3s ease-in-out"
+                    }} />
+                </div>
+                <p>If you are currently on a payment plan and you wish to switch to another plan, just click on the new plan you wish to subscribe to.</p>
+
+                {
+                    open && (
+                        <div className="billBox">
+                            <div className="prices">
+                                {
+                                    plans.map((item, index) => {
+                                        return (
+                                            <div className="boxP" key={item.title}>
+                                                {
+                                                    item.extra != "" && (
+                                                        <div className="tag"
+                                                            style={{
+                                                                background:
+                                                                    index === 2 ?
+                                                                        "#0A3DBF" :
+                                                                        index === 3 ?
+                                                                            "#6F2CCD" : ""
+                                                            }}
+                                                        >
+                                                            <p>{item.extra}</p>
+                                                        </div>
+                                                    )
+                                                }
+                                                <div className="planBox"
+                                                    style={{
+                                                        background: index === 1 ?
+                                                            "linear-gradient(-180deg, #0AC271 0%, #0A91C2 100%)" :
+                                                            index === 2 ?
+                                                                "linear-gradient(-180deg, #0A93BF 41.83%, #0A3DBF 100%)" :
+                                                                index === 3 ?
+                                                                    "linear-gradient(-180deg, #0A45BF 0%, #6F2CCD 100%)" : ""
+                                                    }}
+                                                >
+                                                    <div className="headerPlan">
+                                                        <h2>{item.title}</h2>
+                                                    </div>
+                                                    <div className="contentList">
+                                                        {
+                                                            item.content.map((item, i) => {
+                                                                return (
+                                                                    <div key={item} className="priceListBox">
+                                                                        <div className="pDot">
+                                                                            <img src={round} alt="" />
+                                                                        </div>
+
+                                                                        {
+                                                                            i > 2 ? (
+                                                                                <p className="pContent" style={{
+                                                                                    textDecoration: index === 0 ? "line-through" : "",
+                                                                                    opacity: index === 0 ? ".6" : "",
+                                                                                }}>
+                                                                                    {item}
+                                                                                </p>
+                                                                            ) : (
+                                                                                <p className="pContent">
+                                                                                    {item}
+                                                                                </p>
+                                                                            )
+                                                                        }
+
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="groupActionBase">
+                                                    <div className="priceBoxNum"
+                                                        style={{
+                                                            background: index === 1 ?
+                                                                "#0A91C2" :
+                                                                index === 2 ?
+                                                                    "#0A3DBF" :
+                                                                    index === 3 ?
+                                                                        "#6F2CCD" : ""
+                                                        }}
+                                                    >
+                                                        <div className="notch"
+                                                            style={{
+                                                                boxShadow: index === 1 ?
+                                                                    `-12px -12px 0px 10px #0A91C2` :
+                                                                    index === 2 ?
+                                                                        "-12px -12px 0px 10px #0A3DBF" :
+                                                                        index === 3 ?
+                                                                            "-12px -12px 0px 10px #6F2CCD" : ""
+                                                            }}
+                                                        ></div>
+
+                                                        <h2>₦{item.priceNGN}/${item.priceUSD}</h2>
+                                                        <p>per month</p>
+                                                    </div>
+
+                                                    <div className="priceButton" onClick={() => {
+                                                        setAction({
+                                                            type: "Membership Package",
+                                                            plan: item.title,
+                                                            price: item.priceNGN,
+                                                            duration: item.duration
+                                                        })
+                                                    }}>
+                                                        <p>{index <= 0 ? "Join for Free " : "Subscribe"}</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
+        </div>
+    )
+}
+function BillingContent2({ data, setAction }) {
+    const [open, setOpen] = useState(false)
 
 
+    async function handlePayment(planKey) {
+        const selectedPlan = data.packages?.[planKey];
+        const payload = {
+            key: planKey,
+            type: "Training Package",
+            plan: selectedPlan?.name,
+            price: selectedPlan?.plans,
+            duration: "1 Month",
+            message: selectedPlan?.info,
+        };
 
-function OneTimeFee({ action, price }) {
-    const [loading, setLoading] = useState(false)
-    async function generatePaymentLink() {
-        setLoading(true)
-        await payRegistration()
-            .then((payLink) => {
-                // setLoading(false)
-                window.location.href = payLink.paystackResponse.data.authorization_url
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+        console.log({ data, planKey, selectedPlan, payload });
+        setAction(payload);
     }
+
+    return (
+        <div className="topWrapContent">
+            <div className="firste ebound eSplit">
+
+                <div className="toHeader" onClick={() => { setOpen(!open) }}>
+                    <h2>Training Package</h2>
+                    <Icon icon="iconamoon:arrow-down-2-bold" width="24" height="24" style={{
+                        transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "transform 0.3s ease-in-out"
+                    }} />
+                </div>
+                <p>If you are currently on a payment plan and you wish to switch to another plan, just click on the new plan you wish to subscribe to.</p>
+
+                {
+                    open && (
+                        <>
+                            <div className="plansWrap">
+                                <div className="planList">
+                                    <div className="planBox">
+                                        <div className="pBoxContent">
+                                            <div className="planImage" style={{
+                                                background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
+                                                backgroundSize: "cover",
+                                                backgroundPosition: "center",
+                                                width: "100%"
+                                            }}>
+
+                                            </div>
+                                            <h2>{data.packages?.regular?.name || "--"}</h2>
+                                            <p><b>Price: </b> NGN {data.packages?.regular.plans[0].price || "--"}</p>
+                                            <p><b>Duration: </b>1 Month</p>
+                                            <p className="plText">{data.packages?.regular.info || "--"}</p>
+                                        </div>
+                                        <p className="fni" style={{
+                                            margin: "20px 0",
+                                            fontSize: ".8rem"
+                                        }}>
+                                            *All on a membership plan would recive a discount during checkout*
+                                        </p>
+                                        <Button full onClick={() => { handlePayment("regular") }}>Make Payment</Button>
+
+                                    </div>
+                                    <div className="planBox">
+                                        <div className="pBoxContent">
+                                            <div className="planImage" style={{
+                                                background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
+                                                backgroundSize: "cover",
+                                                backgroundPosition: "center",
+                                                width: "100%"
+                                            }}>
+
+                                            </div>
+                                            <h2>{data.packages?.standard.name}</h2>
+                                            <p><b>Price: </b> NGN {data.packages?.standard.plans[0].price}</p>
+                                            <p><b>Duration: </b>1 Month</p>
+                                            <p className="plText">{data.packages?.standard.info}</p>
+                                        </div>
+                                        <p className="fni" style={{
+                                            margin: "20px 0",
+                                            fontSize: ".8rem"
+                                        }}>
+                                            *All on a membership plan would recive a discount during checkout*
+                                        </p>
+                                        <Button full onClick={() => { handlePayment("standard") }}>Make Payment</Button>
+                                    </div>
+                                    <div className="planBox">
+                                        <div className="pBoxContent">
+                                            <div className="planImage" style={{
+                                                background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
+                                                backgroundSize: "cover",
+                                                backgroundPosition: "center",
+                                                width: "100%"
+                                            }}>
+
+                                            </div>
+                                            <h2>{data.packages?.premium.name}</h2>
+                                            <p><b>Price: </b> NGN {data.packages?.premium.plans[0].price}</p>
+                                            <p><b>Duration: </b>1 Month</p>
+                                            <p className="plText">{data.packages?.premium.info}</p>
+                                        </div>
+                                        <p className="fni" style={{
+                                            margin: "20px 0",
+                                            fontSize: ".8rem"
+                                        }}>
+                                            *All on a membership plan would recive a discount during checkout*
+                                        </p>
+                                        <Button full onClick={() => { handlePayment("premium") }}>Make Payment</Button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="plansWrap">
+                                <h2>Special Training Plans</h2>
+                                <div className="planList">
+                                    <div className="planBox">
+                                        <div className="pBoxContent">
+                                            <div className="planImage" style={{
+                                                background: `url(https://i.pinimg.com/736x/fd/c3/eb/fdc3eb1f8fa99c664e32e0bf27238816.jpg)`,
+                                                backgroundSize: "cover",
+                                                backgroundPosition: "center",
+                                                width: "100%"
+                                            }}>
+
+                                            </div>
+                                            <h2>{data.packages?.family.name}</h2>
+                                            <p><b>Price: </b> NGN {data.packages?.family.plans[0].price}</p>
+                                            <p><b>Duration: </b>1 Month</p>
+                                            <p className="plText">{data.packages?.family.info}</p>
+                                        </div>
+                                        <p className="fni" style={{
+                                            margin: "20px 0",
+                                            fontSize: ".8rem"
+                                        }}>
+                                            *All on a membership plan would recive a discount during checkout*
+                                        </p>
+                                        <Button full onClick={() => {
+                                            handlePayment("family")
+                                        }}>Make Payment</Button>
+
+                                    </div>
+                                    <div className="planBox">
+                                        <div className="pBoxContent">
+                                            <div className="planImage" style={{
+                                                background: `url(https://i.pinimg.com/736x/4c/f8/1d/4cf81db6a2def537f469df3ec69350e4.jpg)`,
+                                                backgroundSize: "cover",
+                                                backgroundPosition: "center",
+                                                width: "100%"
+                                            }}>
+
+                                            </div>
+                                            <h2>{data.packages?.couples.name}</h2>
+                                            <p><b>Price: </b> NGN {data.packages?.couples.plans[0].price}</p>
+                                            <p><b>Duration: </b>1 Month</p>
+                                            <p className="plText">{data.packages?.couples.info}</p>
+                                        </div>
+
+                                        <p className="fni" style={{
+                                            margin: "20px 0",
+                                            fontSize: ".8rem"
+                                        }}>
+                                            *All on a membership plan would recive a discount during checkout*
+                                        </p>
+                                        <Button full onClick={() => {
+                                            handlePayment("couples")
+                                        }}>Make Payment</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
+            </div>
+        </div>
+    )
+}
+
+
+function BillingSummary({ action, dataFn }) {
+
+    console.log(dataFn)
+    const [loading, setLoading] = useState(false)
+
+    const [payData, setPayData] = useState({
+        key: dataFn.key,
+        type: dataFn.type || "Membership Package",
+        plan: dataFn.plan || "Free Plan",
+        price: dataFn.price,
+        planType: 0,
+        autoRenew: false,
+    })
+
+    function handleChange(e) {
+        console.log(e.target.value)
+        setPayData({
+            ...payData,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    async function handleSubmit() {
+        console.log("Submitting payment data", payData);
+
+        if (payData.type === "Training Package") {
+            await payTraining(payData.key, Number(payData.planType) == 0 ? "1month" : "3months")
+                .then((payLink) => {
+                    setLoading(false)
+                    window.location.href = payLink.paystackResponse.data.authorization_url
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+    }
+
+
     return (
         <div className="layoutOverlay">
             <div className="layoutBase">
-                <div className="oneSection">
-                    <div className="onImage" style={{
-                        background: `url(https://i.pinimg.com/736x/25/6b/67/256b679d72535df5cb4b31656d6f3f3d.jpg)`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center"
-                    }}>
+                <div className="headerLL">
+                    <h2>Payment Summary</h2>
+                    <Button alt onClick={() => { action(false) }}>
+                        Close
+                    </Button>
+                </div>
 
+                <div className="pawyWrap">
+                    <div className="paContent">
+                        <div className="payfType">
+                            <h3>{dataFn.type}</h3>
+
+
+                            <div className="cmo vm">
+                                <div className="toVVWrap">
+                                    <h3>
+                                        {dataFn.plan}
+                                    </h3>
+                                    <div className="saveBo">
+                                        <Icon icon="fluent-emoji-flat:party-popper" width="20" height="20" />
+
+                                        <p className="saveText">
+                                            Save 20%
+                                        </p>
+                                    </div>
+                                </div>
+                                <p>
+                                    {dataFn.message || "This plan offers full dashboard access, tournament insights, community support, progress tracking, exclusive training perks, social events, priority tournament benefits, and a premium badge to showcase your status."}
+                                </p>
+                            </div>
+                            <br />
+
+
+                            <div className="cmo vv">
+                                <Icon icon="fluent-color:alert-urgent-20" width="50" height="50" />
+                                <p>
+                                    Please carefully review this plan you want to pay for before you proceed to make your payment.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <h3>
-                        Welcome to ATP.
-                    </h3>
-                    <p>New members are to pay a one time fee to join the club</p>
+                    <div className="Order">
+                        <div className="orWarp">
+                            <div className="orderHeader">
+                                <h3>Order Summary</h3>
+                            </div>
+                            <div className="orderContent">
+                                <p className="textO">Renews On</p>
+                                <p >Jan 15 2024</p>
+                            </div>
+                            <br />
+                            <div className="orderContent">
+                                <p className="textO">Total Amount:</p>
+                                <p className="textTotal">₦{
+                                    dataFn.type === "Training Package" ? (dataFn.price[payData.planType].price) : dataFn.price
+                                }.00</p>
+                            </div>
+                        </div>
+
+                        <div className="orWarp bbOWrap">
+
+                            {
+                                dataFn.type === "Membership Package" && (
+                                    <div className="auto">
+                                        <p>Auto renewal</p>
+                                        <input
+                                            type="checkbox"
+                                            id="autoRenew"
+                                            name="autoRenew"
+                                            checked={payData.autoRenew}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                )
+                            }
+                            {
+                                dataFn.type === "Training Package" && (
+                                    <>
+                                        <p>Select a Duration</p>
+                                        <select name="planType" value={payData.planType} id="" onChange={handleChange}>
+                                            <option value="0">1 Month</option>
+                                            <option value="1">3 Months</option>
+                                        </select>
+                                    </>
+                                )
+                            }
+                        </div>
+
+                        <Button full disabled={loading} onClick={handleSubmit}>Make Payment</Button>
+                    </div>
                 </div>
-                <div className="baseAction">
-                    <Button alt onClick={action} disabled={loading}>Close</Button>
-                    <Button onClick={generatePaymentLink} disabled={loading}>{loading ? "Processing..." : ` Pay NGN ${price}`}</Button>
-                </div>
+
+                {/* <div className="topWrapContent">
+                    <div className="firste ebound eSplit">
+                        <div className="toHeader">
+                            <h2>Payment Summary</h2>
+                        </div>
+                        <p>Here you can view your billing summary and history.</p>
+                    </div>
+                </div> */}
             </div>
         </div>
     )
