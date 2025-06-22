@@ -15,6 +15,11 @@ import DashboardLayout from "./user/layout";
 import { Login, SignUp } from "./signUser";
 import { AdultMembership, ChildrenMembership, ComboMembership } from "./membership";
 import Billing from "./user/billingValid";
+import Tournaments from "./user/tournamentPage";
+import Notifications from "./user/notificationPage";
+import { Billings } from "./user/billingPage";
+import YourCoach from "./user/coachPage";
+import Tickets from "./user/ticketPage";
 
 export default function App() {
     return (
@@ -23,29 +28,34 @@ export default function App() {
                 <Navbar />
                 <Routes>
                     <Route index element={<Home />} />
-                    <Route path="/signup" element={<SignUp/>}/>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/about" element={<About/>}/>
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/about" element={<About />} />
                     <Route path="/tournaments" element={<Tournament />} />
-                    <Route path="/resources" element={<Resources/>}/>
+                    <Route path="/resources" element={<Resources />} />
                     <Route path="/membership/">
-                        <Route path="/membership/children" element={<ChildrenMembership/>}/>
-                        <Route path="/membership/adult" element={<AdultMembership/>}/>
-                        <Route path="/membership/combo" element={<ComboMembership/>}/>
+                        <Route path="/membership/children" element={<ChildrenMembership />} />
+                        <Route path="/membership/adult" element={<AdultMembership />} />
+                        <Route path="/membership/combo" element={<ComboMembership />} />
                     </Route>
                     <Route path="/coaching">
-                        <Route index element={<Coaching/>}/>
-                        <Route path="/coaching/:id" element={<CoachInfo/>}/>
+                        <Route index element={<Coaching />} />
+                        <Route path="/coaching/:id" element={<CoachInfo />} />
                     </Route>
-                    <Route path="/videos" element={<Videos/>}/>
-                    <Route path="/contact" element={<ContactUs/>}/>
-                    <Route path="/u" element={<DashboardLayout/>}>
-                        <Route index element={<Dashboard/>}/>
-                        <Route path="/u/ticket/:tournamentID" element={<YourTicket/>}/>
-                        <Route path="/u/bills/:type/:subType/:duration" element={<Billing/>}/>
+                    <Route path="/videos" element={<Videos />} />
+                    <Route path="/contact" element={<ContactUs />} />
+                    <Route path="/u" element={<DashboardLayout />}>
+                        <Route index element={<Dashboard />} />
+                        <Route path="/u/notifications" element={<Notifications />} />
+                        <Route path="/u/tournaments" element={<Tournaments />} />
+                        <Route path="/u/billings" element={<Billings />} />
+                        <Route path="/u/coach" element={<YourCoach />} />
+                        <Route path="/u/tickets" element={<Tickets />} />
+                        <Route path="/u/ticket/:tournamentID" element={<YourTicket />} />
+                        <Route path="/u/bills/:type/:subType/:duration" element={<Billing />} />
                     </Route>
                 </Routes>
-                <Footer/>
+                <Footer />
             </BrowserRouter>
         </>
     )
