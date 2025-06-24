@@ -1,6 +1,5 @@
 // src/api/axios.js
 import axios from 'axios';
-console.log(import.meta.env.VITE_SERVER_API)
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_API, 

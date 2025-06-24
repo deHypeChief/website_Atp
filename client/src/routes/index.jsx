@@ -8,9 +8,10 @@ import Hero from "../components/hero/hero"
 import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { getTour } from "../libs/api/api.endpoints"
-import { client, urlFor } from "../sanityClient"
+import { client } from "../sanityClient"
 import { useEffect, useState } from "react"
 import Reviews from "../components/reviews/review"
+import round from "/round.svg"
 
 export default function Home() {
     const [content, setContent] = useState([])
@@ -36,20 +37,81 @@ export default function Home() {
 
     const plans = [
         {
-            title: "Children's Plan",
-            des: "This plan is sub-divided into two (2) packages:",
-            link: "/membership/children"
+            title: "Free Plan",
+            priceNGN: 0,
+            priceUSD: 0,
+            duration: "",
+            extra: "",
+            content: [
+                "Access to Dashboard",
+                "Access to ATP Tournaments Page",
+                "Join Free WhatsApp Community",
+                "Join Premium WhatsApp Community",
+                "Access to Progress Tracker",
+                "Training / Coaching Discounts",
+                "1 Free Training / Quarter",
+                "Exclusive Social Events",
+                "Tournament Priority Access & 5% Discount",
+                "Premium Badge on Dashboard",
+            ],
         },
         {
-            title: "Adult Plan",
-            des: "This plan is sub-divided into three (3) packages",
-            link: "/membership/adult"
+            title: "Premium Monthly",
+            extra: "",
+            priceNGN: 6000,
+            priceUSD: 5,
+            duration: "monthly",
+            content: [
+                "Access to Dashboard",
+                "Access to ATP Tournaments Page",
+                "Join Free WhatsApp Community",
+                "Join Premium WhatsApp Community",
+                "Access to Progress Tracker",
+                "Training / Coaching Discounts",
+                "1 Free Training / Quarter",
+                "Exclusive Social Events",
+                "Tournament Priority Access & 5% Discount",
+                "Premium Badge on Dashboard",
+            ],
         },
         {
-            title: "Special Combo",
-            des: "Description for the beginner package will be placed here",
-            link: "/membership/combo"
-        }
+            title: "Premium Quarterly",
+            extra: "Save N25 if when you join",
+            priceNGN: 17000,
+            priceUSD: 10,
+            duration: "quarterly",
+            content: [
+                "Access to Dashboard",
+                "Access to ATP Tournaments Page",
+                "Join Free WhatsApp Community",
+                "Join Premium WhatsApp Community",
+                "Access to Progress Tracker",
+                "Training / Coaching Discounts",
+                "1 Free Training / Quarter",
+                "Exclusive Social Events",
+                "Tournament Priority Access & 5% Discount",
+                "Premium Badge on Dashboard",
+            ],
+        },
+        {
+            title: "Premium Yearly",
+            extra: "Save N25 if when you join",
+            priceNGN: 70000,
+            priceUSD: 50,
+            duration: "yearly",
+            content: [
+                "Access to Dashboard",
+                "Access to ATP Tournaments Page",
+                "Join Free WhatsApp Community",
+                "Join Premium WhatsApp Community",
+                "Access to Progress Tracker",
+                "Training / Coaching Discounts",
+                "1 Free Training / Quarter",
+                "Exclusive Social Events",
+                "Tournament Priority Access & 5% Discount",
+                "Premium Badge on Dashboard",
+            ],
+        },
     ]
 
     return (
@@ -76,7 +138,7 @@ export default function Home() {
                         </p>
                         <div className="aboutAction">
                             <Link to="/about">
-                            <Button>Learn More</Button>
+                                <Button>Learn More</Button>
                             </Link>
                         </div>
                     </div>
@@ -108,7 +170,7 @@ export default function Home() {
                             toruOuery.data.map((item, index) => {
                                 return (
                                     index < 3 ? (
-                                        <Card payload={item} />
+                                        <Card payload={item} key={"1" + item} />
                                     ) : null
                                 )
                             })
@@ -119,7 +181,10 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* <section className="membership">
+
+            {/* memebership section */}
+
+            <section className="membership">
                 <div className="secTop">
                     <div className="heroSubTop">
                         <div className="rArrow rL">
@@ -139,30 +204,114 @@ export default function Home() {
                 <div className="prices">
                     {
                         plans.map((item, index) => {
+                            console.log(item)
                             return (
-                                <div key={"pri" + index} className="priceBox">
-                                    <div className="pTextHead">
-                                        <h3>{item.title}</h3>
-                                        <p>
-                                            {item.des}
-                                        </p>
+                                <div className="boxP" key={item.title}>
+                                    {
+                                        item.extra != "" && (
+                                            <div className="tag"
+                                                style={{
+                                                    background:
+                                                        index === 2 ?
+                                                            "#0A3DBF" :
+                                                            index === 3 ?
+                                                                "#6F2CCD" : ""
+                                                }}
+                                            >
+                                                <p>{item.extra}</p>
+                                            </div>
+                                        )
+                                    }
+                                    <div className="planBox"
+                                        style={{
+                                            background: index === 1 ?
+                                                "linear-gradient(-180deg, #0AC271 0%, #0A91C2 100%)" :
+                                                index === 2 ?
+                                                    "linear-gradient(-180deg, #0A93BF 41.83%, #0A3DBF 100%)" :
+                                                    index === 3 ?
+                                                        "linear-gradient(-180deg, #0A45BF 0%, #6F2CCD 100%)" : ""
+                                        }}
+                                    >
+                                        <div className="headerPlan">
+                                            <h2>{item.title}</h2>
+                                        </div>
+                                        <div className="contentList">
+                                            {
+                                                item.content.map((item, i) => {
+                                                    return (
+                                                        <div key={item} className="priceListBox">
+                                                            <div className="pDot">
+                                                                <img src={round} alt="" />
+                                                            </div>
+
+                                                            {
+                                                                i > 2 ? (
+                                                                    <p className="pContent" style={{
+                                                                        textDecoration: index === 0 ? "line-through" : "",
+                                                                        opacity: index === 0 ? ".6" : "",
+                                                                    }}>
+                                                                        {item}
+                                                                    </p>
+                                                                ) : (
+                                                                    <p className="pContent">
+                                                                        {item}
+                                                                    </p>
+                                                                )
+                                                            }
+
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="groupActionBase">
+                                        <div className="priceBoxNum"
+                                            style={{
+                                                background: index === 1 ?
+                                                    "#0A91C2" :
+                                                    index === 2 ?
+                                                        "#0A3DBF" :
+                                                        index === 3 ?
+                                                            "#6F2CCD" : ""
+                                            }}
+                                        >
+                                            <div className="notch"
+                                                style={{
+                                                    boxShadow: index === 1 ?
+                                                        `-12px -12px 0px 10px #0A91C2` :
+                                                        index === 2 ?
+                                                            "-12px -12px 0px 10px #0A3DBF" :
+                                                            index === 3 ?
+                                                                "-12px -12px 0px 10px #6F2CCD" : ""
+                                                }}
+                                            ></div>
+
+                                            <h2>₦{item.priceNGN}/${item.priceUSD}</h2>
+                                            <p>per month</p>
+                                        </div>
+
+                                        <Link to={`/signup?pl="${item.title.split(" ").join("-")}"&pay=${JSON.stringify(
+                                            {
+                                                type: "Membership Package",
+                                                plan: item.title,
+                                                price: item.priceNGN,
+                                                duration: item.duration,
+                                                key: item.duration,
+                                            }
+                                        )}`}>
+                                            <div className="priceButton">
+                                                <p>{index <= 0 ? "Join for Free " : "Subscribe"}</p>
+                                            </div>
+                                        </Link>
                                     </div>
 
-                                    <Link to={item.link}>
-                                        {
-                                            index === 1 ? (
-                                                <Button full alt green>View Plan</Button>
-                                            ) : (
-                                                <Button full alt blue>View Plan</Button>
-                                            )
-                                        }
-                                    </Link>
                                 </div>
                             )
                         })
                     }
                 </div>
-            </section> */}
+            </section>
 
             <section className="pair">
                 <div className="aboutWrap">
@@ -186,7 +335,7 @@ export default function Home() {
                         <div className="aboutAction">
                             <Link to="/coaching">
 
-                            <Button>Find a Coach</Button>
+                                <Button>Find a Coach</Button>
                             </Link>
                         </div>
                     </div>
@@ -197,7 +346,7 @@ export default function Home() {
             </section>
 
 
-            <Reviews/>
+            <Reviews />
 
             <section className="news">
                 <div className="secTop">

@@ -1,4 +1,4 @@
-button{
+button {
     padding: 12px 30px;
     font-size: 1rem;
     background: var(--color-main);
@@ -6,24 +6,35 @@ button{
     border: none;
     font-weight: 600;
     border-radius: 5px;
+
+
+    p {
+        font-size: 1rem;
+        font-weight: 600;
+
+    }
 }
 
-.alt{
+.alt {
     background: grey;
     color: white;
     border: var(--set-border);
 }
 
-.blue{
+.blue {
     border-color: var(--color-blue);
     color: var(--color-blue);
-} 
+}
 
-.green{
+.green {
     border-color: var(--color-main);
     color: var(--color-main);
-}   
+}
 
-.full{
+.full {
     width: 100%;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 }

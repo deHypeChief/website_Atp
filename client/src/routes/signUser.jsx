@@ -25,15 +25,15 @@ export function Login() {
         document.getElementsByTagName("nav")[0].style.display = "block"
         document.getElementsByTagName("footer")[0].style.display = "block"
     }, [])
+
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
+        const payParam = queryParams.get('pay');
 
-        const planId = queryParams.get('planId');
-        if (planId) {
-            const url = new URL(window.location.href)
-            setPayQuery(url.search)
+        if (payParam) {
+            setPayQuery(payParam);
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         async function checkAuth() {
@@ -46,13 +46,13 @@ export function Login() {
             }
         }
         checkAuth()
-    }, [isAuthenticated, navigate, payQuery])
+    }, [])
 
     const { mutateAsync: createUserMu, isPending } = useMutation({
         mutationFn: userLogin,
         onSuccess: (data) => {
             console.log(data);
-            navigate(`/u${payQuery}`)
+            navigate(`/u?pay=${payQuery}`)
         },
         onError: (err) => {
             setError(err.response.data.message)
@@ -76,7 +76,10 @@ export function Login() {
         }
         setError("")
         await createUserMu(payload)
+        console.log(payQuery)
     }
+
+
     return (
         <section className="auth">
             <div className="authLeft">
@@ -136,9 +139,6 @@ export function Login() {
 }
 
 
-
-
-
 export function SignUp() {
     const navigate = useNavigate()
     const { isAuthenticated, userRegister } = useAuth()
@@ -149,13 +149,14 @@ export function SignUp() {
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
+        const payParam = queryParams.get("pay");
+        console.log(payParam);
 
-        const planId = queryParams.get('planId');
-        if (planId) {
-            const url = new URL(window.location.href)
-            setPayQuery(url.search)
+        if (payParam) {
+            // Safely store it as encoded for redirect later
+            setPayQuery(`?pay=${encodeURIComponent(payParam)}`);
         }
-    }, [location.search])
+    }, [location.search]);
 
     const [payload, setPayload] = useState({
         fullName: "",
@@ -184,14 +185,12 @@ export function SignUp() {
             }
         }
         checkAuth()
-    }, [isAuthenticated, navigate])
+    }, [])
 
     const { mutateAsync: createUserMu, isPending } = useMutation({
         mutationFn: userRegister,
-        onSuccess: (data) => {
-            console.log(data);
+        onSuccess: () => {
             navigate(`/login${payQuery}`)
-            // Invalidate and refetch
         },
         onError: (err) => {
             setError(err.response.data.message)
@@ -214,7 +213,8 @@ export function SignUp() {
         }
         setError("")
         await createUserMu(payload)
-        console.log(payload)
+        // console.log(payload)
+        console.log(payQuery);
     }
 
     return (
@@ -364,31 +364,5 @@ export function SignUp() {
             </div>
             <div className="authRight"></div>
         </section>
-    )
-}
-
-
-
-function SocialAuth() {
-    return (
-        <div className="authOther">
-            <p className="authOtherText">
-                Or sign up with
-            </p>
-            <div className="authOtherSocials">
-                <Button alt blue>
-                    <div className="authWrapButton">
-                        <div className="SoIcon"></div>
-                        <p>Google</p>
-                    </div>
-                </Button>
-                <Button alt blue>
-                    <div className="authWrapButton">
-                        <div className="SoIcon"></div>
-                        <p>Facebook</p>
-                    </div>
-                </Button>
-            </div>
-        </div>
     )
 }

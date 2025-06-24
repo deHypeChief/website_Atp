@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import api from "@/lib/axios";
 
 // Fetch all users
@@ -121,3 +122,6 @@ export const deleteCoach = async (id) => {
 	throw new Error(error.response.data.message);
   }
 }
+
+
+

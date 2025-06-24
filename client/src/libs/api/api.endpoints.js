@@ -199,9 +199,10 @@ export const payRegistration = async () => {
   }
 }
 
-export const payDues = async (type) => {
+export const payDues = async (type, autoRenew) => {
   try {
-    const response = await api.post(`/billing/pay/membership/${type}`);
+    const response = await api.post(`/billing/pay/membership/${type}/${autoRenew}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching billing info:", error);

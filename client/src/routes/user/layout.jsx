@@ -1,25 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import Button from "../../components/button/button";
 import logo from "../../libs/images/logoColor.svg"
 import "../../libs/styles/userLayout.css"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../libs/hooks/use-auth"
 import { useQuery } from "@tanstack/react-query"
-import { getMatches, getMe, getPayMe, uploadProfile } from "../../libs/api/api.endpoints";
+import { getMe, getPayMe } from "../../libs/api/api.endpoints";
 
-import raIcon1 from "../../libs/images/Group 1.svg";
-import raIcon2 from "../../libs/images/Vector-1.svg";
-import raIcon3 from "../../libs/images/Vector.svg";
-import raIcon4 from "../../libs/images/Group.svg";
 
-import { QRCodeCanvas } from 'qrcode.react';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import { Icon } from "@iconify/react/dist/iconify.js";
-import axios from 'axios';
-
-
+import badge from "/shield.svg"
 
 dayjs.extend(relativeTime);
 
@@ -27,17 +19,16 @@ dayjs.extend(relativeTime);
 
 
 export default function DashboardLayout() {
-    const [handleMem, setHandleMem] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
     const navigate = useNavigate()
-    const { isAuthenticated, userLogout } = useAuth()
+    const { isAuthenticated } = useAuth()
 
 
     useEffect(() => {
         document.getElementsByTagName("nav")[0].style.display = "none"
         document.getElementsByTagName("footer")[0].style.display = "none"
     }, [])
+    const { userLogout } = useAuth();
 
 
 
@@ -46,15 +37,15 @@ export default function DashboardLayout() {
             async function moreFn() {
                 const payload = {
                     user: await getMe(),
-                    matches: await getMatches(),
                     billing: await getPayMe(),
-                    leaderboard: []
                 }
                 console.log(payload);
                 return payload
             }
             return moreFn()
         },
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
         queryKey: ["moreData"]
     })
 
@@ -64,11 +55,11 @@ export default function DashboardLayout() {
     }
 
     useEffect(() => {
-        document.getElementById("dContent").addEventListener('click', () => {
+        document.getElementById("dContent")?.addEventListener('click', () => {
             document.getElementById("hamSide").style.display = open ? "flex" : null
             setOpen(!open)
         })
-    }, [])
+    }, [open])
 
 
     useEffect(() => {
@@ -79,7 +70,7 @@ export default function DashboardLayout() {
             }
         }
         checkAuth()
-    }, [isAuthenticated, navigate])
+    }, [])
 
     return (
         <div className="useNov">
@@ -90,6 +81,19 @@ export default function DashboardLayout() {
                     </div>
                 </div>
                 <div className="upUserInfo">
+                    {
+                        data?.billing.data.membership.plan === "none" ? <></> : (
+                            <div className="badge"
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    marginRight: "10px"
+                                }}>
+                                <img src={badge} alt="" />
+                            </div>
+                        )
+                    }
+
                     <div className="userRound">
                         {
                             data?.user?.picture ? (
@@ -98,7 +102,11 @@ export default function DashboardLayout() {
                         }
                     </div>
                     <div className="membershipPill">
-                        <p style={{ textTransform: "capitalize" }}>{`${data?.billing?.data.bills?.trainingBill?.trainingType || " No"} Traning Plan`}</p>
+                        <p style={{ textTransform: "capitalize" }}>
+                            {data?.billing?.data?.training?.plan && data.billing.data.training.plan !== "none"
+                                ? `${data.billing.data.training.plan} Training Plan`
+                                : "No Training Plan"}
+                        </p>
                     </div>
                 </div>
 
@@ -106,7 +114,65 @@ export default function DashboardLayout() {
                     <Icon icon="gg:menu" width="40px" height="40px" style={{ color: "black" }} />
                 </div>
             </div>
-            <Outlet />
+
+            <div className="dashboardSection">
+
+                <div className="sideContent" id="hamSide">
+
+                    <div className="sdeTopContent">
+                        <Link to={"/u"}>
+                            <div className={`sideContent_Bttn ${location.pathname === "/u" ? "active" : "sc_BttnClosed"}`}>
+                                <p>Your Overview</p>
+                            </div>
+                        </Link>
+                        <Link to={"/u/coach"}>
+                            <div className={`sideContent_Bttn ${location.pathname.includes("coach") ? "active" : "sc_BttnClosed"}`}>
+                                <p>Your Coach</p>
+                            </div>
+                        </Link>
+                        <Link to={"/u/tickets"}>
+                            <div className={`sideContent_Bttn ${location.pathname.includes("tickets") ? "active" : "sc_BttnClosed"}`}>
+                                <p>Tickets</p>
+                            </div>
+                        </Link>
+                        <Link to={"/u/tournaments"}>
+                            <div className={`sideContent_Bttn ${location.pathname.includes("tournaments") ? "active" : "sc_BttnClosed"}`}>
+                                <p>Tournaments</p>
+                            </div>
+                        </Link>
+                        <Link to={"/u/notifications"}>
+                            <div className={`sideContent_Bttn ${location.pathname.includes("notifications") ? "active" : "sc_BttnClosed"}`}>
+                                <p>Notifications</p>
+                            </div>
+                        </Link>
+                        <Link to={"/u/billings"}>
+                            <div className={`sideContent_Bttn ${location.pathname.includes("billings") ? "" : "sc_BttnClosed"}`}>
+                                <p>Billings</p>
+                            </div>
+                        </Link>
+                        {/* <div className={`sideContent_Bttn ${slide != 2 && "sc_BttnClosed"}`} onClick={() => { setSlide(2) }}>
+                                    <p>Your Coach</p>
+                                </div> */}
+                    </div>
+
+                    <div className="sideBottomContent">
+                        <Link to={"/login"} onClick={() => {
+                            userLogout()
+                            document.getElementsByTagName("nav")[0].style.display = "block"
+                            document.getElementsByTagName("footer")[0].style.display = "block"
+                        }}>
+                            <div className="sideContent_Bttn sc_BttnClosed">
+                                <p>Logout</p>
+                            </div>
+                        </Link>
+                    </div>
+
+                </div>
+                <div className="dashboardContent" id="dContent">
+                    <Outlet />
+                </div>
+            </div>
+
         </div>
     )
 }

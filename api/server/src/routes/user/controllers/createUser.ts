@@ -4,6 +4,7 @@ import { userSchemas } from "../setup";
 import Notify from "../../notifications/model";
 import { sendMail } from "../../../middleware/sendMail";
 import Billing from "../../billings/model";
+import { Subscription } from "../../subscriptions/model";
 
 const createUser = new Elysia()
     .use(userSchemas)
@@ -20,7 +21,7 @@ const createUser = new Elysia()
         } = body
 
         try {
-            
+
             const usernameExists = await User.findOne({ username })
             const userEmailExists = await User.findOne({ email })
 
@@ -43,8 +44,18 @@ const createUser = new Elysia()
                 level,
             });
             await user.save();
-            await Billing.create({
+            await Subscription.create({
                 user: user._id,
+                membership: {
+                    status: "Not Paid",
+                    plan: "none",
+                    autoRenew: false,
+                },
+                training: {
+                    status: "Not Paid",
+                    plan: "none",
+                },
+                paymentHistory: [],
             })
             await Notify.create({
                 userID: user._id,
@@ -52,7 +63,7 @@ const createUser = new Elysia()
                 message: `Welcome to ATP, ${fullName}`,
                 type: "info"
             });
-            
+
             mailConfig(
                 email,
                 `Hello welcome to ATP`,

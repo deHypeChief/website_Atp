@@ -23,7 +23,7 @@ export default function Billing() {
             const url = new URL(window.location.href);
             const tx_ref = url.searchParams.get('trxref') || null;
 
-            const billingUrl = `/${type}/${subType}/${duration}?tx_ref=${tx_ref}`;
+            const billingUrl = `/${type}/${subType}/${duration}/:autoRenew?tx_ref=${tx_ref}`;
             return validateBilling(billingUrl);
         },
         queryKey: ["validateBilling"],

@@ -22,7 +22,7 @@ button {
     width: 100%;
     height: 100%;
     border-radius: 10px;
-    background: white;
+    /* background: white; */
 }
 
 
@@ -46,8 +46,8 @@ button {
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            
-            h1{
+
+            h1 {
                 color: white;
                 text-align: center;
             }
@@ -77,6 +77,238 @@ button {
                 font-size: .8rem;
             }
 
+        }
+    }
+}
+
+.topWrapSec {
+    display: flex;
+}
+
+.topWrapContent {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .ebound {
+        /* background: white; */
+        padding: 40px 50px;
+        border-radius: 10px;
+        border: 2px rgba(128, 128, 128, 0.331) solid;
+        /* box-shadow: 0 0 10px 4px rgba(125, 125, 125, 0.084); */
+
+        p {
+            font-size: 1rem;
+            opacity: .6;
+        }
+
+        .topVV {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        &.eSplit {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        &.firste {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            flex: 1;
+            flex-wrap: wrap;
+
+            .bcontent {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+
+                .bcont {
+                    flex: 1;
+
+                    .bName {
+                        margin-bottom: 10px;
+                        font-size: 1;
+                    }
+
+                    .bp, p{
+                        font-size: .9rem;
+                    }
+                }
+            }
+
+            .boundBase {
+                display: flex;
+                gap: 10px;
+                width: 100%;
+                margin-top: 20px;
+
+                .baseImg {
+                    height: 20px;
+                    width: 20px;
+                }
+
+
+                p {
+                    font-size: .9rem;
+                }
+            }
+        }
+    }
+
+    .toHeader {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+        border-bottom: 2px rgba(128, 128, 128, 0.331) solid;
+        margin-bottom: 10px;
+
+        h2 {
+            padding: 0;
+        }
+    }
+
+    .billBox {
+        margin-top: 30px
+    }
+
+    .prices {
+        margin-top: 20px;
+        margin-bottom: 80px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+        row-gap: 120px;
+
+
+        .boxP {
+            position: relative;
+            /* height: 650px; */
+        }
+
+        .tag {
+            position: absolute;
+            top: -20px;
+            right: 0;
+            padding: 10px 20px;
+            background: white;
+            transform: rotate(5.45deg);
+            color: white;
+            box-shadow: 0px 8px 4px 0px #00000040;
+
+
+            gap: 10px;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border-bottom-left-radius: 30px;
+            padding: 15px;
+
+
+        }
+
+        .planBox {
+            z-index: 5;
+            flex: 1;
+            border-radius: 20px 20px 20px 0;
+            padding: 30px 30px 30px;
+            color: white;
+            background: linear-gradient(-180deg, #113858 22.05%, #0083EE 100%);
+
+            .headerPlan h2 {
+                font-size: 1.2rem;
+            }
+
+            .contentList {
+                margin-top: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+                .priceListBox {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+
+                    .pDot {
+                        height: 12px;
+                        width: 12px;
+                    }
+
+                    .pContent {
+                        font-size: .8rem;
+                    }
+                }
+            }
+        }
+
+        .groupActionBase {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: absolute;
+            width: fit-content;
+            width: 100%;
+
+            .priceBoxNum {
+                background: #0083EE;
+                padding: 0px 40px 20px 30px;
+                border-radius: 0 0 20px 20px;
+                color: white;
+                position: relative;
+                min-width: 200px;
+                /* width: fit-content; */
+
+                h2 {
+                    font-size: 1.3rem;
+                }
+
+                p {
+                    font-size: .9rem;
+                    margin-top: -10px;
+                }
+            }
+
+            /* Create outward rounded notch using pseudo-element */
+            .notch {
+                z-index: -1;
+                content: '';
+                /* background: var(--accent-foreground); */
+                position: absolute;
+                box-shadow: -12px -12px 0px 10px #0083EE;
+                top: 0px;
+                right: -40px;
+                width: 40px;
+                height: 40px;
+                border-radius: 1000px 0 0 10px;
+                z-index: 1;
+            }
+
+            a {
+                display: block;
+                width: 100%;
+            }
+
+            .priceButton {
+                background: #113858;
+                color: white;
+                width: 100%;
+                flex: 1;
+                text-align: center;
+                padding: 15px 20px;
+
+                width: 220;
+                border-top-left-radius: 35px;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                border-bottom-left-radius: 10px;
+            }
         }
     }
 }
@@ -347,7 +579,7 @@ button {
     align-items: center;
     overflow: hidden;
 
-    img{
+    img {
         width: 115%;
     }
 }
@@ -364,8 +596,8 @@ button {
     }
 }
 
-.coachText{
-    p{
+.coachText {
+    p {
         padding-bottom: 30px;
     }
 }
@@ -413,7 +645,7 @@ button {
             align-items: center;
             justify-content: center;
 
-            h2{
+            h2 {
                 color: white;
             }
         }
@@ -461,7 +693,8 @@ button {
     padding: 10px;
     resize: none;
 }
-.textInput{
+
+.textInput {
     padding: 10px;
     margin-bottom: 20px;
     width: 100%;
@@ -508,9 +741,7 @@ button {
     display: none;
 }
 
-
-
-.billScreen{
+.billScreen {
     position: fixed;
     top: 0;
     left: 0;
@@ -525,6 +756,21 @@ button {
 
 
 @media screen and (max-width: 600px) {
+    .topWrapContent {
+        .prices {
+            margin-top: 20px;
+            margin-bottom: 80px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            row-gap: 120px;
+        }
+    }
+
+    .topWrapSec {
+        display: block;
+    }
+
     .coachInfo {
         width: 100%;
         padding: 0;
@@ -549,7 +795,7 @@ button {
     .textAreaReview {
         height: 160px;
     }
-    
+
 
     .borderWrap {
         display: flex;
@@ -561,12 +807,14 @@ button {
         padding: 55px 0;
         gap: 30px;
     }
-    .coachText{
-        p{
+
+    .coachText {
+        p {
             padding-bottom: 10px;
         }
     }
-    .commentList{
+
+    .commentList {
         margin-top: 10px;
     }
 
