@@ -23,7 +23,7 @@ const signUser = new Elysia()
 
             // Sign the JWT token
             const token = await userJwt.sign({
-                userId: userData._id.toString(),
+                userId: (userData._id as { toString: () => string }).toString(),
                 email: userData.email,
             });
 
@@ -32,7 +32,7 @@ const signUser = new Elysia()
 
             // Send email notification
             mailConfig(
-                user?.email, // Send to user's email
+                (user?.email ?? ""), // Send to user's email, fallback to empty string if undefined
                 "Login Alert for Your Account", // Subject of the email
                 generateAtpEmail({
                     title: "Account Login Notification",
@@ -62,7 +62,7 @@ const signUser = new Elysia()
             set.status = 500;
             return {
                 message: "Error while validating",
-                error: err.message, // Optional: include error message for debugging
+                error: err instanceof Error ? err.message : String(err), // Optional: include error message for debugging
             };
         }
     }, {
@@ -82,7 +82,7 @@ const signUser = new Elysia()
 
             if (!decoded) {
                 set.status = 401; // Unauthorized
-                
+
                 return {
                     isValid: false,
                     message: "Invalid or expired token",
@@ -91,9 +91,9 @@ const signUser = new Elysia()
 
             const isUser = await User.findById(decoded.userId)
 
-            if(!isUser){
+            if (!isUser) {
                 set.status = 401; // Unauthorized
-                
+
                 return {
                     isValid: false,
                     message: "Invalid or expired token",

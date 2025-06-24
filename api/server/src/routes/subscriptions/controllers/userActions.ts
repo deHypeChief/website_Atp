@@ -1,19 +1,18 @@
 import Elysia from "elysia";
 import { paystack } from "../../../middleware/paystack";
-import { BillingConfig } from "./billingContent";
-import { isUser_Authenticated } from "../../../middleware/isUserAuth";
-import Billing from "../model";
-import Notify from "../../notifications/model";
-import { billingSchema } from "../setup";
 import { sendMail } from "../../../middleware/sendMail";
+import { isUser_Authenticated } from "../../../middleware/isUserAuth";
+import BillingConfig from "./billingContent";
+import { Subscription } from "../model";
+import Notify from "../../notifications/model";
 
-const userAction = new Elysia()
+const subscriptions = new Elysia()
     .use(paystack)
     .use(sendMail)
     .use(isUser_Authenticated)
     .get("/pay/me", async ({ set, user }) => {
         try {
-            const billing = await Billing.findOne({ user: user._id });
+            const billing = await Subscription.findOne({ user: user._id });
 
             if (!billing) {
                 set.status = 400;
@@ -46,37 +45,9 @@ const userAction = new Elysia()
             return { message: "Error getting payment info" };
         }
     })
-    .post("/pay/registration", async ({ paystack_Transaction, set, user }) => {
+    .post("/pay/membership/:type/:autoRenew", async ({ paystack_Transaction, set, user, params: { type, autoRenew } }) => {
         try {
-            const billing = await Billing.findOne({ user: user._id });
-
-            if (!billing) {
-                set.status = 400;
-                return {
-                    message: 'User Billing not found',
-                };
-            }
-
-            const paystackResponse = await paystack_Transaction({
-                reference: `${user.username}-registration-${Date.now()}`,
-                amount: (BillingConfig.registration.price * 100).toString(),
-                currency: "NGN",
-                callback_url: `${process.env.ACTIVE_ORIGIN}/u/bills/registration/none/none`,
-                // callback_url: `${process.env.ACTIVE_ORIGIN}/u/bills/registration`,
-                email: user.email,
-            });
-
-            set.status = 200;
-            return { paystackResponse };
-        } catch (err) {
-            console.error(err);
-            set.status = 500;
-            return { message: "Error during payment processing" };
-        }
-    })
-    .post("/pay/membership/:type", async ({ paystack_Transaction, set, params: { type }, user }) => {
-        try {
-            const billing = await Billing.findOne({ user: user._id });
+            const billing = await Subscription.findOne({ user: user._id });
 
             if (!billing) {
                 set.status = 400;
@@ -86,7 +57,7 @@ const userAction = new Elysia()
             }
 
             // Validate membership type
-            const membershipTypes = ['monthly', 'quarterly', 'biAnnually', 'yearly'];
+            const membershipTypes = ['monthly', 'quarterly', 'yearly'];
             if (!membershipTypes.includes(type)) {
                 set.status = 400;
                 return {
@@ -94,13 +65,14 @@ const userAction = new Elysia()
                 };
             }
 
-            const membershipConfig = BillingConfig.dues[type as 'monthly' | 'quarterly' | 'biAnnually' | 'yearly'];
+            const membershipConfig = BillingConfig.dues[type as 'monthly' | 'quarterly' | 'yearly'];
+
 
             const paystackResponse = await paystack_Transaction({
                 reference: `${user.username}-membership-${type}-${Date.now()}`,
                 amount: (membershipConfig.price * 100).toString(),
                 currency: "NGN",
-                callback_url: `${process.env.ACTIVE_ORIGIN}/u/bills/membership/${type}/${membershipConfig.duration}`,
+                callback_url: `${process.env.ACTIVE_ORIGIN}/u/bills/membership/${type}/${membershipConfig.duration}/${autoRenew}`,
                 email: user.email,
             });
 
@@ -109,12 +81,12 @@ const userAction = new Elysia()
         } catch (err) {
             console.error(err);
             set.status = 500;
-            return { message: "Error during payment processing" };
+            return { message: "Error creating membership subscription" };
         }
     })
-    .post("/pay/training/:type/:duration", async ({ paystack_Transaction, user, set, params: { type, duration } }) => {
+    .post("/pay/training/:type/:duration", async ({ paystack_Transaction, set, user, params: { type, duration } }) => {
         try {
-            const billing = await Billing.findOne({ user: user._id });
+            const billing = await Subscription.findOne({ user: user._id });
 
             if (!billing) {
                 set.status = 400;
@@ -150,10 +122,11 @@ const userAction = new Elysia()
 
             // Calculate price with member discount if applicable
             const basePrice = selectedPlan.price;
-            const finalPrice = billing.isMember
-                ? basePrice - (basePrice * (billing.bills.membershipBill.discount / 100))
+            const finalPrice = billing.membership.status === "Paid"
+                ? basePrice * (1 - trainingConfig.discount / 100)
                 : basePrice;
 
+            // generate a unique reference for the transaction
             const paystackResponse = await paystack_Transaction({
                 reference: `${user.username}-training-${type}-${duration}-${Date.now()}`,
                 amount: (finalPrice * 100).toString(),
@@ -167,17 +140,17 @@ const userAction = new Elysia()
         } catch (err) {
             console.error(err);
             set.status = 500;
-            return { message: "Error during payment processing" };
+            return { message: "Error creating training subscription" };
         }
     })
-    .get("/pay/callback/:type/:subType/:duration", async ({
+    .get("/pay/callback/:type/:subType/:duration/:autoRenew", async ({
         paystack_VerifyTransaction,
         mailConfig,
         generateAtpEmail,
         set,
         user,
         query,
-        params: { type, subType, duration }
+        params: { type, subType, duration, autoRenew }
     }) => {
         try {
 
@@ -186,16 +159,6 @@ const userAction = new Elysia()
                 return { message: "Transaction reference is missing" };
             }
 
-            // // Check if this transaction was already processed
-            // const existingTransaction = getBilling.billingHistory.find(
-            //     history => history.transactionRef === query.tx_ref
-            // );
-
-            // if (existingTransaction) {
-            //     set.status = 400;
-            //     return { message: "Transaction has already been processed" };
-            // }
-
             const paystackResponse = await paystack_VerifyTransaction(query.tx_ref);
 
             if (!paystackResponse.status) {
@@ -203,10 +166,24 @@ const userAction = new Elysia()
                 return { message: "Payment transaction error" };
             }
 
-            
+            const billing = await Subscription.findOne({ user: user._id });
+            if (!billing) {
+                set.status = 400;
+                return { message: "User Billing not found" };
+            }
+
+            // Update auto renwal information based on type
+            if (type === "membership") {
+                billing.membership.autoRenew = autoRenew === "true";
+            }
+            await billing.save();
 
             set.status = 200;
-            return { message: "Payment Successful" };
+            return {
+                message: "Payment Successful",
+                billing,
+                autoRenew
+            };
         } catch (err) {
             console.error("Error checking payment status:", err);
 
@@ -216,11 +193,16 @@ const userAction = new Elysia()
                 title: "Payment Processing Error",
                 message: "We encountered an issue processing your payment. Please contact support for assistance.",
                 type: "error"
-            }).catch(notifyErr => console.error("Failed to create error notification:", notifyErr));
+            })
+                .catch(notifyErr =>
+                    console.error("Failed to create error notification:",
+                        notifyErr
+                    ));
 
             set.status = 500;
             return { message: "Error during payment validation check" };
         }
     });
 
-export default userAction;
+
+export default subscriptions 

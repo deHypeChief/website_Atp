@@ -5,13 +5,13 @@ import "../../libs/styles/userLayout.css"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../libs/hooks/use-auth"
 import { useQuery } from "@tanstack/react-query"
-import { getMatches, getMe, getPayMe } from "../../libs/api/api.endpoints";
+import { getMe, getPayMe } from "../../libs/api/api.endpoints";
 
 
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import { Icon } from "@iconify/react/dist/iconify.js";
-
+import badge from "/shield.svg"
 
 dayjs.extend(relativeTime);
 
@@ -37,15 +37,15 @@ export default function DashboardLayout() {
             async function moreFn() {
                 const payload = {
                     user: await getMe(),
-                    matches: await getMatches(),
                     billing: await getPayMe(),
-                    leaderboard: []
                 }
                 console.log(payload);
                 return payload
             }
             return moreFn()
         },
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
         queryKey: ["moreData"]
     })
 
@@ -81,14 +81,19 @@ export default function DashboardLayout() {
                     </div>
                 </div>
                 <div className="upUserInfo">
-                    <div className="badge"
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginRight: "15px"
-                        }}>
-                        {/* <img src={badge} alt="" /> */}
-                    </div>
+                    {
+                        data?.billing.data.membership.plan === "none" ? <></> : (
+                            <div className="badge"
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    marginRight: "10px"
+                                }}>
+                                <img src={badge} alt="" />
+                            </div>
+                        )
+                    }
+
                     <div className="userRound">
                         {
                             data?.user?.picture ? (
@@ -97,7 +102,11 @@ export default function DashboardLayout() {
                         }
                     </div>
                     <div className="membershipPill">
-                        <p style={{ textTransform: "capitalize" }}>{`${data?.billing?.data.bills?.trainingBill?.trainingType || " No"} Traning Plan`}</p>
+                        <p style={{ textTransform: "capitalize" }}>
+                            {data?.billing?.data?.training?.plan && data.billing.data.training.plan !== "none"
+                                ? `${data.billing.data.training.plan} Training Plan`
+                                : "No Training Plan"}
+                        </p>
                     </div>
                 </div>
 

@@ -1,178 +1,176 @@
 import Elysia from "elysia";
 import { sendMail } from "../../middleware/sendMail";
 import dayjs from "dayjs";
-import User from "../user/model";
 import Notify from "../notifications/model";
-import Billing from "../billings/model";
-import mongoose from "mongoose";
+import { Subscription } from "../subscriptions/model";
+import { paystack } from "../../middleware/paystack";
+import BillingConfig from "../subscriptions/controllers/billingContent";
+import CoachAssignment from "../coachAssigments/model";
 
-
-const jobs = new Elysia()
+export const jobs = new Elysia()
     .use(sendMail)
-    .post("/removeExpiredMemberships", async ({ set, mailConfig, generateAtpEmail }) => {
+    .use(paystack)
+    .post("/handleSubscribtions", async ({ set, mailConfig, generateAtpEmail, paystack_Transaction_Subscriptions }) => {
         try {
-            const today = new Date();
+            const today = dayjs();
 
-            // Find all records with expired membership bills (renewAt date has passed)
-            const expiredMemberships = await Billing.find({
-                'bills.membershipBill.status': { $ne: "Expired" },
-                'bills.membershipBill.renewAt': { $lt: today }
-            });
+            const subscriptions = await Subscription.find({
+                $or: [
+                    {
+                        "membership.status": "Paid",
+                        "membership.endDate": { $lt: today.toDate() }
+                    },
+                    {
+                        "training.status": "Paid",
+                        "training.endDate": { $lt: today.toDate() }
+                    }
+                ]
+            }).populate("user");
 
-            // Handle expired memberships based on grace period
-            for (const billing of expiredMemberships) {
-                const user = await mongoose.model('User').findById(billing.user);
+            for (const sub of subscriptions) {
+                const user = sub.user as any;
 
-                if (!user) continue;
+                // Handle Membership Expiry
+                if (
+                    sub.membership.status === "Paid" &&
+                    sub.membership.endDate &&
+                    dayjs(sub.membership.endDate).isBefore(today)
+                ) {
+                    if (sub.membership.autoRenew) {
+                        try {
+                            const validPlans = ["monthly", "quarterly", "yearly"] as const;
+                            type PlanType = typeof validPlans[number];
+                            const plan = validPlans.includes(sub.membership.plan as PlanType) ? sub.membership.plan as PlanType : "monthly";
+                            const price = BillingConfig.dues[plan]?.price || 0;
 
-                // Check if within grace period or grace period has passed
-                const graceExpired = billing.bills.membershipBill.gracePeriod < today;
+                            const chargeResult = await paystack_Transaction_Subscriptions({
+                                amount: String(price * 100), // kobo
+                                email: user.email,
+                                authorization_code: sub.cardAuthToken
+                            });
 
-                if (graceExpired) {
-                    // Grace period has passed - mark as expired
-                    await Billing.findByIdAndUpdate(billing._id, {
-                        isMember: false,
-                        'bills.membershipBill.status': "Expired",
-                        'bills.membershipBill.discount': 0
-                    });
+                            if (chargeResult.status && chargeResult.data.status === "success") {
+                                sub.paymentHistory.push({
+                                    type: "membership",
+                                    date: today.toDate(),
+                                    amount: price,
+                                    status: "paid",
+                                    transactionRef: chargeResult.data.reference
+                                });
 
-                    // Send expiration notification
-                    await Notify.create({
-                        userID: user._id,
-                        title: "Membership Expired",
-                        message: `Hi ${user.fullName}, your membership has now expired. You'll need to renew to continue enjoying our services and benefits.`,
-                        type: "warning"
-                    });
+                                sub.membership.endDate = dayjs(today).add(
+                                    BillingConfig.dues[plan]?.duration || 1,
+                                    "month"
+                                ).toDate();
 
-                    mailConfig(
-                        user.email,
-                        "ATP membership expired",
-                        generateAtpEmail({
+                                await Notify.create({
+                                    user: user._id,
+                                    title: "Membership Auto-Renewed",
+                                    message: `Your membership plan (${sub.membership.plan}) has been auto-renewed successfully.`,
+                                });
+
+
+                                mailConfig(
+                                    (user?.email ?? ""), // Send to user's email, fallback to empty string if undefined
+                                    "Membership Renewed",
+                                    generateAtpEmail({
+                                        title: "Membership Renewed",
+                                        content: `<p>Hello ${user.fullName},</p><p>Your membership has been auto-renewed. Your next billing date is ${dayjs(sub.membership.endDate).format("DD MMM YYYY")}.</p>`
+                                    })
+                                )
+                            } else {
+                                sub.membership.status = "Expired";
+                                sub.membership.plan = "none";
+
+                                sub.paymentHistory.push({
+                                    type: "membership",
+                                    date: today.toDate(),
+                                    amount: price,
+                                    status: "failed",
+                                    transactionRef: chargeResult.data?.reference || `AUTOFAIL-${Date.now()}`
+                                });
+
+                                await Notify.create({
+                                    user: user._id,
+                                    title: "Auto-Renewal Failed",
+                                    message: `We couldn't auto-renew your membership. Please update your billing info.`,
+                                });
+
+
+                                mailConfig(
+                                    (user?.email ?? ""), // Send to user's email, fallback to empty string if undefined
+                                    "Membership Renewal Failed",
+                                    generateAtpEmail({
+                                        title: "Membership Renewal Failed",
+                                        content: `<p>Hello ${user.fullName},</p><p>Your membership auto-renewal failed. Kindly update your payment method to avoid interruptions.</p>`
+                                    })
+                                )
+                            }
+                        } catch (err) {
+                            console.error("Auto-renewal failed:", err);
+                        }
+                    } else {
+                        sub.membership.status = "Expired";
+                        sub.membership.plan = "none";
+
+                        await Notify.create({
+                            user: user._id,
                             title: "Membership Expired",
-                            content: `
-                                <p>Hi ${user.fullName},</p>
-                                <p>Your membership plan <strong>${user.membership}</strong> has now expired and the grace period has ended.</p>
-                                <p>To regain access to our services, please visit your profile to renew your plan.</p>
-                                <p>Thank you!</p>
-                            `
-                        })
-                    );
-                } else {
-                    // Within grace period - send grace period notification
-                    // Only send if status is not already "Grace Period" to avoid duplicate notifications
-                    if (billing.bills.membershipBill.status !== "Grace Period") {
-                        await Billing.findByIdAndUpdate(billing._id, {
-                            'bills.membershipBill.status': "Grace Period"
+                            message: `Your membership has expired. Please renew to continue.`,
                         });
 
-                        await Notify.create({
-                            userID: user._id,
-                            title: "Membership Renewal",
-                            message: `Hi ${user.fullName}, your membership has ended! Renew now to keep enjoying all the benefits and stay on track. We'd love to have you back! 🚀`,
-                            type: "info"
-                        });
 
                         mailConfig(
-                            user.email,
-                            "ATP membership renewal",
+                            (user?.email ?? ""), // Send to user's email, fallback to empty string if undefined
+                            "Membership Expired",
                             generateAtpEmail({
-                                title: "Membership Update",
-                                content: `
-                                    <p>Hi ${user.fullName},</p>
-                                    <p>Your membership plan <strong>${user.membership}</strong> has expired!</p>
-                                    <p>You have a grace period of 7 days to renew. Don't miss out on the benefits! Please visit your profile to renew your plan.</p>
-                                    <p>Thank you!</p>
-                                `
+                                title: "Membership Expired",
+                                content: `<p>Hello ${user.fullName},</p><p>Your membership has expired. Kindly renew to continue enjoying our services.</p>`
                             })
-                        );
+                        )
                     }
                 }
-            }
 
-            // Handle expired training bills
-            const expiredTrainings = await Billing.find({
-                'bills.trainingBill.status': { $ne: "Expired" },
-                'bills.trainingBill.renewAt': { $lt: today }
-            });
+                // Handle Training Expiry
+                if (
+                    sub.training.status === "Paid" &&
+                    sub.training.endDate &&
+                    dayjs(sub.training.endDate).isBefore(today)
+                ) {
+                    sub.training.status = "Expired";
+                    sub.training.plan = "none";
 
-            for (const billing of expiredTrainings) {
-                const user = await mongoose.model('User').findById(billing.user);
+                    // Unassign any coach linked to the user
+                    await CoachAssignment.deleteMany({ playerId: user._id });
 
-                if (!user) continue;
-
-                // Check if within grace period or grace period has passed
-                const graceExpired = (billing.bills.trainingBill?.gracePeriod ?? new Date(0)) < today;
-
-                if (graceExpired) {
-                    // Grace period has passed - mark as expired
-                    await Billing.findByIdAndUpdate(billing._id, {
-                        'bills.trainingBill.status': "Expired"
-                    });
-
-                    // Send expiration notification
                     await Notify.create({
-                        userID: user._id,
-                        title: "Training Subscription Expired",
-                        message: `Hi ${user.fullName}, your training subscription has now expired. You'll need to renew to continue accessing training resources.`,
-                        type: "warning"
+                        user: user._id,
+                        title: "Training Plan Expired",
+                        message: `Your training plan has expired. Your coach has been unassigned.`,
                     });
 
                     mailConfig(
-                        user.email,
-                        "ATP training subscription expired",
+                        (user?.email ?? ""), // Send to user's email, fallback to empty string if undefined
+                        "Training Expired",
                         generateAtpEmail({
-                            title: "Training Subscription Expired",
-                            content: `
-                                <p>Hi ${user.fullName},</p>
-                                <p>Your training subscription for <strong>${billing.bills.trainingBill?.trainingType ?? 'Unknown'}</strong> has now expired and the grace period has ended.</p>
-                                <p>To regain access to our training resources, please visit your profile to renew your subscription.</p>
-                                <p>Thank you!</p>
-                            `
+                            title: "Training Plan Expired",
+                            content: `<p>Hello ${user.fullName},</p><p>Your training plan has expired and your coach has been unassigned. Kindly renew to continue your training sessions.</p>`
                         })
-                    );
-                } else {
-                    // Within grace period - send grace period notification
-                    // Only send if status is not already "Grace Period" to avoid duplicate notifications
-                    if (billing.bills.trainingBill?.status !== "Grace Period") {
-                        await Billing.findByIdAndUpdate(billing._id, {
-                            'bills.trainingBill.status': "Grace Period"
-                        });
-
-                        await Notify.create({
-                            userID: user._id,
-                            title: "Training Subscription Renewal",
-                            message: `Hi ${user.fullName}, your training subscription has ended! Renew now to keep accessing all training resources. You have a 7-day grace period.`,
-                            type: "info"
-                        });
-
-                        mailConfig(
-                            user.email,
-                            "ATP training subscription renewal",
-                            generateAtpEmail({
-                                title: "Training Subscription Update",
-                                content: `
-                                    <p>Hi ${user.fullName},</p>
-                                    <p>Your training subscription for <strong>${billing.bills.trainingBill?.trainingType ?? 'Unknown'}</strong> has expired!</p>
-                                    <p>You have a grace period of 7 days to renew. Don't miss out on the benefits! Please visit your profile to renew your subscription.</p>
-                                    <p>Thank you!</p>
-                                `
-                            })
-                        );
-                    }
+                    )
                 }
+
+                await sub.save();
             }
 
-            set.status = 200;
-            return {
-                message: "Expired memberships and trainings processed successfully",
-                membershipCount: expiredMemberships.length,
-                trainingCount: expiredTrainings.length
-            };
-
+            return { message: "Subscription checks completed successfully" };
         } catch (err: Error | unknown) {
             set.status = 500;
-            return { message: "Error while processing expired memberships", error: err instanceof Error ? err.message : 'Unknown error' };
+            return {
+                message: "Error while processing expired subscriptions",
+                error: err instanceof Error ? err.message : "Unknown error"
+            };
         }
     });
 
-export default jobs
+    
+export default jobs;

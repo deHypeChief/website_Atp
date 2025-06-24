@@ -40,6 +40,7 @@ export default function Home() {
             title: "Free Plan",
             priceNGN: 0,
             priceUSD: 0,
+            duration: "",
             extra: "",
             content: [
                 "Access to Dashboard",
@@ -59,6 +60,7 @@ export default function Home() {
             extra: "",
             priceNGN: 6000,
             priceUSD: 5,
+            duration: "monthly",
             content: [
                 "Access to Dashboard",
                 "Access to ATP Tournaments Page",
@@ -77,6 +79,7 @@ export default function Home() {
             extra: "Save N25 if when you join",
             priceNGN: 17000,
             priceUSD: 10,
+            duration: "quarterly",
             content: [
                 "Access to Dashboard",
                 "Access to ATP Tournaments Page",
@@ -95,6 +98,7 @@ export default function Home() {
             extra: "Save N25 if when you join",
             priceNGN: 70000,
             priceUSD: 50,
+            duration: "yearly",
             content: [
                 "Access to Dashboard",
                 "Access to ATP Tournaments Page",
@@ -166,7 +170,7 @@ export default function Home() {
                             toruOuery.data.map((item, index) => {
                                 return (
                                     index < 3 ? (
-                                        <Card payload={item} key={"1"+item} />
+                                        <Card payload={item} key={"1" + item} />
                                     ) : null
                                 )
                             })
@@ -200,6 +204,7 @@ export default function Home() {
                 <div className="prices">
                     {
                         plans.map((item, index) => {
+                            console.log(item)
                             return (
                                 <div className="boxP" key={item.title}>
                                     {
@@ -286,7 +291,15 @@ export default function Home() {
                                             <p>per month</p>
                                         </div>
 
-                                        <Link to={`/signup?pl="${item.title.split(" ").join("-")}"`}>
+                                        <Link to={`/signup?pl="${item.title.split(" ").join("-")}"&pay=${JSON.stringify(
+                                            {
+                                                type: "Membership Package",
+                                                plan: item.title,
+                                                price: item.priceNGN,
+                                                duration: item.duration,
+                                                key: item.duration,
+                                            }
+                                        )}`}>
                                             <div className="priceButton">
                                                 <p>{index <= 0 ? "Join for Free " : "Subscribe"}</p>
                                             </div>

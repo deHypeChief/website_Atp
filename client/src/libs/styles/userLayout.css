@@ -154,9 +154,17 @@
                         .bcont {
                             flex: 1;
 
+                            .bp,
+                            p {
+                                font-size: .9rem;
+                            }
+
                             .bName {
                                 margin-bottom: 10px;
+                                font-size: 1rem;
                             }
+
+
                         }
                     }
 
@@ -818,7 +826,7 @@
                 p {
                     font-size: .9rem;
                     opacity: .6;
-                    
+
                 }
 
                 .auto {
@@ -960,7 +968,7 @@
     }
 
     .dashboardSection {
-        margin: 20px 20px 0;
+        margin: 20px 5px 0;
         /* background: pink; */
         height: 85vh;
         display: flex;
@@ -1090,7 +1098,7 @@
 
     .planList {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr;
         flex-direction: column;
         gap: 20px;
 

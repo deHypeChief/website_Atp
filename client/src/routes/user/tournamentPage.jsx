@@ -11,18 +11,22 @@ export default function Tournaments() {
     const [alert, setAlert] = useState(false)
     const matchMutation = useQuery({
         queryKey: ["match"],
-        queryFn: () => getMatches()
+        queryFn: () => getMatches(),
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
     })
     const tour = useQuery({
         queryKey: ["tour"],
-        queryFn: () => getTour()
+        queryFn: () => getTour(),
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
     })
     const user = useQuery({
         queryKey: ["user"],
-        queryFn: () => getMe()
+        queryFn: () => getMe(),
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
     })
-
-    console.log(tour.data)
 
     return (
         <>

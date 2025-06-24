@@ -93,7 +93,9 @@ const YourCoach = ({ actions }) => {
     ]);
     const user = useQuery({
         queryKey: ["user"],
-        queryFn: () => getMe()
+        queryFn: () => getMe(),
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
     })
 
     const handleSubmitReview = (newReview) => {

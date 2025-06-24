@@ -6,7 +6,7 @@ import "../../libs/styles/dashboard.css";
 import raIcon3 from "../../libs/images/Vector.svg";
 
 import { useQuery } from "@tanstack/react-query";
-import { getMatches, getTour } from "../../libs/api/api.endpoints";
+import { getMatches, getMe, getPayMe, getTour } from "../../libs/api/api.endpoints";
 import { useEffect, useRef, useState } from "react";
 // import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import dayjs from 'dayjs';
@@ -16,7 +16,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Chart from 'chart.js/auto'
 import iconBox from "/Icon.svg"
 import trend from "/ic-trending-up-24px.png"
-import { BillingSummary } from "./billingPage";
+import { BillingSummary } from "./billingSuport";
 
 dayjs.extend(relativeTime);
 
@@ -33,8 +33,14 @@ export default function Dashboard() {
 
 
     useEffect(() => {
-        console.log(openPayment)
-    }, [openPayment])
+        const queryParams = new URLSearchParams(location.search);
+        const payParam = queryParams.get('pay');
+
+        if (payParam) {
+            setOpenPayment(JSON.parse(payParam));
+        }
+    }, []);
+
 
     const matchMutation = useQuery({
         queryKey: ["match"],
@@ -57,9 +63,23 @@ function YourOverview({ matchMutation, user }) {
     const sliderRef = useRef(null);
 
     const { data } = useQuery({
-        queryKey: ["tourData"],
-        queryFn: () => getTour(),
-    });
+        queryFn: () => {
+            async function moreFn() {
+                const payload = {
+                    user: await getMe(),
+                    billing: await getPayMe(),
+                    tour: await getTour()
+                }
+                console.log(payload);
+                return payload
+            }
+            return moreFn()
+        },
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
+        queryKey: ["moreDataDash"]
+    })
+
 
     useEffect(() => {
         sliderRef.current.style.gridTemplateColumns = `repeat(${data?.length}, 100%)`
@@ -136,32 +156,69 @@ function YourOverview({ matchMutation, user }) {
                     </div>
                 </div>
 
-                <div className="firste ebound eSplit ">
-                    <div className="bcontent">
-                        <div className="bcont">
-                            <p className="bName">View Training Plans</p>
-                            <h2>You have 15% discount</h2>
-                        </div>
-                    </div>
-                    <div className="boundBase">
-                        <p>You are currently on the couples plan</p>
-                    </div>
-                </div>
 
-                <div className="firste ebound eSplit ">
-                    <div className="bcontent">
-                        <div className="bcont">
-                            <p className="bName">Join the Premium ATP Community</p>
-                            <p>Click the link below to join the premium WhatsApp group</p>
-                        </div>
-                    </div>
-                    <div className="boundBase">
-                        <Button full>
-                            <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
-                            <p>Join Whatsapp</p>
-                        </Button>
-                    </div>
-                </div>
+
+                {
+                    data?.billing.data.membership.plan === "none" ? (
+                        <>
+                            <div className="firste ebound eSplit ">
+                                <div className="bcontent">
+                                    <div className="bcont">
+                                        <p className="bName">Your Membership</p>
+                                        <h2>Free</h2>
+                                    </div>
+                                </div>
+                                <div className="boundBase">
+                                    <p>Upgrade to get training discount</p>
+                                </div>
+                            </div>
+
+                            <div className="firste ebound eSplit ">
+                                <div className="bcontent">
+                                    <div className="bcont">
+                                        <p className="bName">Join the Free ATP Community</p>
+                                        <p>Click the link below to join the free WhatsApp group</p>
+                                    </div>
+                                </div>
+                                <div className="boundBase">
+                                    <Button full>
+                                        <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
+                                        <p>Join Whatsapp</p>
+                                    </Button>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="firste ebound eSplit ">
+                                <div className="bcontent">
+                                    <div className="bcont">
+                                        <p className="bName">Your Membership</p>
+                                        <h2>{data?.billing.data.membership.plan} Plan</h2>
+                                    </div>
+                                </div>
+                                <div className="boundBase">
+                                    <p>Get 15% discount on your next training plan</p>
+                                </div>
+                            </div>
+                            <div className="firste ebound eSplit ">
+
+                                <div className="bcontent">
+                                    <div className="bcont">
+                                        <p className="bName">Join the Premium ATP Community</p>
+                                        <p className="bp">Click the link below to join the premium WhatsApp group</p>
+                                    </div>
+                                </div>
+                                <div className="boundBase">
+                                    <Button full>
+                                        <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
+                                        <p>Join Whatsapp</p>
+                                    </Button>
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
             </div>
 
             <div className="overviewGroup">
@@ -198,7 +255,7 @@ function YourOverview({ matchMutation, user }) {
                         <div className="cardBoxup" ref={sliderRef}>
 
                             {
-                                data?.map((item, index) => (
+                                data?.tour.map((item, index) => (
                                     <div key={"m" + index} className="upCard">
                                         <div className="bigTextUp">
                                             <h1 className="ipText">
@@ -229,3 +286,5 @@ function YourOverview({ matchMutation, user }) {
         </div>
     )
 }
+
+

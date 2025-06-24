@@ -52,7 +52,7 @@ export default function App() {
                         <Route path="/u/coach" element={<YourCoach />} />
                         <Route path="/u/tickets" element={<Tickets />} />
                         <Route path="/u/ticket/:tournamentID" element={<YourTicket />} />
-                        <Route path="/u/bills/:type/:subType/:duration" element={<Billing />} />
+                        <Route path="/u/bills/:type/:subType/:duration/:autoRenew" element={<Billing />} />
                     </Route>
                 </Routes>
                 <Footer />

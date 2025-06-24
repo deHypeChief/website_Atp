@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -37,29 +36,20 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DataTablePagination } from "../components/pageination"
 import { useState } from "react"
 import "../../style/tables.css"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
 import {
     Select,
     SelectContent,
@@ -68,14 +58,9 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import api from "@/lib/axios"
-import axios from "axios"
-import { useMutation } from "@tanstack/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -116,35 +101,22 @@ export function CoachTable<TData, TValue>({
         },
     })
 
-    // Zod Schema for Validation
-    // const FormSchema = z.object({
-    //     name: z.string().min(5, {
-    //         message: "Tour title must be at least 5 characters.",
-    //     }),
-    //     category: z.string({
-    //         required_error: "Add a category ",
-    //     }),
-    //     location: z.string({
-    //         required_error: "Add a location",
-    //     }),
-    //     price: z.string({
-    //         required_error: "Add a price",
-    //     }),
-    //     date: z.date({
-    //         required_error: "Add a date",
-    //     }),
-    // });
+    const FormSchema = z.object({
+        player: z.string().min(5, { message: "Please selete a player" }),
+        coach: z.string().min(5, { message: "Please selete a coach" })
+    });
 
-    // const form = useForm<z.infer<typeof FormSchema>>({
-    //     resolver: zodResolver(FormSchema),
-    //     defaultValues: {
-    //         name: "",
-    //         category: "",
-    //         date: new Date(), // Correctly set default as Date object
-    //         location: "",
-    //         price: ""
-    //     },
-    // });
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            player: "",
+            coach: ""
+        },
+    });
+
+    function submitForm(data: z.infer<typeof FormSchema>) {
+        console.log("Form Submitted", data);
+    }
 
 
     return (
@@ -155,15 +127,79 @@ export function CoachTable<TData, TValue>({
                 <Input
                     placeholder="Filter name..."
                     value={(table.getColumn("coachName")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>{
+                    onChange={(event) => {
                         console.log(table.getColumn("coachName"))
-                        table.getColumn("coachName")?.setFilterValue(event.target.value)}
+                        table.getColumn("coachName")?.setFilterValue(event.target.value)
+                    }
                     }
                     className="max-w-sm"
                 />
 
                 {/* Right Actions */}
                 <div className="rightAction">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="default">
+                                Assign Coaches
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[375px]">
+                            <DialogHeader>
+                                <DialogTitle>Link Players to their coaches</DialogTitle>
+                                <DialogDescription>
+                                    Players on a training plan will be shown here.
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            <Form {...form}>
+                                <form className="space-y-4" onSubmit={form.handleSubmit(submitForm)}>
+                                    <FormField
+                                        control={form.control}
+                                        name="player"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a Player" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="playerOneId">Player One</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="coach"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a Coach" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="coachOneID">Coach One</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <DialogFooter>
+                                        <Button type="submit">Assign</Button>
+                                    </DialogFooter>
+                                </form>
+                            </Form>
+
+                        </DialogContent>
+                    </Dialog>
+
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="ml-auto">

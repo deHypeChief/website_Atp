@@ -89,6 +89,7 @@ button {
     display: flex;
     flex-direction: column;
     gap: 30px;
+
     .ebound {
         /* background: white; */
         padding: 40px 50px;
@@ -101,7 +102,7 @@ button {
             opacity: .6;
         }
 
-        .topVV{
+        .topVV {
             width: 100%;
             display: flex;
             justify-content: space-between;
@@ -132,6 +133,11 @@ button {
 
                     .bName {
                         margin-bottom: 10px;
+                        font-size: 1;
+                    }
+
+                    .bp, p{
+                        font-size: .9rem;
                     }
                 }
             }
@@ -177,7 +183,7 @@ button {
         margin-bottom: 80px;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        gap: 30px;
+        gap: 15px;
         row-gap: 120px;
 
 
@@ -235,7 +241,7 @@ button {
                         width: 12px;
                     }
 
-                    .pContent{
+                    .pContent {
                         font-size: .8rem;
                     }
                 }
@@ -750,6 +756,21 @@ button {
 
 
 @media screen and (max-width: 600px) {
+    .topWrapContent {
+        .prices {
+            margin-top: 20px;
+            margin-bottom: 80px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            row-gap: 120px;
+        }
+    }
+
+    .topWrapSec {
+        display: block;
+    }
+
     .coachInfo {
         width: 100%;
         padding: 0;

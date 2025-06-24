@@ -98,7 +98,7 @@ function Coaches() {
                 message: "Please enter a valid price greater than 0.",
             }),
 		level: z
-			.enum(["kids", "regular", "amateur", "professional"], {
+			.enum(["kids", "regular", "standard", "premium"], {
 				required_error: "The coach level is needed",
 				invalid_type_error: "Please select a valid level",
 			}),

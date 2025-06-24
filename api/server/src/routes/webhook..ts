@@ -4,6 +4,8 @@ import User from "./user/model";
 import Billing from "./billings/model";
 import Notify from "./notifications/model";
 import { sendMail } from "../middleware/sendMail";
+import { Subscription } from "./subscriptions/model";
+import CoachAssignment from "./coachAssigments/model";
 
 const verifySignature = (signature: string, payload: any, secretKey: string): boolean => {
     const hash = crypto.createHmac('sha512', secretKey)
@@ -107,13 +109,14 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
     const { reference, amount, customer } = data;
     const amountInNaira = amount / 100; // Convert kobo to naira
 
+    const user = await User.findOne({ email: customer.email }) as { _id: string; email: string; fullName: string };
+
     try {
         // Parse the reference to determine payment details
         const { paymentType, planType, duration } = parseReference(reference);
         console.log(`Payment: Type=${paymentType}, Plan=${planType}, Duration=${duration} months`);
 
         // Find the user by email
-        const user = await User.findOne({ email: customer.email });
 
         if (!user) {
             console.error(`User not found for email: ${customer.email}`);
@@ -121,74 +124,69 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         }
 
         // Find the billing record
-        const billing = await Billing.findOne({ user: user._id });
+        const billing = await Subscription.findOne({ user: user._id });
 
         if (!billing) {
-            console.error(`Billing record not found for user: ${user._id}`);
+            console.error(`Subscription record not found for user: ${user._id}`);
             return;
         }
 
         let billName = '';
 
         switch (paymentType.toLowerCase()) {
-            case 'registration':
-                // Update registration bill
-                billing.bills.registrationBill.status = 'Paid';
-                billing.bills.registrationBill.date = new Date();
-                billing.bills.registrationBill.amount = amountInNaira;
-                billName = 'Registration Fee';
-                break;
-
             case 'membership':
                 // Update membership bill
-                billing.bills.membershipBill.status = 'Paid';
-                billing.bills.membershipBill.amount = amountInNaira;
-                billing.bills.membershipBill.duration = duration;
-                billing.isMember = true;
+                billing.membership.status = 'Paid';
+                // Map planType string to allowed literal types
+                const allowedPlans = ["monthly", "quarterly", "yearly", "none"] as const;
+                billing.membership.plan = allowedPlans.includes(planType as any) ? planType as typeof allowedPlans[number] : "none";
 
                 // Calculate renewal date based on membership duration
                 const renewalDate = new Date();
                 renewalDate.setMonth(renewalDate.getMonth() + duration);
-                billing.bills.membershipBill.renewAt = renewalDate;
+                billing.membership.endDate = renewalDate;
 
                 // Calculate grace period (7 days after renewal)
                 const gracePeriod = new Date(renewalDate);
                 gracePeriod.setDate(gracePeriod.getDate() + 7);
-                billing.bills.membershipBill.gracePeriod = gracePeriod;
+                billing.membership.gracePeriod = gracePeriod;
 
                 billName = `${planType.charAt(0).toUpperCase() + planType.slice(1)} Membership (${duration} month${duration > 1 ? 's' : ''})`;
                 break;
 
             case 'training':
-                // Update training bill
-                if (!billing.bills.trainingBill) {
-                    // Create training bill if it doesn't exist
-                    billing.bills.trainingBill = {
-                        trainingType: planType.charAt(0).toUpperCase() + planType.slice(1),
-                        status: 'Paid',
-                        duration: duration,
-                        renewAt: new Date(),
-                        amount: amountInNaira,
-                        gracePeriod: new Date()
-                    };
-                } else {
-                    billing.bills.trainingBill.status = 'Paid';
-                    billing.bills.trainingBill.trainingType = planType.charAt(0).toUpperCase() + planType.slice(1);
-                    billing.bills.trainingBill.duration = duration;
-                    billing.bills.trainingBill.amount = amountInNaira;
-                }
+                billing.training.status = 'Paid';
+                const allowedTrainingPlans = ["none", "regular", "standard", "premium", "family", "couples"] as const;
+                billing.training.plan = allowedTrainingPlans.includes(planType as any) ? planType as typeof allowedTrainingPlans[number] : "none";
+
 
                 // Calculate renewal date based on training duration
                 const trainingRenewalDate = new Date();
                 trainingRenewalDate.setMonth(trainingRenewalDate.getMonth() + duration);
-                billing.bills.trainingBill.renewAt = trainingRenewalDate;
+                billing.training.endDate = trainingRenewalDate;
 
                 // Calculate grace period (7 days after renewal)
                 const trainingGracePeriod = new Date(trainingRenewalDate);
                 trainingGracePeriod.setDate(trainingGracePeriod.getDate() + 7);
-                billing.bills.trainingBill.gracePeriod = trainingGracePeriod;
+                billing.training.gracePeriod = trainingGracePeriod;
 
                 billName = `${planType.charAt(0).toUpperCase() + planType.slice(1)} Training (${duration} month${duration > 1 ? 's' : ''})`;
+
+                //create a coach assignment for the user and send a coach assignment notification
+                const coachAssignment = await CoachAssignment.create({
+                    status: "Pending",
+                    playerId: user._id.toString()
+                });
+                if (!coachAssignment) {
+                    console.error(`Failed to create coach assignment for user: ${user._id}`);
+                    return;
+                }
+                await Notify.create({
+                    userID: user._id,
+                    title: "Coach Assignment Pending",
+                    message: "Your training payment was successful. A coach will be assigned to you shortly.",
+                    type: "info"
+                });
                 break;
 
             default:
@@ -197,11 +195,11 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         }
 
         // Add to billing history
-        billing.billingHistory.push({
-            name: billName,
+        billing.paymentHistory.push({
+            type: paymentType,
             date: new Date(),
             amount: amountInNaira,
-            status: 'Paid',
+            status: 'paid',
             transactionRef: reference
         });
 
@@ -235,12 +233,14 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
 
     } catch (error) {
         // Create error notification
-        await Notify.create({
-            userID: user._id,
-            title: "Payment Processing Error",
-            message: "We encountered an issue processing your payment. Please contact support for assistance.",
-            type: "error"
-        }).catch(notifyErr => console.error("Failed to create error notification:", notifyErr));
+        if (user) {
+            await Notify.create({
+                userID: user._id,
+                title: "Payment Processing Error",
+                message: "We encountered an issue processing your payment. Please contact support for assistance.",
+                type: "error"
+            }).catch(notifyErr => console.error("Failed to create error notification:", notifyErr));
+        }
         console.error('Error handling charge.success:', error);
     }
 }
