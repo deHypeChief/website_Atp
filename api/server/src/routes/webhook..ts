@@ -108,6 +108,7 @@ function parseReference(reference: string) {
 async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail: any) {
     const { reference, amount, customer } = data;
     const amountInNaira = amount / 100; // Convert kobo to naira
+    console.log(data)
 
     const user = await User.findOne({ email: customer.email }) as { _id: string; email: string; fullName: string };
 

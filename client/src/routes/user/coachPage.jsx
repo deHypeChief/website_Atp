@@ -116,6 +116,9 @@ const YourCoach = ({ actions }) => {
         console.log("Posting Comment:", newReview);
     };
 
+    console.log(coach?.data)
+    
+    
     // No coach assigned view
     if (coach?.data?.coachInfo.status === "Pending") {
         return (
@@ -133,7 +136,7 @@ const YourCoach = ({ actions }) => {
         );
     }
 
-    if (!user.assignedCoach) {
+    if (coach?.data?.coachInfo.status  !== "Pending" && coach?.data?.coachInfo.status !== "Assigned") {
         return (
             <div className="noContent eWrap">
                 <div className="ebound">
@@ -170,16 +173,16 @@ const YourCoach = ({ actions }) => {
                                 </div>
                             </div>
                             <p>Your Coach,</p>
-                            <h1>David Okoye A.</h1>
-                            <Button onClick={() => setIsReviewModalOpen(true)}>
+                            <h1>{coach?.data.coachInfo.coachId.coachName}</h1>
+                            {/* <Button onClick={() => setIsReviewModalOpen(true)}>
                                 Add a Review
-                            </Button>
+                            </Button> */}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="coContent">
+            {/* <div className="coContent">
                 <div className="header">
                     <h2>Reviews</h2>
                 </div>
@@ -193,7 +196,7 @@ const YourCoach = ({ actions }) => {
                         />
                     ))}
                 </div>
-            </div>
+            </div> */}
         </>
     );
 };

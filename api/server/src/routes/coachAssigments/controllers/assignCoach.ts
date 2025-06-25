@@ -1,11 +1,20 @@
 import Elysia from "elysia";
 import CoachAssignment from "../model";
+import User from "../../user/model";
+import Coach from "../../coach/model";
 
 const assignCaoch = new Elysia()
     .get("/assigncoach/listAssignments", async ({ set }) => {
         try {
             // Fetching all assignments from the database
-            const assignments = await CoachAssignment.find({});
+            const assignments = await CoachAssignment.find({})
+                .populate({
+                    path: "coachId",
+                })
+                .populate({
+                    path: "playerId",
+                    select: "fullName"
+                });
 
             // Returning the assignments to the client
             set.status = 200;
@@ -21,6 +30,20 @@ const assignCaoch = new Elysia()
     })
     .get("/assigncoach/:playerId/:coachId", async ({ set, params: { coachId, playerId } }) => {
         try {
+            console.log(playerId, coachId)
+            const player = await User.findById(playerId)
+            if (!player) {
+                set.status = 400;
+                return { message: "Invalid Player" };
+            }
+
+            const coach = await Coach.findById(coachId)
+            if (!coach) {
+                set.status = 400;
+                return { message: "Invalid Coach" };
+            }
+
+
             // look for existing assignment for registered player
             const existingAssignment = await CoachAssignment.findOne({ playerId, status: "Pending" });
 
@@ -74,4 +97,4 @@ const assignCaoch = new Elysia()
     })
 
 
-    export default assignCaoch
+export default assignCaoch

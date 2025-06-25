@@ -40,7 +40,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import api from '@/lib/axios'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
-import { getCoaches } from '@/apis/endpoints'
+import { getCoaches, getPaidUsers } from '@/apis/endpoints'
 import { useCloudinary } from '@/hooks/use-cloudinary'
 
 export const Route = createFileRoute('/_admin/coaches')({
@@ -58,6 +58,7 @@ function Coaches() {
 		queryFn: getCoaches,
 		queryKey: ["coaches"]
 	})
+	
 	const { mutate, isPending } = useMutation({
 		mutationFn: handleFile,
 		onSuccess: () => {
@@ -87,7 +88,7 @@ function Coaches() {
 			.string()
 			.email({ message: "Please enter a valid email address" })
 			.nonempty({ message: "Add an email" }),
-			bioInfo: z
+		bioInfo: z
 			.string()
 			.min(6, { message: "Profile info should be at least 6 characters" })
 			.max(500, { message: "Profile info should not exceed 500 characters" })
@@ -95,8 +96,8 @@ function Coaches() {
 		price: z
 			.string()
 			.refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-                message: "Please enter a valid price greater than 0.",
-            }),
+				message: "Please enter a valid price greater than 0.",
+			}),
 		level: z
 			.enum(["kids", "regular", "standard", "premium"], {
 				required_error: "The coach level is needed",

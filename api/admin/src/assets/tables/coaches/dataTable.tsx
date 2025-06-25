@@ -47,7 +47,6 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form"
 import {
@@ -61,6 +60,10 @@ import {
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { useToast } from "@/hooks/use-toast"
+import api from "@/lib/axios"
+import { getCoaches, getPaidUsers } from "@/apis/endpoints"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -100,6 +103,9 @@ export function CoachTable<TData, TValue>({
             sorting,
         },
     })
+    const { toast } = useToast()
+    const [open, setOpen] = useState(false);
+
 
     const FormSchema = z.object({
         player: z.string().min(5, { message: "Please selete a player" }),
@@ -114,8 +120,42 @@ export function CoachTable<TData, TValue>({
         },
     });
 
-    function submitForm(data: z.infer<typeof FormSchema>) {
-        console.log("Form Submitted", data);
+    const parringData = useQuery({
+        queryKey: ["pairCoach"],
+        queryFn: async () => {
+            const coaches = await getCoaches();
+            const subUsers = await getPaidUsers();
+            return {
+                coaches,
+                subUsers
+            }
+        },
+    });
+    const assignCoach = useMutation({
+        mutationFn: async ({ player, coach }: { player?: string; coach?: string; }) => {
+            const res = await api.get(`/assigncoach/${player}/${coach}`);
+            console.log(res)
+            return res.data;
+        },
+        onSuccess: () => {
+            toast({
+                variant: "default",
+                title: "Coach paring completed",
+            })
+            setOpen(false);
+        },
+        onError: (err: unknown) => {
+            console.error("Assignment failed:", err);
+            toast({
+                variant: "destructive",
+                title: "Error during Coach Assigment",
+                description: err.response.data.message ? err.response.data.message : err.message,
+            })
+        }
+    });
+
+    function submitForm(data: { player?: string; coach?: string; }) {
+        assignCoach.mutate(data);
     }
 
 
@@ -137,7 +177,7 @@ export function CoachTable<TData, TValue>({
 
                 {/* Right Actions */}
                 <div className="rightAction">
-                    <Dialog>
+                    <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
                             <Button variant="default">
                                 Assign Coaches
@@ -165,7 +205,13 @@ export function CoachTable<TData, TValue>({
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="playerOneId">Player One</SelectItem>
+                                                        {
+                                                            parringData?.data?.subUsers?.payments?.map((item) => {
+                                                                return (
+                                                                    <SelectItem key={item.user._id} value={item.user._id}>{item.user.fullName}</SelectItem>
+                                                                )
+                                                            })
+                                                        }
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />
@@ -184,7 +230,13 @@ export function CoachTable<TData, TValue>({
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="coachOneID">Coach One</SelectItem>
+                                                        {
+                                                            parringData?.data?.coaches?.map((item) => {
+                                                                return (
+                                                                    <SelectItem key={item._id} value={item._id}>{item.coachName}</SelectItem>
+                                                                )
+                                                            })
+                                                        }
                                                     </SelectContent>
                                                 </Select>
                                                 <FormMessage />

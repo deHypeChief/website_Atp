@@ -120,32 +120,32 @@ export default function DashboardLayout() {
                 <div className="sideContent" id="hamSide">
 
                     <div className="sdeTopContent">
-                        <Link to={"/u"}>
+                        <Link to={"/u"} onClick={hamFunction}>
                             <div className={`sideContent_Bttn ${location.pathname === "/u" ? "active" : "sc_BttnClosed"}`}>
                                 <p>Your Overview</p>
                             </div>
                         </Link>
-                        <Link to={"/u/coach"}>
+                        <Link to={"/u/coach"} onClick={hamFunction}>
                             <div className={`sideContent_Bttn ${location.pathname.includes("coach") ? "active" : "sc_BttnClosed"}`}>
                                 <p>Your Coach</p>
                             </div>
                         </Link>
-                        <Link to={"/u/tickets"}>
+                        <Link to={"/u/tickets"} onClick={hamFunction}>
                             <div className={`sideContent_Bttn ${location.pathname.includes("tickets") ? "active" : "sc_BttnClosed"}`}>
                                 <p>Tickets</p>
                             </div>
                         </Link>
-                        <Link to={"/u/tournaments"}>
+                        <Link to={"/u/tournaments"} onClick={hamFunction}>
                             <div className={`sideContent_Bttn ${location.pathname.includes("tournaments") ? "active" : "sc_BttnClosed"}`}>
                                 <p>Tournaments</p>
                             </div>
                         </Link>
-                        <Link to={"/u/notifications"}>
+                        <Link to={"/u/notifications"} onClick={hamFunction}>
                             <div className={`sideContent_Bttn ${location.pathname.includes("notifications") ? "active" : "sc_BttnClosed"}`}>
                                 <p>Notifications</p>
                             </div>
                         </Link>
-                        <Link to={"/u/billings"}>
+                        <Link to={"/u/billings"} onClick={hamFunction}>
                             <div className={`sideContent_Bttn ${location.pathname.includes("billings") ? "" : "sc_BttnClosed"}`}>
                                 <p>Billings</p>
                             </div>

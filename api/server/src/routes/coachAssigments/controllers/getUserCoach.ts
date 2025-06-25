@@ -7,9 +7,8 @@ const getUserCoach = new Elysia()
     .get("/assigncoach/getUserCoach", async ({ set, user }) => {
         try {
             const coachInfo = await CoachAssignment.findOne({
-                playerId: user._id,
-                status: "Pending"
-            })
+                playerId: user._id
+            }).populate("coachId")
 
             if (!coachInfo) {
                 set.status = 400;

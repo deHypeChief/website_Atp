@@ -22,7 +22,7 @@ import subscriptionsPlugin from "./routes/subscriptions/plugin";
 connectDb();
 export const app = new Elysia();
 
-// Apply middlewares and plugins
+// Apply middlewares 
 app
   .use(swagger({
     path: "/docs",

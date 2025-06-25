@@ -248,7 +248,7 @@ export const billingInfo = async () => {
 export const getUserCoachData = async () => {
   try {
     const response = await api.get(`/assigncoach/getUserCoach`);
-    console.log(response)
+    // console.log(response)
     return response.data;
   } catch (error) {
     console.error("Error fetching user coach info:", error);

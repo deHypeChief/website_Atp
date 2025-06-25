@@ -518,15 +518,19 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
 
     async function handleSubmit() {
         console.log("Submitting payment data", payData);
-
+        setLoading(true)
         try {
             let payLink;
             if (payData.type === "Training Package") {
+                setLoading(false)
+
                 payLink = await payTraining(
                     payData.key,
                     Number(payData.planType) === 0 ? "1month" : "3months"
                 );
             } else {
+                setLoading(false)
+
                 await setAutoRenew(payData.autoRenew)
                 payLink = await payDues(payData.key, payData.autoRenew);
             }
@@ -534,6 +538,8 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
             setLoading(false);
             window.location.href = payLink.paystackResponse.data.authorization_url;
         } catch (err) {
+            setLoading(false)
+
             console.error(err);
             setLoading(false);
         }

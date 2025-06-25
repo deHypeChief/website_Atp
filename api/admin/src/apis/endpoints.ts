@@ -53,7 +53,7 @@ export async function verifyToken(payload: {
 export async function getCoaches() {
 	try {
 		const response = await api.get(`/coach/getCoaches/all`);
-		//console.log(response.data)
+		console.log(response.data)
 		return response.data.coaches.reverse();
 	} catch (error) {
 		//console.error("Error getting coach:", error);
@@ -125,3 +125,35 @@ export const deleteCoach = async (id) => {
 
 
 
+export async function getPaidUsers() {
+	try {
+		const response = await api.get(`/billing/pay/all/users/ontraning`);
+		console.log(response.data)
+		return response.data;
+	} catch (error) {
+		//console.error("Error getting coach:", error);
+		throw error;
+	}
+}
+
+export async function getLinkedPlayers() {
+	try {
+		const response = await api.get(`/assigncoach/listAssignments`);
+		console.log(response.data)
+		return response.data;
+	} catch (error) {
+		//console.error("Error getting coach:", error);
+		throw error;
+	}
+}
+
+export async function getSubedPlayers() {
+	try {
+		const response = await api.get(`/billing/pay/all`);
+		console.log(response.data)
+		return response.data;
+	} catch (error) {
+		//console.error("Error getting coach:", error);
+		throw error;
+	}
+}
