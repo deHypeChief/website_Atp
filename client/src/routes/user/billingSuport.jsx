@@ -86,12 +86,12 @@ const plans = [
 ]
 
 export function BillingContent({ setAction }) {
-    const [open, setOpen] = useState(false)
+    const [opens, setOpens] = useState(false)
     return (
         <div className="topWrapContent">
             <div className="firste ebound eSplit">
 
-                <div className="toHeader" onClick={() => { setOpen(!open) }}>
+                <div className="toHeader" onClick={() => { setOpens(!opens) }}>
                     <h2>Membership Package</h2>
                     <Icon icon="iconamoon:arrow-down-2-bold" width="24" height="24" style={{
                         transform: open ? "rotate(180deg)" : "rotate(0deg)",
@@ -101,7 +101,7 @@ export function BillingContent({ setAction }) {
                 <p>If you are currently on a payment plan and you wish to switch to another plan, just click on the new plan you wish to subscribe to.</p>
 
                 {
-                    open && (
+                    opens && (
                         <div className="billBox">
                             <div className="prices">
                                 {
@@ -219,7 +219,7 @@ export function BillingContent({ setAction }) {
 }
 
 export function BillingContent2({ data, setAction, userSubData }) {
-    const [open, setOpen] = useState(false)
+    const [opens, setOpens] = useState(false)
 
 
     async function handlePayment(planKey) {
@@ -242,7 +242,7 @@ export function BillingContent2({ data, setAction, userSubData }) {
         <div className="topWrapContent">
             <div className="firste ebound eSplit">
 
-                <div className="toHeader" onClick={() => { setOpen(!open) }}>
+                <div className="toHeader" onClick={() => { setOpens(!opens) }}>
                     <h2>Training Package</h2>
                     <Icon icon="iconamoon:arrow-down-2-bold" width="24" height="24" style={{
                         transform: open ? "rotate(180deg)" : "rotate(0deg)",
@@ -252,7 +252,7 @@ export function BillingContent2({ data, setAction, userSubData }) {
                 <p>If you are currently on a payment plan and you wish to switch to another plan, just click on the new plan you wish to subscribe to.</p>
 
                 {
-                    open && (
+                    opens && (
                         <>
                             <div className="plansWrap">
                                 <div className="planList">

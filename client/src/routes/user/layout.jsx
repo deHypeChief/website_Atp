@@ -54,12 +54,12 @@ export default function DashboardLayout() {
         setOpen(!open)
     }
 
-    useEffect(() => {
-        document.getElementById("dContent")?.addEventListener('click', () => {
-            document.getElementById("hamSide").style.display = open ? "flex" : null
-            setOpen(!open)
-        })
-    }, [open])
+    // useEffect(() => {
+    //     document.getElementById("dContent")?.addEventListener('click', () => {
+    //         document.getElementById("hamSide").style.display = open ? "flex" : null
+    //         setOpen(!open)
+    //     })
+    // }, [open])
 
 
     useEffect(() => {

@@ -734,6 +734,7 @@
                         padding: 0;
                         border: 0;
                         margin: 0;
+                        text-align: left;
                     }
 
                     p {
@@ -804,6 +805,7 @@
 
                 .orderHeader h3 {
                     font-size: 1.2rem;
+                    text-align: left;
                 }
 
                 .orderContent {
@@ -933,6 +935,23 @@
         display: block;
     }
 
+    .layoutOverlay {
+        & .pawyWrap {
+            & .paContent {
+                & .payfType {
+                    & .cmo {
+                        &.vv {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            gap: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     .pHeader {
         display: flex;
         flex-direction: column;
@@ -1015,12 +1034,15 @@
     }
 
     .layoutOverlay {
+        .pawyWrap {
+            grid-template-columns: 1fr;
+        }
 
         .layoutBase {
             padding: 0px;
             background: white;
             border-radius: 10px;
-            max-width: 450px;
+            width: 100vw;
             max-height: 80vh;
             overflow: auto;
             border: 20px white solid;
