@@ -39,6 +39,17 @@ export function Billings() {
         );
     }
 
+    // Helper function to format date
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+        const date = new Date(dateStr);
+        return date.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+    };
+
     return (
         <>
             {isSummaryOpen && (
@@ -63,7 +74,7 @@ export function Billings() {
                                 </h1>
                                 {data?.data.membership?.plan !== "none" && (
                                     <p style={{ fontSize: ".8rem", paddingTop: "10px" }}>
-                                        *Current Plan ends on 20/07/2028
+                                        *Current Plan ends on {formatDate(data.data.membership?.endDate)}
                                     </p>
                                 )}
                             </div>
@@ -76,7 +87,7 @@ export function Billings() {
                     </div>
 
                     <BillingContent setAction={openSummary} />
-                    <BillingContent2 data={payData} setAction={openSummary} />
+                    <BillingContent2 data={payData} setAction={openSummary} userSubData={data} />
 
                     <div className="firste ebound eSplit">
                         <div

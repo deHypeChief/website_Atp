@@ -218,7 +218,7 @@ export function BillingContent({ setAction }) {
     )
 }
 
-export function BillingContent2({ data, setAction }) {
+export function BillingContent2({ data, setAction, userSubData }) {
     const [open, setOpen] = useState(false)
 
 
@@ -236,6 +236,7 @@ export function BillingContent2({ data, setAction }) {
         console.log({ data, planKey, selectedPlan, payload });
         setAction(payload);
     }
+
 
     return (
         <div className="topWrapContent">
@@ -269,7 +270,7 @@ export function BillingContent2({ data, setAction }) {
                                             <p>
                                                 <b>Price: </b> NGN{" "}
                                                 {(() => {
-                                                    const isOnPlan = data?.billing?.data?.membership?.plan !== "none";
+                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
                                                     const basePrice = data?.packages?.regular?.plans?.[0]?.price || 0;
                                                     const discount = data?.packages?.regular?.discount || 0;
 
@@ -279,6 +280,7 @@ export function BillingContent2({ data, setAction }) {
                                                 })()}
                                             </p>
                                             <p><b>Duration: </b>1 Month</p>
+                                            {/* <p><b>Duratioppp: </b>{data?.packages?.regular?.plans?.[0]?.price}</p> */}
                                             <p className="plText">{data.packages?.regular.info || "--"}</p>
                                         </div>
                                         <p className="fni" style={{
@@ -304,7 +306,7 @@ export function BillingContent2({ data, setAction }) {
                                             <p>
                                                 <b>Price: </b> NGN{" "}
                                                 {(() => {
-                                                    const isOnPlan = data?.billing?.data?.membership?.plan !== "none";
+                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
                                                     const basePrice = data?.packages?.standard?.plans?.[0]?.price || 0;
                                                     const discount = data?.packages?.standard?.discount || 0;
 
@@ -340,7 +342,7 @@ export function BillingContent2({ data, setAction }) {
                                             <p>
                                                 <b>Price: </b> NGN{" "}
                                                 {(() => {
-                                                    const isOnPlan = data?.billing?.data?.membership?.plan !== "none";
+                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
                                                     const basePrice = data?.packages?.premium?.plans?.[0]?.price || 0;
                                                     const discount = data?.packages?.premium?.discount || 0;
 
@@ -381,7 +383,7 @@ export function BillingContent2({ data, setAction }) {
                                             <p>
                                                 <b>Price: </b> NGN{" "}
                                                 {(() => {
-                                                    const isOnPlan = data?.billing?.data?.membership?.plan !== "none";
+                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
                                                     const basePrice = data?.packages?.family?.plans?.[0]?.price || 0;
                                                     const discount = data?.packages?.family?.discount || 0;
 
@@ -418,7 +420,7 @@ export function BillingContent2({ data, setAction }) {
                                             <p>
                                                 <b>Price: </b> NGN{" "}
                                                 {(() => {
-                                                    const isOnPlan = data?.billing?.data?.membership?.plan !== "none";
+                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
                                                     const basePrice = data?.packages?.couples?.plans?.[0]?.price || 0;
                                                     const discount = data?.packages?.couples?.discount || 0;
 
@@ -561,7 +563,9 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                                             width="20"
                                             height="20"
                                         />
-                                        <p className="saveText">Save 20%</p>
+                                        {payData.type === "Training Package" && subData?.data?.membership?.plan !== "none" && (
+                                            <p className="saveText">Save {payDataRec?.packages?.[payData.key]?.discount}%</p>
+                                        )}
                                     </div>
                                 </div>
                                 <p>

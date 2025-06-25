@@ -131,7 +131,7 @@ const subscriptions = new Elysia()
                 reference: `${user.username}-training-${type}-${duration}-${Date.now()}`,
                 amount: (finalPrice * 100).toString(),
                 currency: "NGN",
-                callback_url: `${process.env.ACTIVE_ORIGIN}/u/bills/training/${type}/${duration}`,
+                callback_url: `${process.env.ACTIVE_ORIGIN}/u/bills/training/${type}/${duration}/none`,
                 email: user.email,
             });
 
