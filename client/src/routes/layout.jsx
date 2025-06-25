@@ -20,6 +20,7 @@ import Notifications from "./user/notificationPage";
 import { Billings } from "./user/billingPage";
 import YourCoach from "./user/coachPage";
 import Tickets from "./user/ticketPage";
+import { BillingHistory } from "./user/billingHistory";
 
 export default function App() {
     return (
@@ -51,6 +52,7 @@ export default function App() {
                         <Route path="/u/billings" element={<Billings />} />
                         <Route path="/u/coach" element={<YourCoach />} />
                         <Route path="/u/tickets" element={<Tickets />} />
+                        <Route path="/u/billings/history" element={<BillingHistory />} />
                         <Route path="/u/ticket/:tournamentID" element={<YourTicket />} />
                         <Route path="/u/bills/:type/:subType/:duration/:autoRenew" element={<Billing />} />
                     </Route>

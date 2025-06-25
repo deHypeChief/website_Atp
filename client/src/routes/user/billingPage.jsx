@@ -4,6 +4,7 @@ import { billingInfo, getPayMe } from "../../libs/api/api.endpoints";
 import { useState } from "react";
 import Button from "../../components/button/button";
 import { BillingContent, BillingContent2, BillingSummary } from "./billingSuport";
+import { Link } from "react-router-dom";
 
 export function Billings() {
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
@@ -101,7 +102,9 @@ export function Billings() {
                                 </p>
                             </div>
                             <div className="actionB">
-                                <Button>View History</Button>
+                                <Link to="/u/billings/history">
+                                    <Button>View History</Button>
+                                </Link>
                             </div>
                         </div>
                     </div>

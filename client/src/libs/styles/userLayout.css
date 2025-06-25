@@ -930,9 +930,60 @@
 }
 
 
+.his {
+    display: flex;
+    flex-direction: column;
+    /* gap: 20px; */
+
+    .hisBox {
+
+        display: grid;
+        justify-content: space-between;
+        grid-template-columns: 200px 1fr 100px 100px 200px;
+        padding: 10px 20px 10px;
+        margin: 0px 0px 10px;
+        background: white;
+        border-radius: 10px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 5;
+
+        p {
+            font-size: .9rem;
+        }
+    }
+
+}
+
+
 @media screen and (max-width: 600px) {
     .ham {
         display: block;
+    }
+
+    .his {
+        display: flex;
+        flex-direction: column;
+        /* gap: 20px; */
+
+        .hisBox {
+
+            display: grid;
+            justify-content: space-between;
+            grid-template-columns:1fr 1fr;
+            padding: 10px 15px 10px;
+            margin: 0px 0px 10px;
+            background: white;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5;
+row-gap: 10px;
+            p {
+                font-size: .9rem;
+            }
+        }
+
     }
 
     .layoutOverlay {
