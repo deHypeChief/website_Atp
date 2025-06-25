@@ -1,16 +1,19 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { getMe } from "../../libs/api/api.endpoints";
+import { getMe, getUserCoachData } from "../../libs/api/api.endpoints";
 import { useQuery } from "@tanstack/react-query";
 import ball from "/ball.png"
 import Button from "../../components/button/button";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { Link } from "react-router-dom";
 
 const ReviewForm = ({ onClose, onSubmit }) => {
     const [formData, setFormData] = useState({
         rating: "",
         comment: ""
     });
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -98,6 +101,11 @@ const YourCoach = ({ actions }) => {
         refetchOnWindowFocus: false,
     })
 
+    const coach = useQuery({
+        queryFn: () => getUserCoachData(),
+        queryKey: ["coachUserData"]
+    })
+
     const handleSubmitReview = (newReview) => {
         const review = {
             id: reviews.length + 1,
@@ -109,8 +117,7 @@ const YourCoach = ({ actions }) => {
     };
 
     // No coach assigned view
-    let a = 2
-    if (a === 1) {
+    if (coach?.data?.coachInfo.status === "Pending") {
         return (
             <div className="noContent eWrap">
                 <div className="ebound">
@@ -119,7 +126,7 @@ const YourCoach = ({ actions }) => {
                             <img src={ball} alt="" />
                         </div>
                         <h1>Getting your Coach</h1>
-                        <p>Expect an email notification soon with details about your coach&#39;s.</p>
+                        <p>Expect an email notification soon with details about your coach.</p>
                     </div>
                 </div>
             </div>
@@ -134,7 +141,9 @@ const YourCoach = ({ actions }) => {
                         <h1>No Coach Yet</h1>
                         <p>Join a training plan and a coach would be assigned to you</p>
 
-                        <Button onClick={actions}>See Plans</Button>
+                        <Link to={"/u/billings"}>
+                            <Button onClick={actions}>See Plans</Button>
+                        </Link>
                     </div>
                 </div>
             </div>

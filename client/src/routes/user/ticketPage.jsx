@@ -5,6 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from 'dayjs';
 import { useQuery } from "@tanstack/react-query";
 import { getMatches } from "../../libs/api/api.endpoints";
+import { Link } from "react-router-dom";
 
 dayjs.extend(relativeTime);
 
@@ -60,7 +61,9 @@ export default function Tickets({ actions }) {
                             <div className="cleft">
                                 <h1>Tounament tickets</h1>
                                 <p>Nothing here yet, try getting a ticket</p>
-                                <Button onClick={actions}>Buy a ticket</Button>
+                                <Link to={"/u/tournaments"}>
+                                    <Button onClick={actions}>Buy a ticket</Button>
+                                </Link>
                             </div>
                         </div>
                     </div>

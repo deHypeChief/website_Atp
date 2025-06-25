@@ -79,9 +79,9 @@ export function Billings() {
                                 )}
                             </div>
                             <div className="actionB">
-                                {data?.data.membership?.plan !== "none" && (
+                                {/* {data?.data.membership?.plan !== "none" && (
                                     <Button>Renew Plan</Button>
-                                )}
+                                )} */}
                             </div>
                         </div>
                     </div>

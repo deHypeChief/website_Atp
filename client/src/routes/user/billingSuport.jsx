@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Icon } from "@iconify/react/dist/iconify.js";
 import round from "/round.svg"
-import { payDues, payTraining } from "../../libs/api/api.endpoints";
+import { payDues, payTraining, setAutoRenew } from "../../libs/api/api.endpoints";
 import Button from "../../components/button/button";
 
 const plans = [
@@ -494,7 +494,6 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                 day: "numeric",
             });
 
-            console.log(formatted)
             setExpDate(formatted);
         }
 
@@ -528,6 +527,7 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                     Number(payData.planType) === 0 ? "1month" : "3months"
                 );
             } else {
+                await setAutoRenew(payData.autoRenew)
                 payLink = await payDues(payData.key, payData.autoRenew);
             }
 
@@ -538,6 +538,8 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
             setLoading(false);
         }
     }
+
+    console.log("Pay Data:", subData);
 
     return (
         <div className="layoutOverlay">
@@ -654,9 +656,29 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                             )}
                         </div>
 
-                        <Button full disabled={loading} onClick={handleSubmit}>
-                            Make Payment
-                        </Button>
+                        {
+                            dataFn.type === "Training Package" ? (
+                                subData?.data?.training?.status === "Paid" ? (
+                                    <Button full disabled={true}>
+                                        Already on a Training Package
+                                    </Button>
+                                ) : (
+                                    <Button full disabled={loading} onClick={handleSubmit}>
+                                        {loading ? "Processing..." : "Make Payment"}
+                                    </Button>
+                                )
+                            ) : (
+                                subData?.data?.membership?.status === "Paid" ? (
+                                    <Button full disabled={true} >
+                                        Already on a Membership Package
+                                    </Button>
+                                ) : (
+                                    <Button full disabled={loading} onClick={handleSubmit}>
+                                        {loading ? "Processing..." : "Make Payment"}
+                                    </Button>
+                                )
+                            )
+                        }
                     </div>
                 </div>
             </div>

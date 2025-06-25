@@ -199,6 +199,19 @@ export const payRegistration = async () => {
   }
 }
 
+export const setAutoRenew = async (autoRenew) => {
+  try {
+    const response = await api.post(`/billing/pay/set/autoRenew`, {
+      autoRenew
+    });
+    console.log(response.data)
+    return response.data;
+  } catch (error) {
+    console.error("Error setting auto renew:", error);
+    throw new Error(error.response.data.message);
+  }
+}
+
 export const payDues = async (type, autoRenew) => {
   try {
     const response = await api.post(`/billing/pay/membership/${type}/${autoRenew}`);
@@ -224,10 +237,21 @@ export const payTraining = async (type, duration) => {
 export const billingInfo = async () => {
   try {
     const response = await api.get(`/billing/pay/info`);
-    console.log(response)
     return response.data.data;
   } catch (error) {
     console.error("Error fetching billing info:", error);
+    throw new Error(error.response.data.message);
+  }
+}
+
+
+export const getUserCoachData = async () => {
+  try {
+    const response = await api.get(`/assigncoach/getUserCoach`);
+    console.log(response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user coach info:", error);
     throw new Error(error.response.data.message);
   }
 }

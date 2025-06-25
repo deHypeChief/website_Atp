@@ -32,7 +32,7 @@ export default function Notifications() {
                         <div className="notiBoxi">
                             {
                                 notifyMutation.data?.map((item, index) => (
-                                    <div className="notiB" key={item.title}>
+                                    <div className="notiB" key={item.title + index}>
                                         <div key={"noytif" + index} className="titNotiB">
                                             <h2>{item.title}</h2>
                                             <p>{dayjs(item.createdAt).format("MMMM D, YYYY h:mm A")}</p>

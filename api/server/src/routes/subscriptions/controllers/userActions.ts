@@ -45,6 +45,37 @@ const subscriptions = new Elysia()
             return { message: "Error getting payment info" };
         }
     })
+    .post("/pay/set/autoRenew", async ({ set, user, body }) => {
+        try {
+            const billing = await Subscription.findOne({ user: user._id });
+
+            if (!billing) {
+                set.status = 400;
+                return {
+                    message: 'User Billing not found',
+                };
+            }
+
+            // Validate autoRenew value
+            if (typeof body.autoRenew !== 'boolean') {
+                set.status = 400;
+                return {
+                    message: 'Invalid auto-renewal value',
+                };
+            }
+
+            // Update auto-renewal status
+            billing.membership.autoRenew = body.autoRenew;
+            await billing.save();
+
+            set.status = 200;
+            return { message: "Auto-renewal status updated successfully" };
+        } catch (err) {
+            console.error(err);
+            set.status = 500;
+            return { message: "Error setting auto-renewal" };
+        }
+    })
     .post("/pay/membership/:type/:autoRenew", async ({ paystack_Transaction, set, user, params: { type, autoRenew } }) => {
         try {
             const billing = await Subscription.findOne({ user: user._id });
@@ -166,23 +197,9 @@ const subscriptions = new Elysia()
                 return { message: "Payment transaction error" };
             }
 
-            const billing = await Subscription.findOne({ user: user._id });
-            if (!billing) {
-                set.status = 400;
-                return { message: "User Billing not found" };
-            }
-
-            // Update auto renwal information based on type
-            if (type === "membership") {
-                billing.membership.autoRenew = autoRenew === "true";
-            }
-            await billing.save();
-
             set.status = 200;
             return {
-                message: "Payment Successful",
-                billing,
-                autoRenew
+                message: "Payment Successful"
             };
         } catch (err) {
             console.error("Error checking payment status:", err);
@@ -203,6 +220,5 @@ const subscriptions = new Elysia()
             return { message: "Error during payment validation check" };
         }
     });
-
 
 export default subscriptions 

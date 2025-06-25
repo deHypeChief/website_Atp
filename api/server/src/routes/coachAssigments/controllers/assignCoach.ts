@@ -2,7 +2,7 @@ import Elysia from "elysia";
 import CoachAssignment from "../model";
 
 const assignCaoch = new Elysia()
-    .get("listAssignments", async ({ set }) => {
+    .get("/assigncoach/listAssignments", async ({ set }) => {
         try {
             // Fetching all assignments from the database
             const assignments = await CoachAssignment.find({});
