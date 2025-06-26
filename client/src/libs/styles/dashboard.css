@@ -13,6 +13,22 @@ button {
     font-size: .9rem;
 }
 
+.no-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    opacity: 0.6;
+}
+
+.no-data-img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1rem;
+}
+
 
 .profile,
 .track,
