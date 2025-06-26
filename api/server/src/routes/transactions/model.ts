@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 interface ITransDocument {
     user: mongoose.ObjectId
@@ -10,7 +10,7 @@ interface ITransDocument {
 
 
 const TransSchema: Schema = new Schema({
-    user: { type: mongoose.Types.ObjectId, ref: "User" },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     type: { type: String, required: true },
     amount: { type: String, required: true },
     status: { type: String, enum: ["Pending", "Complete"], required: true },
