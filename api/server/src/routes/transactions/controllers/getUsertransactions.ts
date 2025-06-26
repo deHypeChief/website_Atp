@@ -1,12 +1,14 @@
 import Elysia from "elysia";
 import Transaction from "../model";
+import { isUser_Authenticated } from "../../../middleware/isUserAuth";
 
 const getTrans = new Elysia()
-    .get("/transaction/all", async ({ set }) => {
+    .use(isUser_Authenticated)
+    .get("/transaction/all", async ({ set, user }) => {
         try {
-            const trans = await Transaction.find({})
+            const trans = await Transaction.find({ user: user._id })
 
-            
+
             set.status = 200;
             return {
                 trans
@@ -19,4 +21,4 @@ const getTrans = new Elysia()
     })
 
 
-    export default getTrans
+export default getTrans

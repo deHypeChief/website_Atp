@@ -1,16 +1,19 @@
 import nodemailer from 'nodemailer';
 
 export const transporter = nodemailer.createTransport({
-  host: 'gmail',
-  // host: 'smtp.hostinger.com',
-  // port: 465,
-  // secure: true,
+  service: 'gmail',
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.MAIL,
     pass: process.env.MAIL_PASS
   }
 });
 
-// <a href="${buttonLink}">
-//   <button class="full">${buttonText}</button>
-// </a>
+transporter.verify((error) => {
+  if (error) {
+    console.error('Error connecting to email server:', error);
+  } else {
+    console.log('Server is ready to take messages');
+  }
+});

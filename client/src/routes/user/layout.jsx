@@ -39,7 +39,7 @@ export default function DashboardLayout() {
                     user: await getMe(),
                     billing: await getPayMe(),
                 }
-                console.log(payload);
+                // console.log(payload);
                 return payload
             }
             return moreFn()

@@ -30,7 +30,8 @@ export default function Tournaments() {
 
     return (
         <>
-            {alert && <TourPayAlert setAlert={setAlert} alert={alert} />}
+            {alert && <BillingSummary action={setAlert} dataFn={alert} />}
+            {/* {alert && <BillingSummary action={setAlert} dataFn={alert} payDataRec={payData} subData={data} />} */}
             <div className="tourDiv">
                 <div className="eWrap">
                     <div className="ebound ">
@@ -97,7 +98,16 @@ export default function Tournaments() {
                                             <Button
                                                 full
                                                 onClick={() => {
-                                                    setAlert({ ...item, userData: user })
+                                                    setAlert({
+                                                        _id: item._id,
+                                                        userData: {
+                                                            _id: user._id
+                                                        },
+                                                        type: item.name,
+                                                        key: "Ticket",
+                                                        price: item.price,
+                                                        message: "You are about to pay for the selected tournament"
+                                                    })
                                                 }}
                                             >Buy Ticket</Button>
                                         </div>
@@ -116,6 +126,7 @@ export default function Tournaments() {
 
 
 import PropTypes from "prop-types";
+import { BillingSummary } from "./billingSuport";
 
 function TourPayAlert({ alert, setAlert }) {
     const [loading, setLoading] = useState(false)

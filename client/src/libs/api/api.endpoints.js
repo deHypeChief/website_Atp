@@ -255,3 +255,14 @@ export const getUserCoachData = async () => {
     throw new Error(error.response.data.message);
   }
 }
+
+export const getUserTrans = async () => {
+  try {
+    const response = await api.get(`/transaction/all`);
+    console.log(response.data)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user coach info:", error);
+    throw new Error(error.response.data.message);
+  }
+}

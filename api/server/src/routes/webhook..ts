@@ -134,7 +134,7 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         }
 
         let billName = '';
-        let pType = ''
+        let pType = '' || "ticket"
         switch (paymentType.toLowerCase()) {
             case 'membership':
                 // Update membership bill
@@ -207,6 +207,7 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         });
 
         await billing.save();
+
         await Transaction.create({
             amount: amountInNaira,
             type: pType,
@@ -248,7 +249,6 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
                 userID: user._id,
                 title: "Payment Processing Error",
                 message: "We encountered an issue processing your payment. Please contact support for assistance.",
-                type: "error"
             }).catch(notifyErr => console.error("Failed to create error notification:", notifyErr));
         }
         console.error('Error handling charge.success:', error);

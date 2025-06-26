@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Icon } from "@iconify/react/dist/iconify.js";
 import round from "/round.svg"
-import { payDues, payTraining, setAutoRenew } from "../../libs/api/api.endpoints";
+import { checkMatch, getTourPayLink, payDues, payTraining, setAutoRenew } from "../../libs/api/api.endpoints";
 import Button from "../../components/button/button";
 
 const plans = [
@@ -454,6 +454,7 @@ export function BillingContent2({ data, setAction, userSubData }) {
 }
 
 export function BillingSummary({ action, dataFn, payDataRec, subData }) {
+    const [status, setStatus] = useState(false)
     const [loading, setLoading] = useState(false);
     const [expData, setExpDate] = useState("");
 
@@ -473,6 +474,19 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
             [name]: type === "checkbox" ? checked : value,
         }));
     };
+
+    useEffect(() => {
+        const checkfn = async () => {
+            const checkData = await checkMatch({
+                tournament: dataFn._id,
+                user: dataFn.userData._id
+            })
+            let stat = checkData.match ? true : false
+            setStatus(stat)
+        }
+        checkfn()
+    }, [])
+
 
     useEffect(() => {
         const today = new Date();
@@ -522,17 +536,26 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
         try {
             let payLink;
             if (payData.type === "Training Package") {
-                setLoading(false)
-
                 payLink = await payTraining(
                     payData.key,
                     Number(payData.planType) === 0 ? "1month" : "3months"
                 );
-            } else {
-                setLoading(false)
-
+            }
+            if (payData.type === "Membership Package") {
                 await setAutoRenew(payData.autoRenew)
                 payLink = await payDues(payData.key, payData.autoRenew);
+            }
+
+            if (payData.key === "Ticket") {
+                await getTourPayLink(dataFn._id)
+                    .then((link) => {
+                        if (link === undefined) {
+                            setLoading(false)
+                            alert("Network error during payment. Try reloading the page.");
+                            return;
+                        }
+                        window.location.href = link;
+                    })
             }
 
             setLoading(false);
@@ -545,7 +568,6 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
         }
     }
 
-    console.log("Pay Data:", subData);
 
     return (
         <div className="layoutOverlay">
@@ -560,22 +582,27 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                 <div className="pawyWrap">
                     <div className="paContent">
                         <div className="payfType">
-                            <h3>{dataFn.type}</h3>
+                            <h3>{dataFn.type.toUpperCase()}</h3>
 
                             <div className="cmo vm">
-                                <div className="toVVWrap">
-                                    <h3>{dataFn.plan}</h3>
-                                    <div className="saveBo">
-                                        <Icon
-                                            icon="fluent-emoji-flat:party-popper"
-                                            width="20"
-                                            height="20"
-                                        />
-                                        {payData.type === "Training Package" && subData?.data?.membership?.plan !== "none" && (
-                                            <p className="saveText">Save {payDataRec?.packages?.[payData.key]?.discount}%</p>
-                                        )}
-                                    </div>
-                                </div>
+                                {
+                                    payData.key !== "Ticket" && (
+                                        <div className="toVVWrap">
+                                            <h3>{dataFn.plan}</h3>
+                                            <div className="saveBo">
+                                                <Icon
+                                                    icon="fluent-emoji-flat:party-popper"
+                                                    width="20"
+                                                    height="20"
+                                                />
+                                                {payData.type === "Training Package" && subData?.data?.membership?.plan !== "none" && (
+                                                    <p className="saveText">Save {payDataRec?.packages?.[payData.key]?.discount}%</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )
+                                }
+
                                 <p>
                                     {dataFn.message ||
                                         "This plan offers full dashboard access, tournament insights, community support, progress tracking, exclusive training perks, social events, priority tournament benefits, and a premium badge to showcase your status."}
@@ -586,7 +613,7 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                             <div className="cmo vv">
                                 <Icon icon="fluent-color:alert-urgent-20" width="50" height="50" />
                                 <p>
-                                    Please carefully review this plan you want to pay for before you
+                                    Please carefully review the selected payment before you
                                     proceed to make your payment.
                                 </p>
                             </div>
@@ -600,9 +627,13 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                             </div>
 
                             <div className="orderContent">
-                                <p className="textO">
-                                    {dataFn.type === "Membership Package" ? "Renews On" : "Ends On"}
-                                </p>
+                                {
+                                    payData.key !== "Ticket" && (
+                                        <p className="textO">
+                                            {dataFn.type === "Membership Package" ? "Renews On" : "Ends On"}
+                                        </p>
+                                    )
+                                }
                                 <p>{expData}</p>
                             </div>
 
@@ -633,54 +664,70 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                             </div>
                         </div>
 
-                        <div className="orWarp bbOWrap">
-                            {dataFn.type === "Membership Package" && (
-                                <div className="auto">
-                                    <p>Auto renewal</p>
-                                    <input
-                                        type="checkbox"
-                                        id="autoRenew"
-                                        name="autoRenew"
-                                        checked={payData.autoRenew}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            )}
+                        {
+                            payData.key !== "Ticket" && (
+                                <div className="orWarp bbOWrap">
+                                    {dataFn.type === "Membership Package" && (
+                                        <div className="auto">
+                                            <p>Auto renewal</p>
+                                            <input
+                                                type="checkbox"
+                                                id="autoRenew"
+                                                name="autoRenew"
+                                                checked={payData.autoRenew}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                    )}
 
-                            {dataFn.type === "Training Package" && (
-                                <>
-                                    <p>Select a Duration</p>
-                                    <select
-                                        name="planType"
-                                        value={payData.planType}
-                                        onChange={handleChange}
-                                    >
-                                        <option value={0}>1 Month</option>
-                                        <option value={1}>3 Months</option>
-                                    </select>
-                                </>
-                            )}
-                        </div>
+                                    {dataFn.type === "Training Package" && (
+                                        <>
+                                            <p>Select a Duration</p>
+                                            <select
+                                                name="planType"
+                                                value={payData.planType}
+                                                onChange={handleChange}
+                                            >
+                                                <option value={0}>1 Month</option>
+                                                <option value={1}>3 Months</option>
+                                            </select>
+                                        </>
+                                    )}
+                                </div>
+                            )
+                        }
 
                         {
-                            dataFn.type === "Training Package" ? (
-                                subData?.data?.training?.status === "Paid" ? (
-                                    <Button full disabled={true}>
-                                        Already on a Training Package
-                                    </Button>
+                            payData.key !== "Ticket" ? (
+                                dataFn.type === "Training Package" ? (
+                                    subData?.data?.training?.status === "Paid" ? (
+                                        <Button full disabled={true}>
+                                            Already on a Training Package
+                                        </Button>
+                                    ) : (
+                                        <Button full disabled={loading} onClick={handleSubmit}>
+                                            {loading ? "Processing..." : "Make Payment"}
+                                        </Button>
+                                    )
                                 ) : (
-                                    <Button full disabled={loading} onClick={handleSubmit}>
-                                        {loading ? "Processing..." : "Make Payment"}
-                                    </Button>
+                                    subData?.data?.membership?.status === "Paid" ? (
+                                        <Button full disabled={true} >
+                                            Already on a Membership Package
+                                        </Button>
+                                    ) : (
+                                        <Button full disabled={loading} onClick={handleSubmit}>
+                                            {loading ? "Processing..." : "Make Payment"}
+                                        </Button>
+                                    )
                                 )
                             ) : (
-                                subData?.data?.membership?.status === "Paid" ? (
-                                    <Button full disabled={true} >
-                                        Already on a Membership Package
+                                status ? (
+                                    <Button full disabled={true}>
+                                        Already Paid
                                     </Button>
                                 ) : (
                                     <Button full disabled={loading} onClick={handleSubmit}>
-                                        {loading ? "Processing..." : "Make Payment"}
+                                        {loading ? "Processing..." : "Make Payments"}
                                     </Button>
                                 )
                             )

@@ -136,7 +136,8 @@ button {
                         font-size: 1;
                     }
 
-                    .bp, p{
+                    .bp,
+                    p {
                         font-size: .9rem;
                     }
                 }
@@ -756,6 +757,18 @@ button {
 
 
 @media screen and (max-width: 600px) {
+    .topWrapContent {
+        & .ebound {
+            .topVV {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                justify-content: space-between;
+            }
+        }
+    }
+
     .topWrapContent {
         .prices {
             margin-top: 20px;

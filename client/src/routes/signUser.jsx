@@ -63,7 +63,7 @@ export function Login() {
         const { name, value } = e.target;
         setPayload({
             ...payload,
-            [name]: value
+            [name]: name === "email" ? value.toLowerCase() : value
         });
     }
 
@@ -201,7 +201,7 @@ export function SignUp() {
         const { name, value } = e.target;
         setPayload({
             ...payload,
-            [name]: value
+            [name]: name === "email" ? value.toLowerCase() : value
         });
     }
     async function handleSubmit(e) {

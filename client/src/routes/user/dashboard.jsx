@@ -17,6 +17,7 @@ import Chart from 'chart.js/auto'
 import iconBox from "/Icon.svg"
 import trend from "/ic-trending-up-24px.png"
 import { BillingSummary } from "./billingSuport";
+import { Link } from "react-router-dom";
 
 dayjs.extend(relativeTime);
 
@@ -181,10 +182,12 @@ function YourOverview({ matchMutation, user }) {
                                     </div>
                                 </div>
                                 <div className="boundBase">
-                                    <Button full>
-                                        <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
-                                        <p>Join Whatsapp</p>
-                                    </Button>
+                                    <Link to="https://chat.whatsapp.com/Fb6QzLLZ4gsK6nhoTzXBIc">
+                                        <Button full>
+                                            <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
+                                            <p>Join Whatsapp</p>
+                                        </Button>
+                                    </Link>
                                 </div>
                             </div>
                         </>
@@ -210,10 +213,12 @@ function YourOverview({ matchMutation, user }) {
                                     </div>
                                 </div>
                                 <div className="boundBase">
-                                    <Button full>
-                                        <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
-                                        <p>Join Whatsapp</p>
-                                    </Button>
+                                    <Link to="https://chat.whatsapp.com/I6gwsNWfYKELAO4pHg21ue">
+                                        <Button full>
+                                            <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
+                                            <p>Join Whatsapp</p>
+                                        </Button>
+                                    </Link>
                                 </div>
                             </div>
                         </>
