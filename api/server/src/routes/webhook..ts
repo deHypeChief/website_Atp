@@ -6,6 +6,7 @@ import Notify from "./notifications/model";
 import { sendMail } from "../middleware/sendMail";
 import { Subscription } from "./subscriptions/model";
 import CoachAssignment from "./coachAssigments/model";
+import Transaction from "./transactions/model";
 
 const verifySignature = (signature: string, payload: any, secretKey: string): boolean => {
     const hash = crypto.createHmac('sha512', secretKey)
@@ -133,7 +134,7 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         }
 
         let billName = '';
-
+        let pType = ''
         switch (paymentType.toLowerCase()) {
             case 'membership':
                 // Update membership bill
@@ -146,7 +147,7 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
                 const renewalDate = new Date();
                 renewalDate.setMonth(renewalDate.getMonth() + duration);
                 billing.membership.endDate = renewalDate;
-
+                pType = "membership"
                 // Calculate grace period (7 days after renewal)
                 const gracePeriod = new Date(renewalDate);
                 gracePeriod.setDate(gracePeriod.getDate() + 7);
@@ -172,6 +173,7 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
                 billing.training.gracePeriod = trainingGracePeriod;
 
                 billName = `${planType.charAt(0).toUpperCase() + planType.slice(1)} Training (${duration} month${duration > 1 ? 's' : ''})`;
+                pType = "training"
 
                 //create a coach assignment for the user and send a coach assignment notification
                 const coachAssignment = await CoachAssignment.create({
@@ -205,6 +207,13 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         });
 
         await billing.save();
+        await Transaction.create({
+            amount: amountInNaira,
+            type: pType,
+            date:new Date(),
+            status: "Complete",
+            user: user._id
+        })
 
         // Send notification
         await Notify.create({

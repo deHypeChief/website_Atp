@@ -5,6 +5,7 @@ import Tournament from "../../tournament/model";
 import Notify from "../../notifications/model";
 import { sendMail } from "../../../middleware/sendMail";
 import { paystack } from "../../../middleware/paystack";
+import Transaction from "../../transactions/model";
 
 const createMatch = new Elysia()
     .use(paystack)
@@ -97,6 +98,14 @@ const createMatch = new Elysia()
             });
 
             await match.save();
+
+            await Transaction.create({
+                amount: tour.price,
+                type: "Tournament Registration",
+                date: new Date(),
+                status: "Complete",
+                user: user._id
+            })
             await Notify.create({
                 userID: user._id,
                 title: `Tournament Registration Successful 🎉`,

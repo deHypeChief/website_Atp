@@ -17,6 +17,7 @@ import billing from "./routes/billings/plugin";
 import webhook from "./routes/webhook.";
 import CoachAssignmentPlugin from "./routes/coachAssigments/plugin";
 import subscriptionsPlugin from "./routes/subscriptions/plugin";
+import transPlugin from "./routes/transactions/plugin";
 
 // Connect to the database
 connectDb();
@@ -40,6 +41,7 @@ app
   .use(webhook)
   .use(CoachAssignmentPlugin)
   .use(subscriptionsPlugin)
+  .use(transPlugin)
   .get("/", () => "Server is Up and running 🦊")
   .listen(Bun.env.PORT || 3002);
 

@@ -6,6 +6,7 @@ import { Subscription } from "../subscriptions/model";
 import { paystack } from "../../middleware/paystack";
 import BillingConfig from "../subscriptions/controllers/billingContent";
 import CoachAssignment from "../coachAssigments/model";
+import Transaction from "../transactions/model";
 
 export const jobs = new Elysia()
     .use(sendMail)
@@ -90,6 +91,14 @@ export const jobs = new Elysia()
                                     transactionRef: chargeResult.data?.reference || `AUTOFAIL-${Date.now()}`
                                 });
 
+                                await Transaction.create({
+                                    amount: price,
+                                    type: "Membership Renewal",
+                                    date: new Date(),
+                                    status: "Complete",
+                                    user: user._id
+                                })
+
                                 await Notify.create({
                                     user: user._id,
                                     title: "Auto-Renewal Failed",
@@ -172,5 +181,5 @@ export const jobs = new Elysia()
         }
     });
 
-    
+
 export default jobs;
