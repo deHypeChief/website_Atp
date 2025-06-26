@@ -6,8 +6,8 @@
   },
   "scripts": {
     "dev": "bun run --watch src/index.ts",
-    "start": "bun run build/index.js",
-    "build": "bun build ./src/index.ts --outdir ./build --target bun"
+    "start": "bun run build/index.js ",
+    "build": "bun build ./src/index.ts --outdir ./build  --target bun --sourcemap"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.1.1",
