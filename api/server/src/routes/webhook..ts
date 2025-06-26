@@ -1,7 +1,6 @@
 import Elysia from "elysia";
 import crypto from 'crypto';
 import User from "./user/model";
-import Billing from "./billings/model";
 import Notify from "./notifications/model";
 import { sendMail } from "../middleware/sendMail";
 import { Subscription } from "./subscriptions/model";
@@ -134,7 +133,7 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         }
 
         let billName = '';
-        let pType = '' || "ticket"
+        let pType = "ticket"
         switch (paymentType.toLowerCase()) {
             case 'membership':
                 // Update membership bill
@@ -211,7 +210,7 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         await Transaction.create({
             amount: amountInNaira,
             type: pType,
-            date:new Date(),
+            date: new Date(),
             status: "Complete",
             user: user._id
         })

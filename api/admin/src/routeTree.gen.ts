@@ -24,6 +24,7 @@ import { Route as AdminMatchesImport } from './routes/_admin/matches'
 import { Route as AdminLinkedPlayersImport } from './routes/_admin/linkedPlayers'
 import { Route as AdminLeaderboardImport } from './routes/_admin/leaderboard'
 import { Route as AdminDashboardImport } from './routes/_admin/dashboard'
+import { Route as AdminCustomMatchesImport } from './routes/_admin/customMatches'
 import { Route as AdminCoachesImport } from './routes/_admin/coaches'
 import { Route as AdminCmsImport } from './routes/_admin/cms'
 import { Route as AdminBillingsImport } from './routes/_admin/billings'
@@ -95,6 +96,11 @@ const AdminDashboardRoute = AdminDashboardImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 
+const AdminCustomMatchesRoute = AdminCustomMatchesImport.update({
+  path: '/customMatches',
+  getParentRoute: () => AdminRoute,
+} as any)
+
 const AdminCoachesRoute = AdminCoachesImport.update({
   path: '/coaches',
   getParentRoute: () => AdminRoute,
@@ -147,6 +153,13 @@ declare module '@tanstack/react-router' {
       path: '/coaches'
       fullPath: '/coaches'
       preLoaderRoute: typeof AdminCoachesImport
+      parentRoute: typeof AdminImport
+    }
+    '/_admin/customMatches': {
+      id: '/_admin/customMatches'
+      path: '/customMatches'
+      fullPath: '/customMatches'
+      preLoaderRoute: typeof AdminCustomMatchesImport
       parentRoute: typeof AdminImport
     }
     '/_admin/dashboard': {
@@ -235,6 +248,7 @@ interface AdminRouteChildren {
   AdminBillingsRoute: typeof AdminBillingsRoute
   AdminCmsRoute: typeof AdminCmsRoute
   AdminCoachesRoute: typeof AdminCoachesRoute
+  AdminCustomMatchesRoute: typeof AdminCustomMatchesRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminLeaderboardRoute: typeof AdminLeaderboardRoute
   AdminLinkedPlayersRoute: typeof AdminLinkedPlayersRoute
@@ -250,6 +264,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBillingsRoute: AdminBillingsRoute,
   AdminCmsRoute: AdminCmsRoute,
   AdminCoachesRoute: AdminCoachesRoute,
+  AdminCustomMatchesRoute: AdminCustomMatchesRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminLeaderboardRoute: AdminLeaderboardRoute,
   AdminLinkedPlayersRoute: AdminLinkedPlayersRoute,
@@ -269,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/billings': typeof AdminBillingsRoute
   '/cms': typeof AdminCmsRoute
   '/coaches': typeof AdminCoachesRoute
+  '/customMatches': typeof AdminCustomMatchesRoute
   '/dashboard': typeof AdminDashboardRoute
   '/leaderboard': typeof AdminLeaderboardRoute
   '/linkedPlayers': typeof AdminLinkedPlayersRoute
@@ -288,6 +304,7 @@ export interface FileRoutesByTo {
   '/billings': typeof AdminBillingsRoute
   '/cms': typeof AdminCmsRoute
   '/coaches': typeof AdminCoachesRoute
+  '/customMatches': typeof AdminCustomMatchesRoute
   '/dashboard': typeof AdminDashboardRoute
   '/leaderboard': typeof AdminLeaderboardRoute
   '/linkedPlayers': typeof AdminLinkedPlayersRoute
@@ -308,6 +325,7 @@ export interface FileRoutesById {
   '/_admin/billings': typeof AdminBillingsRoute
   '/_admin/cms': typeof AdminCmsRoute
   '/_admin/coaches': typeof AdminCoachesRoute
+  '/_admin/customMatches': typeof AdminCustomMatchesRoute
   '/_admin/dashboard': typeof AdminDashboardRoute
   '/_admin/leaderboard': typeof AdminLeaderboardRoute
   '/_admin/linkedPlayers': typeof AdminLinkedPlayersRoute
@@ -329,6 +347,7 @@ export interface FileRouteTypes {
     | '/billings'
     | '/cms'
     | '/coaches'
+    | '/customMatches'
     | '/dashboard'
     | '/leaderboard'
     | '/linkedPlayers'
@@ -347,6 +366,7 @@ export interface FileRouteTypes {
     | '/billings'
     | '/cms'
     | '/coaches'
+    | '/customMatches'
     | '/dashboard'
     | '/leaderboard'
     | '/linkedPlayers'
@@ -365,6 +385,7 @@ export interface FileRouteTypes {
     | '/_admin/billings'
     | '/_admin/cms'
     | '/_admin/coaches'
+    | '/_admin/customMatches'
     | '/_admin/dashboard'
     | '/_admin/leaderboard'
     | '/_admin/linkedPlayers'
@@ -420,6 +441,7 @@ export const routeTree = rootRoute
         "/_admin/billings",
         "/_admin/cms",
         "/_admin/coaches",
+        "/_admin/customMatches",
         "/_admin/dashboard",
         "/_admin/leaderboard",
         "/_admin/linkedPlayers",
@@ -441,6 +463,10 @@ export const routeTree = rootRoute
     },
     "/_admin/coaches": {
       "filePath": "_admin/coaches.tsx",
+      "parent": "/_admin"
+    },
+    "/_admin/customMatches": {
+      "filePath": "_admin/customMatches.tsx",
       "parent": "/_admin"
     },
     "/_admin/dashboard": {

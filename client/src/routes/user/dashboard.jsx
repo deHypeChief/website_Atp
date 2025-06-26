@@ -6,7 +6,7 @@ import "../../libs/styles/dashboard.css";
 import raIcon3 from "../../libs/images/Vector.svg";
 
 import { useQuery } from "@tanstack/react-query";
-import { getMatches, getMe, getPayMe, getTour } from "../../libs/api/api.endpoints";
+import { getMatches, getMe, getPayMe, getTour, getUserMatchesC } from "../../libs/api/api.endpoints";
 import { useEffect, useRef, useState } from "react";
 // import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import dayjs from 'dayjs';
@@ -69,7 +69,8 @@ function YourOverview({ matchMutation, user }) {
                 const payload = {
                     user: await getMe(),
                     billing: await getPayMe(),
-                    tour: await getTour()
+                    tour: await getTour(),
+                    cMatch: await getUserMatchesC()
                 }
                 console.log(payload);
                 return payload
@@ -114,7 +115,7 @@ function YourOverview({ matchMutation, user }) {
             data: {
                 datasets: [{
                     label: 'Matches',
-                    data: [matchMutation?.data?.matchesWon, matchMutation?.data?.matches?.length],
+                    data: [data?.cMatch?.totalWins, data?.cMatch?.totalMatches],
                     backgroundColor: [
                         '#92CD0C',
                         '#113858',
@@ -125,7 +126,7 @@ function YourOverview({ matchMutation, user }) {
         }
         );
         return () => chart.destroy();
-    }, [matchMutation?.data?.matches?.length, matchMutation?.data?.matchesWon])
+    }, [data?.cMatch?.totalMatches, data?.cMatch?.totalWins])
     const getGreeting = () => {
         const hour = new Date().getHours();
         if (hour < 12) return "Good Morning";
@@ -143,17 +144,17 @@ function YourOverview({ matchMutation, user }) {
                     <div className="bcontent">
                         <div className="bcont">
                             <p className="bName">Your Ranking</p>
-                            <h2>3rd</h2>
+                            <h2>{data?.cMatch?.rank || "--"}</h2>
                         </div>
                         <div className="bextra">
                             <img src={iconBox} alt="" className="imgcontent" />
                         </div>
                     </div>
                     <div className="boundBase">
-                        <div className="baseImg">
+                        {/* <div className="baseImg">
                             <img src={trend} alt="" className="iconBase" />
-                        </div>
-                        <p>You progressed from 7th position</p>
+                        </div> */}
+                        <p>{data?.cMatch?.improvement || "--"}</p>
                     </div>
                 </div>
 
@@ -182,7 +183,7 @@ function YourOverview({ matchMutation, user }) {
                                     </div>
                                 </div>
                                 <div className="boundBase">
-                                    <Link to="https://chat.whatsapp.com/Fb6QzLLZ4gsK6nhoTzXBIc">
+                                    <Link to="https://chat.whatsapp.com/Fb6QzLLZ4gsK6nhoTzXBIc" style={{width: "100%"}}>
                                         <Button full>
                                             <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
                                             <p>Join Whatsapp</p>
@@ -213,7 +214,7 @@ function YourOverview({ matchMutation, user }) {
                                     </div>
                                 </div>
                                 <div className="boundBase">
-                                    <Link to="https://chat.whatsapp.com/I6gwsNWfYKELAO4pHg21ue">
+                                    <Link to="https://chat.whatsapp.com/I6gwsNWfYKELAO4pHg21ue" style={{width: "100%"}}>
                                         <Button full>
                                             <Icon icon="mingcute:whatsapp-line" width="24" height="24" />
                                             <p>Join Whatsapp</p>

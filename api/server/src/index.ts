@@ -13,11 +13,11 @@ import notify from "./routes/notifications/plugin";
 import { membershipJob } from "./middleware/cronJob";
 import cron from "./routes/jobs/plugin";
 import leader from "./routes/leaderboards/plugin";
-import billing from "./routes/billings/plugin";
 import webhook from "./routes/webhook.";
 import CoachAssignmentPlugin from "./routes/coachAssigments/plugin";
 import subscriptionsPlugin from "./routes/subscriptions/plugin";
 import transPlugin from "./routes/transactions/plugin";
+import cMatchPlugins from "./routes/customMatch/plugins";
 
 // Connect to the database
 connectDb();
@@ -42,6 +42,7 @@ app
   .use(CoachAssignmentPlugin)
   .use(subscriptionsPlugin)
   .use(transPlugin)
+  .use(cMatchPlugins)
   .get("/", () => "Server is Up and running 🦊")
   .listen(Bun.env.PORT || 3002);
 

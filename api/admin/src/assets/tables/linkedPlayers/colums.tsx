@@ -22,7 +22,7 @@ export const columns: ColumnDef<Users>[] = [
 			return (
 				<>
 					<div className="proBoxImg">
-						<img src={user.coachId.imageUrl} alt="" />
+						<img src={user?.coachId?.imageUrl} alt="" />
 					</div>
 				</>
 			)

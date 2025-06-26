@@ -16,8 +16,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -26,7 +24,6 @@ import {
 	FormControl,
 	FormField,
 	FormItem,
-	FormLabel,
 	FormMessage,
 } from "@/components/ui/form"
 import {
@@ -37,9 +34,6 @@ import {
 } from "@/components/ui/input-otp"
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp'
 import "../../assets/style/routes/matches.css"
-import { Card } from '@/components/ui/card'
-import { useEffect, useRef, useState } from 'react'
-import jsQR from 'jsqr';
 import { toast } from '@/hooks/use-toast'
 
 

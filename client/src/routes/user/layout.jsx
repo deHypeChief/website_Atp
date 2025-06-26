@@ -135,6 +135,11 @@ export default function DashboardLayout() {
                                 <p>Tickets</p>
                             </div>
                         </Link>
+                        {/* <Link to={"/u/matches"} onClick={hamFunction}>
+                            <div className={`sideContent_Bttn ${location.pathname.includes("matches") ? "active" : "sc_BttnClosed"}`}>
+                                <p>Matches</p>
+                            </div>
+                        </Link> */}
                         <Link to={"/u/tournaments"} onClick={hamFunction}>
                             <div className={`sideContent_Bttn ${location.pathname.includes("tournaments") ? "active" : "sc_BttnClosed"}`}>
                                 <p>Tournaments</p>

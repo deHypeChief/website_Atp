@@ -103,7 +103,7 @@ export async function delTour(id) {
 	try {
 		const response = await api.post(`/tour/admin/delTournament/${id}`);
 		//console.log(response.data)
-		// return response.data.leaders;
+		return response.data.leaders;
 	} catch (error) {
 		//console.error("Error deleting Tout:", error);
 		throw error;
@@ -154,6 +154,30 @@ export async function getSubedPlayers() {
 		return response.data;
 	} catch (error) {
 		//console.error("Error getting coach:", error);
+		throw error;
+	}
+}
+
+
+export async function getMatchCustom() {
+	try {
+		const response = await api.get(`/matchCustom/all`);
+		console.log(response.data)
+		return response.data;
+	} catch (error) {
+		//console.error("Error getting coach:", error);
+		throw error;
+	}
+}
+
+export async function createMatchCustom(payload) {
+	console.log(payload)
+	try {
+		const response = await api.post(`/matchCustom/create`, payload);
+		console.log(response.data)
+		return response.data;
+	} catch (error) {
+		console.error("Error creating match custom:", error);
 		throw error;
 	}
 }

@@ -266,3 +266,14 @@ export const getUserTrans = async () => {
     throw new Error(error.response.data.message);
   }
 }
+
+export const getUserMatchesC = async () => {
+  try {
+    const response = await api.get(`/matchCustom/user`);
+    console.log(response.data)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user custom matches info:", error);
+    throw new Error(error.response.data.message);
+  }
+}
