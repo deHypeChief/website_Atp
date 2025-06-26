@@ -400,14 +400,17 @@
 }
 
 .aboutImgRe {
-    height: 80vh;
-    width: 500px;
+    height: 60vh;
+    width: 400px;
     overflow: hidden;
     border-radius: 20px;
 
     img {
         width: 110%;
     }
+}
+.mon{
+    margin: 0 100px;
 }
 
 
@@ -416,9 +419,12 @@
 
 
 @media screen and (max-width: 700px) {
+    .mon{
+    margin: 0 0px;
+}
     .aboutImgRe {
-        height: 60vh;
-        width: 100%;
+        height: 40vh;
+        width: 80%;
         overflow: hidden;
         border-radius: 20px;
         /* border: 20px solid black; */
@@ -583,6 +589,8 @@
                 width: 100%;
             }
         }
+
+        
     }
 
     .testimoney {

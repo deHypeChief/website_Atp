@@ -56,7 +56,7 @@ export default function Reviews() {
 
 	return (
 		<section className="pair">
-			<div className="aboutWrap">
+			<div className="aboutWrap mon">
 				<div className="aboutImgRe">
 					<img
 						src={
