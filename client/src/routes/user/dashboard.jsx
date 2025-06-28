@@ -15,7 +15,6 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 // import { useMutation } from '@tanstack/react-query'
 import Chart from 'chart.js/auto'
 import iconBox from "/Icon.svg"
-import trend from "/ic-trending-up-24px.png"
 import { BillingSummary } from "./billingSuport";
 import { Link } from "react-router-dom";
 
@@ -84,25 +83,32 @@ function YourOverview({ matchMutation, user }) {
 
 
     useEffect(() => {
-        sliderRef.current.style.gridTemplateColumns = `repeat(${data?.length}, 100%)`
-        scrollToSlide(currentSlide);
-    }, [currentSlide, data?.length]);
+        if (sliderRef.current) {
+            sliderRef.current.style.gridTemplateColumns = `repeat(${data?.tour?.length || 0}, 100%)`;
+            scrollToSlide(currentSlide);
+        }
+    }, [currentSlide, data?.tour?.length]);
 
     const handleNext = () => {
-        if (currentSlide < data.length - 1) {
-            setCurrentSlide(currentSlide + 1);
+        if (currentSlide < (data?.tour?.length || 0) - 1) {
+            setCurrentSlide((prev) => prev + 1);
         }
     };
 
     const handlePrev = () => {
         if (currentSlide > 0) {
-            setCurrentSlide(currentSlide - 1);
+            setCurrentSlide((prev) => prev - 1);
         }
     };
 
     const scrollToSlide = (index) => {
-        const slide = sliderRef.current.children[index];
-        slide?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        if (sliderRef.current) {
+            const slideWidth = sliderRef.current.offsetWidth;
+            sliderRef.current.scrollTo({
+                left: index * slideWidth,
+                behavior: 'smooth',
+            });
+        }
     };
 
     useEffect(() => {
@@ -281,6 +287,7 @@ function YourOverview({ matchMutation, user }) {
                                             <div className="datPill">
                                                 <img src={raIcon3} alt="" height={20}/>
                                                 <p>{item.location}</p>
+                                                <br />
                                             </div>
                                         </div>
                                     </div>

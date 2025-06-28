@@ -15,6 +15,7 @@ interface IUser extends Document {
   socialToken: string;
   socialType: string;
   assignedCoach: ObjectId;
+  resetToken: string;
   comparePassword(candidatePin: string): Promise<boolean>;
 }
 

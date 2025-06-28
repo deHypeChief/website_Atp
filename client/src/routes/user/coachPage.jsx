@@ -145,7 +145,7 @@ const YourCoach = ({ actions }) => {
                         <p>Join a training plan and a coach would be assigned to you</p>
 
                         <Link to={"/u/billings"}>
-                            <Button onClick={actions}>See Plans</Button>
+                            <Button onClick={actions}>See Training Plans</Button>
                         </Link>
                     </div>
                 </div>

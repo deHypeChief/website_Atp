@@ -76,9 +76,14 @@ export default function DashboardLayout() {
         <div className="useNov">
             <div className="dashTopNav">
                 <div className="logoTop">
-                    <div className="logoc">
-                        <img src={logo} alt="" />
-                    </div>
+                    <Link to="/" onClick={() => {
+                        document.getElementsByTagName("nav")[0].style.display = "block"
+                        document.getElementsByTagName("footer")[0].style.display = "block"
+                    }}>
+                        <div className="logoc">
+                            <img src={logo} alt="" />
+                        </div>
+                    </Link>
                 </div>
                 <div className="upUserInfo">
                     {

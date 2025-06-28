@@ -66,12 +66,12 @@ export default function Tournament() {
         }
     ]
     const tags = [
-        "Kids Amatuer",
-        "Kids Mid-Level",
-        "Kids Professional",
-        "Adult Amatuer",
-        "Adult Mid-Level",
-        "Adult Professional",
+        "JUNIORS TENNIS TOURNAMENT",
+        "⁠ATP TENNIS TOURNAMENT",
+        // "Kids Professional",
+        // "Adult Amatuer",
+        // "Adult Mid-Level",
+        // "Adult Professional",
     ]
     return (
         <>
@@ -295,13 +295,7 @@ export default function Tournament() {
                     <p>Do you want to join the list of amazing brands, companies, organizations and individuals sponsoring ATP? Send an email to sponsorship@atp.com</p>
                 </div>
                 <div className="sporns">
-                    <div className="sponBox"></div>
-                    <div className="sponBox"></div>
-                    <div className="sponBox"></div>
-                    <div className="sponBox"></div>
-                    <div className="sponBox"></div>
-                    <div className="sponBox"></div>
-                    <div className="sponBox"></div>
+                    <img src="/IMG_2807.jpg" alt="" />
                 </div>
             </section>
         </>

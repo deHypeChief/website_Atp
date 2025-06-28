@@ -490,7 +490,7 @@
     }
 
     .featured {
-        margin-top: 150px;
+        margin-top: 80px;
 
         .feaTop {
             display: flex;
@@ -519,7 +519,7 @@
     }
 
     .membership {
-        margin-top: 150px;
+        margin-top: 50px;
         padding-top: 50px;
         padding-bottom: 50px;
 

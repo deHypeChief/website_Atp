@@ -154,7 +154,7 @@ export default function Home() {
                         <div className="rArrow rL">
                             <img src={line} alt="" />
                         </div>
-                        <h2>ABOUT AMATEUR TENNIS PRO</h2>
+                        <h2>TOURNAMENT BRIEF</h2>
                         <div className="rArrow rR">
                             <img src={line} alt="" />
                         </div>

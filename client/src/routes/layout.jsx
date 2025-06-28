@@ -22,6 +22,8 @@ import YourCoach from "./user/coachPage";
 import Tickets from "./user/ticketPage";
 import { BillingHistory } from "./user/billingHistory";
 import MatchesPage from "./user/matchesPage";
+import ForgotPassword from "./forgotPassword";
+import ResetPassword from "./resetPassword";
 
 export default function App() {
     return (
@@ -58,6 +60,8 @@ export default function App() {
                         <Route path="/u/ticket/:tournamentID" element={<YourTicket />} />
                         <Route path="/u/bills/:type/:subType/:duration/:autoRenew" element={<Billing />} />
                     </Route>
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                 </Routes>
                 <Footer />
             </BrowserRouter>

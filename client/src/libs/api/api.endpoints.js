@@ -277,3 +277,25 @@ export const getUserMatchesC = async () => {
     throw new Error(error.response.data.message);
   }
 }
+
+export const forgotPassword = async (email) => {
+  try {
+    const response = await api.post('/forgot-password', { email });
+    return response.data;
+  } catch (error) {
+    console.error('Error sending forgot password request:', error);
+    throw new Error(error.response.data.message);
+  }
+};
+
+export const resetPassword = async (payload) => {
+  try {
+    const response = await api.post('/reset-password', payload);
+    return response.data;
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    throw new Error(error.response.data.message);
+  }
+};
+
+

@@ -130,6 +130,12 @@ export function Login() {
                                 <span className="green">Sign up</span>
                             </Link>
                         </p>
+                        <p>
+                            Forgot your password?
+                            <Link to="/forgot-password">
+                                <span className="green">Reset it</span>
+                            </Link>
+                        </p>
                     </div>
                 </div>
             </div>

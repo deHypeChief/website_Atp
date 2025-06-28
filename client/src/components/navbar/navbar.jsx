@@ -13,6 +13,10 @@ export default function Navbar() {
     useScrollToTop()
     const link = [
         {
+            name: "Home",
+            link: "/about"
+        },
+        {
             name: "About",
             link: "/about"
         },
