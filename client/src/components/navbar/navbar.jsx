@@ -143,6 +143,12 @@ export default function Navbar() {
                         }}>
                             <Button full >Get Started</Button>
                         </Link>
+
+                        <Link to={"/login"} onClick={() => {
+                            setOpen(!open)
+                        }}>
+                            <Button full >Login</Button>
+                        </Link>
                     </div>
 
                 ) : null

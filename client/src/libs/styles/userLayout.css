@@ -958,7 +958,9 @@
 
 @media screen and (max-width: 600px) {
     .ham {
-        display: block;
+        display: flex;
+        gap: 15px;
+        align-items: center;
     }
 
     .his {

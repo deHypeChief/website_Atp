@@ -116,6 +116,10 @@ export default function DashboardLayout() {
                 </div>
 
                 <div className="ham" onClick={hamFunction}>
+                    <Link to="/" onClick={() => {
+                        document.getElementsByTagName("nav")[0].style.display = "block"
+                        document.getElementsByTagName("footer")[0].style.display = "block"
+                    }}>Home</Link>
                     <Icon icon="gg:menu" width="40px" height="40px" style={{ color: "black" }} />
                 </div>
             </div>
