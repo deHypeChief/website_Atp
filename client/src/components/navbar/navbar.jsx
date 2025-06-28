@@ -14,7 +14,7 @@ export default function Navbar() {
     const link = [
         {
             name: "Home",
-            link: "/about"
+            link: "/"
         },
         {
             name: "About",
@@ -105,7 +105,7 @@ export default function Navbar() {
                     {
                         link.map((item, index) => (
                             <ul key={`${item}+${index}`}>
-                                <Link style={{ color:  "black" }} to={item.link}>{item.name}</Link>
+                                <Link style={{ color: "black" }} to={item.link}>{item.name}</Link>
                             </ul>
                         ))
                     }
@@ -119,7 +119,13 @@ export default function Navbar() {
                     setOpen(!open)
                     // setTriggered(!triggered);
                 }}>
-                    <Icon icon="gg:menu" width="40px" height="40px" style={{ color: "black"}} />
+                    {
+                        !open ? (
+                            <Icon icon="gg:menu" width="40px" height="40px" style={{ color: "black" }} />
+                        ) : (
+                            <Icon icon="gg:close" width="40px" height="40px" style={{ color: "black" }} />
+                        )
+                    }
                 </div>
             </div>
             {

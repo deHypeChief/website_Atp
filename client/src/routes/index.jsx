@@ -7,7 +7,7 @@ import heroImg from "../libs/images/imgUpdate/IMG-20241208-WA0071.jpg"
 import Hero from "../components/hero/hero"
 import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
-import { getTour } from "../libs/api/api.endpoints"
+import { getTour, subscribeNewsletter } from "../libs/api/api.endpoints"
 import { client } from "../sanityClient"
 import { useEffect, useState } from "react"
 import Reviews from "../components/reviews/review"
@@ -15,6 +15,8 @@ import round from "/round.svg"
 
 export default function Home() {
     const [content, setContent] = useState([])
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const toruOuery = useQuery({
         queryFn: getTour,
@@ -113,6 +115,20 @@ export default function Home() {
             ],
         },
     ]
+
+    const handleNewsletterSubmit = async (e) => {
+        e.preventDefault();
+        const email = e.target.elements.email.value;
+
+        try {
+            const response = await subscribeNewsletter(email);
+            setSuccessMessage(response.message); // Display success message
+            setErrorMessage("");
+        } catch (error) {
+            setErrorMessage(error.message); // Display error message
+            setSuccessMessage("");
+        }
+    };
 
     return (
         <>
@@ -349,6 +365,7 @@ export default function Home() {
             <Reviews />
 
             <section className="news">
+                
                 <div className="secTop">
                     <div className="heroSubTop">
                         <div className="rArrow rL">
@@ -375,10 +392,14 @@ export default function Home() {
                 </div>
 
                 <div className="newsInput">
-                    <div className="inputN">
-                        <input type="text" placeholder="Your Email Address" />
-                        <Button>Join Our Mailing List</Button>
-                    </div>
+                    <form onSubmit={handleNewsletterSubmit}>
+                        <div className="inputN">
+                            <input type="text" name="email" placeholder="Your Email Address" required />
+                            <Button type="submit">Join Our Mailing List</Button>
+                        </div>
+                    </form>
+                    {successMessage && <p className="success-message">{successMessage}</p>}
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
                 </div>
             </section>
             <div className="newWall">

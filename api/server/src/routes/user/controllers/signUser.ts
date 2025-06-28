@@ -4,6 +4,7 @@ import { userSchemas } from "../setup";
 import User from "../model";
 import ResetToken from "../resetToken.model";
 import { sendMail } from "../../../middleware/sendMail";
+import NewsletterSubscriber from "../../newsletterSubscriber.model";
 
 const signUser = new Elysia()
     .use(sendMail)
@@ -212,6 +213,48 @@ const signUser = new Elysia()
         }
     }, {
         body: "resetPasswordSchema" // Specify body schema for validation
+    })
+    .post('/subscribe-newsletter', async ({ body, set, mailConfig, generateAtpEmail }) => {
+        const { email } = body;
+
+        if (!email) {
+            set.status = 400; // Bad Request
+            return { message: "Email is required" };
+        }
+
+        try {
+            const existingSubscriber = await NewsletterSubscriber.findOne({ email });
+
+            if (existingSubscriber) {
+                set.status = 409; // Conflict
+                return { message: "Email is already subscribed" };
+            }
+
+            const newSubscriber = new NewsletterSubscriber({ email });
+            await newSubscriber.save();
+
+            // Send success email
+            mailConfig(
+                email,
+                "Welcome to Our Newsletter!",
+                generateAtpEmail({
+                    title: "Subscription Successful",
+                    content: `
+                        <p>Hi,</p>
+                        <p>Thank you for subscribing to our newsletter! We're excited to keep you updated on our latest news, events, and exclusive offers.</p>
+                        <br/>
+                        <p>Best regards,</p>
+                        <p>The ATP Team</p>
+                    `
+                })
+            );
+
+            set.status = 200; // OK
+            return { message: "Successfully subscribed to the newsletter" };
+        } catch (error) {
+            set.status = 500; // Internal Server Error
+            return { message: "An error occurred while subscribing" };
+        }
     });
 
 export default signUser;

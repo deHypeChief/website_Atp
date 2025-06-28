@@ -266,7 +266,9 @@ function YourOverview({ matchMutation, user }) {
                 </div>
 
                 <div className="ebound cals">
-                    <h2>Upcoming Tournament</h2>
+                    <h2>
+                        Upcoming Tournaments
+                         </h2>
                     <div className="calBox">
                         <button onClick={handlePrev} disabled={currentSlide === 0} className="buttons upL">
                             <Icon icon="iconamoon:arrow-left-2-duotone" width="20px" height="20px" />
@@ -279,8 +281,11 @@ function YourOverview({ matchMutation, user }) {
                             {(data?.tour?.length ?? 0) > 0 ? (
                                 data.tour.map((item, index) => (
                                     <div key={"m" + index} className="upCard">
+                                        <p>{dayjs(item.date).format("MMMM, YYYY")}</p>
                                         <div className="bigTextUp">
-                                            <h1 className="ipText">{item.date.split("T")[0].split("-")[2]}</h1>
+                                            <h1 className="ipText" 
+                                                style={{ fontSize: "5rem", lineHeight: "1.2" }}
+                                            >{item.date.split("T")[0].split("-")[2]}</h1>
                                         </div>
                                         <h2 className="tourTitleUp">{item.name}</h2>
                                         <div className="baseupinfo">

@@ -298,4 +298,9 @@ export const resetPassword = async (payload) => {
   }
 };
 
+export const subscribeNewsletter = async (email) => {
+    const response = await api.post('/subscribe-newsletter', { email });
+    return response.data;
+};
+
 

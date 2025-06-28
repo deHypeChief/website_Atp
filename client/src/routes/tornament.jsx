@@ -81,7 +81,7 @@ export default function Tournament() {
             <section className="upcomings">
                 <div className="upComs">
                     <h1>Upcoming Tournaments</h1>
-                    <p>Choose your level and will find a tournament that suits you best</p>
+                    {/* <p>Choose your level and will find a tournament that suits you best</p> */}
                 </div>
                 <div className="upActions">
                     {
@@ -138,7 +138,7 @@ export default function Tournament() {
             <section className="upcomings">
                 <div className="upComs">
                     <h1>Tournaments Leaderboard</h1>
-                    <p>Choose a level to see the leaders in that category</p>
+                    {/* <p>Choose a level to see the leaders in that category</p> */}
                 </div>
                 <div className="upActions">
                     {/* {

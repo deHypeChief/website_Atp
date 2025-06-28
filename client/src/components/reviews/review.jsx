@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { client, urlFor } from "../../sanityClient";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import line from "../../libs/images/Line2.png"
+
 
 export default function Reviews() {
 	const [currentView, setCurrentView] = useState(0);
@@ -56,6 +58,24 @@ export default function Reviews() {
 
 	return (
 		<section className="pair">
+			<div className="secTop" style={{ marginBottom: "2rem" }}>
+				<div className="heroSubTop">
+					<div className="rArrow rL">
+						<img src={line} alt="" />
+					</div>
+					<h2>
+						Student Reviews	
+					</h2>
+					<div className="rArrow rR">
+						<img src={line} alt="" />
+					</div>
+				</div>
+				<h1>
+					What Our Students Say
+				</h1>
+			</div>
+
+			<br />
 			<div className="aboutWrap mon">
 				<div className="aboutImgRe">
 					<img
