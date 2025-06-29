@@ -65,8 +65,16 @@ const webhook = new Elysia({
 export default webhook
 
 function parseReference(reference: string) {
+    // asher04-membership-monthly-1751175591198
+    // asher04-membership-quarterly-1751175683345
+    // asher04-membership-yearly-1751175683345
+
+    // asher04-training-standard-1months-1751175764059
+    // asher04-training-standard-3months-1751175764059
     try {
+        console.log(`DEBUG: parseReference called with: "${reference}"`);
         const parts = reference.split('-');
+        console.log(`DEBUG: Split parts:`, parts);
 
         let paymentType = 'unknown';
         let planType = 'unknown';
@@ -80,15 +88,43 @@ function parseReference(reference: string) {
             planType = parts[2];
         }
 
-        if (parts.length >= 4) {
-            const durationPart = parts[3];
+        console.log(`DEBUG: Initial values - paymentType: "${paymentType}", planType: "${planType}"`);
 
-            // Match formats like "1month"
-            const numericMonthMatch = durationPart.match(/(\d+)month/);
+        // For membership plans, duration is determined by the plan type (parts[2])
+        // For training plans, duration might be in parts[3]
+        if (paymentType.toLowerCase() === 'membership') {
+            console.log(`DEBUG: Processing membership plan`);
+            // Handle membership duration based on plan type
+            switch (planType.toLowerCase()) {
+                case 'monthly':
+                    duration = 1;
+                    break;
+                case 'quarterly':
+                    duration = 3;
+                    break;
+                case 'yearly':
+                    duration = 12;
+                    break;
+                default:
+                    duration = 1;
+                    break;
+            }
+            console.log(`DEBUG: Membership duration set to: ${duration}`);
+        } else if (paymentType.toLowerCase() === 'training' && parts.length >= 4) {
+            console.log(`DEBUG: Processing training plan`);
+            // For training, check parts[3] for duration
+            const durationPart = parts[3];
+            console.log(`DEBUG: Training duration part: "${durationPart}"`);
+
+            // Match formats like "1months" or "3months"
+            const numericMonthMatch = durationPart.match(/(\d+)months?/);
+            console.log(`DEBUG: Numeric match result:`, numericMonthMatch);
+            
             if (numericMonthMatch && numericMonthMatch[1]) {
                 duration = parseInt(numericMonthMatch[1]);
+                console.log(`DEBUG: Training duration parsed from numeric: ${duration}`);
             } else {
-                // Handle word-based durations
+                // Handle word-based durations for training
                 switch (durationPart.toLowerCase()) {
                     case 'monthly':
                         duration = 1;
@@ -103,14 +139,19 @@ function parseReference(reference: string) {
                         duration = 1;
                         break;
                 }
+                console.log(`DEBUG: Training duration set from word-based: ${duration}`);
             }
+        } else {
+            console.log(`DEBUG: No special processing - paymentType: "${paymentType}", parts.length: ${parts.length}`);
         }
 
-        return {
+        const result = {
             paymentType,
             planType,
             duration
         };
+        console.log(`DEBUG: Final parseReference result:`, result);
+        return result;
     } catch (error) {
         console.error('Error parsing reference:', error);
         return {
@@ -132,13 +173,15 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
     const { reference, amount, customer } = data;
     const amountInNaira = amount / 100;
 
-    console.log(data);
+    console.log(`DEBUG: Webhook received data:`, JSON.stringify(data, null, 2));
+    console.log(`DEBUG: Reference from webhook: "${reference}"`);
 
     const user = await User.findOne({ email: customer.email }) as { _id: string; email: string; fullName: string };
 
     try {
+        console.log(`DEBUG: Processing reference: "${reference}"`);
         const { paymentType, planType, duration } = parseReference(reference);
-        console.log(`Payment: Type=${paymentType}, Plan=${planType}, Duration=${duration} months`);
+        console.log(`DEBUG: Parsed result - Type=${paymentType}, Plan=${planType}, Duration=${duration} months`);
 
         if (!user) {
             console.error(`User not found for email: ${customer.email}`);

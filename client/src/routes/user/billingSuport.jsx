@@ -497,7 +497,7 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
             if (planType === "monthly") {
                 today.setMonth(today.getMonth() + 1);
             } else if (planType === "quarterly") {
-                today.setMonth(today.getMonth() + 4);
+                today.setMonth(today.getMonth() + 3);
             } else if (planType === "yearly") {
                 today.setFullYear(today.getFullYear() + 1);
             }
