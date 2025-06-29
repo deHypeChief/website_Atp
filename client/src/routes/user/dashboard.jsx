@@ -31,6 +31,7 @@ export default function Dashboard() {
         setUserData(user())
     }, [])
 
+    
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);

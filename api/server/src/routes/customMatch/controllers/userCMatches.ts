@@ -23,12 +23,12 @@ const userCMatches = new Elysia()
 
             // Rank
             let rank;
-            if (winRate >= 80) rank = "1st";
-            else if (winRate >= 60) rank = "2nd";
-            else if (winRate >= 40) rank = "3rd";
-            else if (winRate >= 30) rank = "4th";
-            else if (winRate >= 20) rank = "5th";
-            else if (winRate >= 10) rank = "6th";
+            if (winRate >= 80) rank = "1 Tier";
+            else if (winRate >= 60) rank = "2 Tier";
+            else if (winRate >= 40) rank = "3 Tier";
+            else if (winRate >= 30) rank = "4 Tier";
+            else if (winRate >= 20) rank = "5 Tier";
+            else if (winRate >= 10) rank = "6 Tier";
             else rank = "Unranked";
 
             // Calculate recent win rate (last 10)

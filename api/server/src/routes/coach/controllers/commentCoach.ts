@@ -5,11 +5,21 @@ import Coach from "../model";
 const commentCoach = new Elysia()
     .use(isUser_Authenticated)
     .post("/user/comment", async ({ set, body, user }) => {
-        const { comment, rating } = body;
+        const { comment, rating, coachId } = body;
 
         try {
+            // Use coachId from body if provided, otherwise use user.assignedCoach
+            const targetCoachId = coachId || user.assignedCoach;
+            
+            if (!targetCoachId) {
+                set.status = 400;
+                return {
+                    message: "No coach ID provided and user has no assigned coach"
+                };
+            }
+
             // Find the coach by id
-            const coach = await Coach.findById(user.assignedCoach);
+            const coach = await Coach.findById(targetCoachId);
 
             if (!coach) {
                 set.status = 404;

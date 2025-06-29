@@ -8,7 +8,13 @@ const getUserCoach = new Elysia()
         try {
             const coachInfo = await CoachAssignment.findOne({
                 playerId: user._id
-            }).populate("coachId")
+            }).populate({
+                path: "coachId",
+                populate: {
+                    path: "comment.userID",
+                    select: "fullName email"
+                }
+            })
 
             if (!coachInfo) {
                 set.status = 400;

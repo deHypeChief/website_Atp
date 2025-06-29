@@ -35,6 +35,7 @@ import {
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp'
 import "../../assets/style/routes/matches.css"
 import { toast } from '@/hooks/use-toast'
+import { Input } from '@/components/ui/input'
 
 
 
@@ -46,11 +47,15 @@ export const Route = createFileRoute('/_admin/matches')({
 function Matches() {
 	const queryClient = useQueryClient()
 	const { data } = useQuery({ queryKey: ['match'], queryFn: getMatches })
-	
+
 	const { mutate, isPending } = useMutation({
-		mutationFn: (data) => verifyToken({
-			token: "ATP-"+data.token
-		}),
+		mutationFn: (data) => {
+			// Remove ATP- prefix if it exists in the input
+			const cleanToken = data.token.startsWith('ATP-') ? data.token.substring(4) : data.token;
+			return verifyToken({
+				token: "ATP-" + cleanToken
+			});
+		},
 		onSuccess: (data) => {
 			console.log(data)
 			toast({
@@ -92,34 +97,23 @@ function Matches() {
 						<DialogHeader>
 							<DialogTitle>Verify Ticket</DialogTitle>
 							<DialogDescription>
-								You can scan the qrcode or add the ticket pin for verification
+								Add the last six chars of the ticket pin for verification
 							</DialogDescription>
 						</DialogHeader>
 						<Form {...form}>
-							<form className="" onSubmit={form.handleSubmit(mutate)} >
-								<div className="fomWrap">
+							<form className="w-full" onSubmit={form.handleSubmit(mutate)} >
+								<div className="w-full mb-4">
 									<FormField
 										control={form.control}
 										name="token"
 										render={({ field }) => (
 											<FormItem>
 												<FormControl>
-													<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS} {...field}>
-														<InputOTPGroup>
-															<InputOTPSlot index={0} />
-															<InputOTPSlot index={1} />
-														</InputOTPGroup>
-														<InputOTPSeparator />
-														<InputOTPGroup>
-															<InputOTPSlot index={2} />
-															<InputOTPSlot index={3} />
-														</InputOTPGroup>
-														<InputOTPSeparator />
-														<InputOTPGroup>
-															<InputOTPSlot index={4} />
-															<InputOTPSlot index={5} />
-														</InputOTPGroup>
-													</InputOTP>
+													<Input
+														className="w-full"
+														placeholder='Enter last 6 chars'
+														{...field}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>

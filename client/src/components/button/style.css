@@ -5,8 +5,10 @@ button {
     color: var(--color-blue);
     border: none;
     font-weight: 600;
+    /* display: flex; */
+    align-items: center;
     border-radius: 5px;
-
+    
 
     p {
         font-size: 1rem;

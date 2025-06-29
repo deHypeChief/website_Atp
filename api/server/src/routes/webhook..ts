@@ -66,27 +66,43 @@ export default webhook
 
 function parseReference(reference: string) {
     try {
-        // Assuming format like: "hype7-training-regular-1month-1743438416284"
         const parts = reference.split('-');
 
-        // Default values
         let paymentType = 'unknown';
         let planType = 'unknown';
         let duration = 1;
 
         if (parts.length >= 2) {
-            paymentType = parts[1]; // "training"
+            paymentType = parts[1];
         }
 
         if (parts.length >= 3) {
-            planType = parts[2]; // "regular"
+            planType = parts[2];
         }
 
-        if (parts.length >= 4 && parts[3].includes('month')) {
-            // Extract the numeric part from strings like "1month"
-            const durationMatch = parts[3].match(/(\d+)month/);
-            if (durationMatch && durationMatch[1]) {
-                duration = parseInt(durationMatch[1]);
+        if (parts.length >= 4) {
+            const durationPart = parts[3];
+
+            // Match formats like "1month"
+            const numericMonthMatch = durationPart.match(/(\d+)month/);
+            if (numericMonthMatch && numericMonthMatch[1]) {
+                duration = parseInt(numericMonthMatch[1]);
+            } else {
+                // Handle word-based durations
+                switch (durationPart.toLowerCase()) {
+                    case 'monthly':
+                        duration = 1;
+                        break;
+                    case 'quarterly':
+                        duration = 3;
+                        break;
+                    case 'yearly':
+                        duration = 12;
+                        break;
+                    default:
+                        duration = 1;
+                        break;
+                }
             }
         }
 
@@ -105,26 +121,30 @@ function parseReference(reference: string) {
     }
 }
 
+
+function addGracePeriod(date: Date, days: number = 7): Date {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+
 async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail: any) {
     const { reference, amount, customer } = data;
-    const amountInNaira = amount / 100; // Convert kobo to naira
-    console.log(data)
+    const amountInNaira = amount / 100;
+
+    console.log(data);
 
     const user = await User.findOne({ email: customer.email }) as { _id: string; email: string; fullName: string };
 
     try {
-        // Parse the reference to determine payment details
         const { paymentType, planType, duration } = parseReference(reference);
         console.log(`Payment: Type=${paymentType}, Plan=${planType}, Duration=${duration} months`);
-
-        // Find the user by email
 
         if (!user) {
             console.error(`User not found for email: ${customer.email}`);
             return;
         }
 
-        // Find the billing record
         const billing = await Subscription.findOne({ user: user._id });
 
         if (!billing) {
@@ -133,70 +153,76 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
         }
 
         let billName = '';
-        let pType = "ticket"
-        switch (paymentType.toLowerCase()) {
-            case 'membership':
-                // Update membership bill
-                billing.membership.status = 'Paid';
-                // Map planType string to allowed literal types
-                const allowedPlans = ["monthly", "quarterly", "yearly", "none"] as const;
-                billing.membership.plan = allowedPlans.includes(planType as any) ? planType as typeof allowedPlans[number] : "none";
+        let pType = "ticket";
+        const normalizedPlanType = planType.toLowerCase();
 
-                // Calculate renewal date based on membership duration
+        switch (paymentType.toLowerCase()) {
+            case 'membership': {
+                billing.membership.status = 'Paid';
+                const allowedPlans = ["monthly", "quarterly", "yearly", "none"] as const;
+                billing.membership.plan = allowedPlans.includes(normalizedPlanType as any)
+                    ? normalizedPlanType as typeof allowedPlans[number]
+                    : "none";
+
                 const renewalDate = new Date();
                 renewalDate.setMonth(renewalDate.getMonth() + duration);
                 billing.membership.endDate = renewalDate;
-                pType = "membership"
-                // Calculate grace period (7 days after renewal)
-                const gracePeriod = new Date(renewalDate);
-                gracePeriod.setDate(gracePeriod.getDate() + 7);
-                billing.membership.gracePeriod = gracePeriod;
+                billing.membership.gracePeriod = addGracePeriod(renewalDate);
 
-                billName = `${planType.charAt(0).toUpperCase() + planType.slice(1)} Membership (${duration} month${duration > 1 ? 's' : ''})`;
+                const label = billing.membership.plan === "none" ? "Basic" : capitalize(billing.membership.plan);
+                billName = `${label} Membership (${duration} month${duration > 1 ? 's' : ''})`;
+
+                pType = "membership";
                 break;
+            }
 
-            case 'training':
+            case 'training': {
                 billing.training.status = 'Paid';
                 const allowedTrainingPlans = ["none", "regular", "standard", "premium", "family", "couples"] as const;
-                billing.training.plan = allowedTrainingPlans.includes(planType as any) ? planType as typeof allowedTrainingPlans[number] : "none";
+                billing.training.plan = allowedTrainingPlans.includes(normalizedPlanType as any)
+                    ? normalizedPlanType as typeof allowedTrainingPlans[number]
+                    : "none";
 
-
-                // Calculate renewal date based on training duration
                 const trainingRenewalDate = new Date();
                 trainingRenewalDate.setMonth(trainingRenewalDate.getMonth() + duration);
                 billing.training.endDate = trainingRenewalDate;
+                billing.training.gracePeriod = addGracePeriod(trainingRenewalDate);
 
-                // Calculate grace period (7 days after renewal)
-                const trainingGracePeriod = new Date(trainingRenewalDate);
-                trainingGracePeriod.setDate(trainingGracePeriod.getDate() + 7);
-                billing.training.gracePeriod = trainingGracePeriod;
+                const label = billing.training.plan === "none" ? "Basic" : capitalize(billing.training.plan);
+                billName = `${label} Training (${duration} month${duration > 1 ? 's' : ''})`;
 
-                billName = `${planType.charAt(0).toUpperCase() + planType.slice(1)} Training (${duration} month${duration > 1 ? 's' : ''})`;
-                pType = "training"
+                pType = "training";
 
-                //create a coach assignment for the user and send a coach assignment notification
-                const coachAssignment = await CoachAssignment.create({
-                    status: "Pending",
-                    playerId: user._id.toString()
-                });
-                if (!coachAssignment) {
-                    console.error(`Failed to create coach assignment for user: ${user._id}`);
-                    return;
+                try {
+                    const coachAssignment = await CoachAssignment.create({
+                        status: "Pending",
+                        playerId: user._id.toString()
+                    });
+
+                    if (coachAssignment) {
+                        await Notify.create({
+                            userID: user._id,
+                            title: "Coach Assignment Pending",
+                            message: "Your training payment was successful. A coach will be assigned to you shortly.",
+                            type: "info"
+                        });
+                    } else {
+                        console.warn(`Coach assignment not created for user: ${user._id}`);
+                    }
+                } catch (coachErr) {
+                    console.error(`Error assigning coach for user ${user._id}:`, coachErr);
                 }
-                await Notify.create({
-                    userID: user._id,
-                    title: "Coach Assignment Pending",
-                    message: "Your training payment was successful. A coach will be assigned to you shortly.",
-                    type: "info"
-                });
-                break;
 
-            default:
+                break;
+            }
+
+            default: {
                 console.log(`Unknown payment type: ${paymentType}`);
                 billName = `Payment (${reference})`;
+                break;
+            }
         }
 
-        // Add to billing history
         billing.paymentHistory.push({
             type: paymentType,
             date: new Date(),
@@ -213,9 +239,8 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
             date: new Date(),
             status: "Complete",
             user: user._id
-        })
+        });
 
-        // Send notification
         await Notify.create({
             userID: user._id,
             title: "Payment Successful",
@@ -223,33 +248,35 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
             type: "success"
         });
 
-        // Send email notification
         mailConfig(
             user.email,
             "Payment Confirmation",
             generateAtpEmail({
                 title: "Payment Successful",
                 content: `
-            <p>Hi ${user.fullName},</p>
-            <p>Your payment of <strong>₦${amountInNaira.toLocaleString()}</strong> for ${billName} has been successfully processed.</p>
-            <p>Transaction Reference: ${reference}</p>
-            <p>Thank you for your payment!</p>
-          `
+                <p>Hi ${user.fullName},</p>
+                <p>Your payment of <strong>₦${amountInNaira.toLocaleString()}</strong> for ${billName} has been successfully processed.</p>
+                <p>Transaction Reference: ${reference}</p>
+                <p>Thank you for your payment!</p>
+              `
             })
         );
 
         console.log(`Successfully processed payment for ${user.fullName}: ${billName}, Amount: ₦${amountInNaira}`);
 
-
     } catch (error) {
-        // Create error notification
         if (user) {
             await Notify.create({
                 userID: user._id,
                 title: "Payment Processing Error",
                 message: "We encountered an issue processing your payment. Please contact support for assistance.",
+                type: "error"
             }).catch(notifyErr => console.error("Failed to create error notification:", notifyErr));
         }
         console.error('Error handling charge.success:', error);
     }
+}
+
+function capitalize(text: string): string {
+    return text.charAt(0).toUpperCase() + text.slice(1);
 }
