@@ -79,7 +79,7 @@ export default function Home() {
         {
             title: "Premium Quarterly",
             extra: "Save N25 if when you join",
-            priceNGN: 17000,
+            priceNGN: 15000,
             priceUSD: 10,
             duration: "quarterly",
             content: [
