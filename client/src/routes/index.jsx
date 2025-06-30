@@ -78,7 +78,7 @@ export default function Home() {
         },
         {
             title: "Premium Quarterly",
-            extra: "Save '' if when you join",
+            extra: "Save 17% if when you join",
             priceNGN: 15000,
             priceUSD: 10,
             duration: "quarterly",
@@ -97,7 +97,7 @@ export default function Home() {
         },
         {
             title: "Premium Yearly",
-            extra: "Save '' if when you join",
+            extra: "Save 3% if when you join",
             priceNGN: 70000,
             priceUSD: 50,
             duration: "yearly",
