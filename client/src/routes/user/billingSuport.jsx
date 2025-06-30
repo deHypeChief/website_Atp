@@ -39,7 +39,7 @@ const plans = [
             "Join Premium WhatsApp Community",
             "Access to Progress Tracker",
             "Training / Coaching Discounts",
-            "1 Free Training / Quarter",
+            "No Free Training / Quarter",
             "Exclusive Social Events",
             "Tournament Priority Access & 5% Discount",
             "Premium Badge on Dashboard",
@@ -47,7 +47,7 @@ const plans = [
     },
     {
         title: "Premium Quarterly",
-        extra: "Save N25 if when you join",
+        extra: "Save '' if when you join",
         priceNGN: 15000,
         priceUSD: 10,
         duration: "quarterly",
@@ -66,7 +66,7 @@ const plans = [
     },
     {
         title: "Premium Yearly",
-        extra: "Save N25 if when you join",
+        extra: "Save '' if when you join",
         priceNGN: 70000,
         priceUSD: 50,
         duration: "yearly",
