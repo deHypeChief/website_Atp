@@ -100,6 +100,7 @@ export default function DashboardLayout() {
                     }
 
                     <div className="userRound">
+                        {/* <p>Home</p> */}
                         {
                             data?.user?.picture ? (
                                 <img src={data.user.picture} />

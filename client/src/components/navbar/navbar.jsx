@@ -111,8 +111,8 @@ export default function Navbar() {
                     }
                 </div>
                 <div className="navAction">
-                    <Link to="/signup">
-                        <Button>Get Started</Button>
+                    <Link to="/login">
+                        <Button>Login</Button>
                     </Link>
                 </div>
                 <div className="hamBox" onClick={() => {
