@@ -114,6 +114,16 @@ export default function DashboardLayout() {
                                 : "No Training Plan"}
                         </p>
                     </div>
+                    <Link to={"/"} onClick={() => {
+                        document.getElementsByTagName("nav")[0].style.display = "block"
+                        document.getElementsByTagName("footer")[0].style.display = "block"
+                    }}>
+                        <div className="membershipPill">
+                            <p style={{ textTransform: "capitalize" }}>
+                                Go Home
+                            </p>
+                        </div>
+                    </Link>
                 </div>
 
                 <div className="ham" onClick={hamFunction}>
