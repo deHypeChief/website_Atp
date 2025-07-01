@@ -303,4 +303,14 @@ export const subscribeNewsletter = async (email) => {
     return response.data;
 };
 
+export const deleteUserAccount = async () => {
+  try {
+    const response = await api.delete('/delUserData');
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting user account:', error);
+    throw new Error(error.response.data.message);
+  }
+};
+
 
