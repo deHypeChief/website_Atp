@@ -206,7 +206,7 @@ button {
 
         .boxP {
             position: relative;
-            /* height: 650px; */
+            height: 650px;
         }
 
         .tag {
@@ -269,7 +269,7 @@ button {
             display: flex;
             align-items: center;
             gap: 10px;
-            position: absolute;
+            /* position: absolute; */
             width: fit-content;
             width: 100%;
 
@@ -791,8 +791,8 @@ button {
             margin-bottom: 80px;
             display: grid;
             grid-template-columns: 1fr;
-            gap: 30px;
-            row-gap: 120px;
+            /* gap: 30px;
+            row-gap: 120px; */
         }
     }
 
