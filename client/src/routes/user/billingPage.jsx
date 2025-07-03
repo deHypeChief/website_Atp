@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useQuery } from "@tanstack/react-query";
 import { billingInfo, getPayMe, deleteUserAccount } from "../../libs/api/api.endpoints";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "../../components/button/button";
 import { BillingContent, BillingContent2, BillingSummary } from "./billingSuport";
 import { Link, useNavigate } from "react-router-dom";
@@ -31,6 +31,17 @@ export function Billings() {
         staleTime: 1000 * 60 * 5,
         refetchOnWindowFocus: false,
     });
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const payParam = queryParams.get('pay');
+
+        if (payParam) {
+            setIsSummaryOpen(true);
+            setPaymentData(JSON.parse(payParam));
+        }
+    }, []);
+
 
     const openSummary = (data) => {
         setPaymentData(data);
@@ -110,6 +121,7 @@ export function Billings() {
             day: "numeric",
         });
     };
+
 
     return (
         <>

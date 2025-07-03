@@ -52,7 +52,7 @@ export function Login() {
         mutationFn: userLogin,
         onSuccess: (data) => {
             console.log(data);
-            navigate(`/u?pay=${payQuery}`)
+            navigate(`/u/billings?pay=${payQuery}`)
         },
         onError: (err) => {
             setError(err.response.data.message)
