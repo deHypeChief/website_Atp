@@ -197,16 +197,16 @@ button {
 
     .prices {
         margin-top: 20px;
-        margin-bottom: 80px;
+        margin-bottom: 0px;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         gap: 15px;
-        row-gap: 120px;
+        row-gap: 0px;
 
 
         .boxP {
             position: relative;
-            height: 650px;
+            height: 550px;
         }
 
         .tag {
