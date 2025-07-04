@@ -189,7 +189,7 @@ export function BillingContent({ setAction }) {
                                                         ></div>
 
                                                         <h2>₦{item.priceNGN}/${item.priceUSD}</h2>
-                                                        <p>per month</p>
+                                                        <p>{item.duration || "per month"}</p>
                                                     </div>
 
                                                     <div className="priceButton" onClick={() => {
