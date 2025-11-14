@@ -1,22 +1,39 @@
-# Stage 1: Build the Vite app with Bun
+# Stage 1: Build the Vite app
 FROM oven/bun:1 AS build
 WORKDIR /admin
 
-# Copy package.json and bun.lockb to install dependencies
+# Install deps
 COPY package.json bun.lockb ./
-
-# Install dependencies with Bun
 RUN bun install --frozen-lockfile
 
-# Copy all project files
+# Build app
 COPY . .
-
-# Build the Vite app for production~~
 RUN bun run build
 
-# Stage 2: Serve the built app with NGINX
-FROM nginx:alpine
-COPY --from=build /admin/dist /usr/share/nginx/html
 
-# Expose the default NGINX port
-EXPOSE 80
+
+# Stage 2: Serve with Bun (NO nginx)
+FROM oven/bun:1 AS prod
+WORKDIR /admin
+
+# Copy built frontend
+COPY --from=build /admin/dist ./dist
+
+# Create a Bun static server directly in the Dockerfile
+RUN printf "import { serve } from 'bun';\n\
+import { file } from 'bun';\n\
+serve({\n\
+  port: 3000,\n\
+  async fetch(req) {\n\
+    const url = new URL(req.url);\n\
+    try {\n\
+      return new Response(file('./dist' + url.pathname));\n\
+    } catch {\n\
+      return new Response(file('./dist/index.html'));\n\
+    }\n\
+  }\n\
+});\n" > server.js
+
+EXPOSE 3000
+
+CMD ["bun", "server.js"]
