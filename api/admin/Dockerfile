@@ -34,6 +34,6 @@ serve({\n\
   }\n\
 });\n" > server.js
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD ["bun", "server.js"]
