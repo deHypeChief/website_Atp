@@ -4,7 +4,7 @@
     WORKDIR /app
     
     # Copy dependency files
-    COPY package.json 
+    COPY package.json ./
     RUN bun install 
     
     # Copy source files and build
