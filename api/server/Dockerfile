@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json package.json
 COPY bun.lockb bun.lockb
 
-RUN bun install  # Ensure bcrypt or bcryptjs is installed
+RUN bun install --frozen-lockfile  # Ensure bcrypt or bcryptjs is installed
 
 COPY ./src ./src
 
