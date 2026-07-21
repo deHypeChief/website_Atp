@@ -4,6 +4,7 @@ import { getStoreProducts } from "../libs/api/api.endpoints";
 import { addToCart, removeCartItem, updateCartItem, useCart } from "../libs/store/cart";
 import "../libs/styles/store.css";
 import "../libs/styles/store-controls.css";
+import "../libs/styles/store-mobile.css";
 
 const money = value => `₦${Number(value).toLocaleString()}`;
 export default function Store() {
@@ -18,9 +19,9 @@ export default function Store() {
         <div className="productInfo"><p>{product.category}</p><h3><Link className="productNameLink" to={`/shop/${product.slug}`}>{product.name}</Link></h3><div><strong>{money(product.price)}</strong>{(() => {
           const cartItem = cartItems.find(item => item._id === product._id);
           return cartItem ? <div className="productQuantity" aria-label={`${product.name} quantity`}>
-            <button aria-label={`Remove one ${product.name}`} onClick={() => cartItem.quantity === 1 ? removeCartItem(product._id) : updateCartItem(product._id, cartItem.quantity - 1)}>−</button>
+            <button aria-label={`Remove one ${product.name}`} onClick={() => cartItem.quantity === 1 ? removeCartItem(product._id) : updateCartItem(product._id, cartItem.quantity - 1, product.stock)}>−</button>
             <span aria-live="polite">{cartItem.quantity}</span>
-            <button aria-label={`Add one ${product.name}`} disabled={cartItem.quantity >= product.stock} onClick={() => updateCartItem(product._id, cartItem.quantity + 1)}>+</button>
+            <button aria-label={`Add one ${product.name}`} disabled={cartItem.quantity >= product.stock} onClick={() => updateCartItem(product._id, cartItem.quantity + 1, product.stock)}>+</button>
           </div> : <button disabled={!product.stock} onClick={() => addToCart(product)}>{product.stock ? "Add to cart" : "Sold out"}</button>;
         })()}</div></div>
       </article>)}</div>}

@@ -1,0 +1,15 @@
+@media (max-width: 560px) {
+  .storeHero {
+    padding-top: 8rem;
+  }
+
+  .shelfHead h2 {
+    font-size: 1.15rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .shelfHead p {
+    font-size: 0.75rem;
+  }
+}

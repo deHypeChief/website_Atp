@@ -110,7 +110,7 @@ export default function Navbar() {
     }
 
     return (
-        <nav style={{ background: "white" }}>
+        <nav className="siteNav" style={{ background: "white" }}>
             <div className="navbar">
                 <Link to={"/"}>
                     <div className="logo">

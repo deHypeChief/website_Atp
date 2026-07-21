@@ -7,11 +7,18 @@ const write = (items) => { localStorage.setItem(KEY, JSON.stringify(items)); win
 export function addToCart(product) {
   const items = read();
   const found = items.find(item => item._id === product._id);
-  if (found) found.quantity = Math.min(product.stock, found.quantity + 1);
+  if (found) {
+    found.stock = product.stock;
+    found.quantity = Math.min(product.stock, found.quantity + 1);
+  }
   else items.push({ _id: product._id, name: product.name, price: product.price, image: product.images?.[0] || "", stock: product.stock, quantity: 1 });
   write(items);
 }
-export const updateCartItem = (id, quantity) => write(read().map(item => item._id === id ? { ...item, quantity: Math.max(1, Math.min(item.stock, quantity)) } : item));
+export const updateCartItem = (id, quantity, currentStock) => write(read().map(item => {
+  if (item._id !== id) return item;
+  const stock = Number.isFinite(currentStock) ? currentStock : item.stock;
+  return { ...item, stock, quantity: Math.max(1, Math.min(stock, quantity)) };
+}));
 export const removeCartItem = id => write(read().filter(item => item._id !== id));
 export const clearCart = () => write([]);
 export function useCart() {
