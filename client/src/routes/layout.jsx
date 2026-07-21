@@ -24,6 +24,12 @@ import { BillingHistory } from "./user/billingHistory";
 import MatchesPage from "./user/matchesPage";
 import ForgotPassword from "./forgotPassword";
 import ResetPassword from "./resetPassword";
+import NewsArticle from "./newsArticle";
+import Store from "./store";
+import Cart from "./cart";
+import StorePaymentCallback from "./storePaymentCallback";
+import OrdersPage from "./user/ordersPage";
+import StoreProduct from "./storeProduct";
 
 export default function App() {
     return (
@@ -37,6 +43,12 @@ export default function App() {
                     <Route path="/about" element={<About />} />
                     <Route path="/tournaments" element={<Tournament />} />
                     <Route path="/resources" element={<Resources />} />
+                    <Route path="/news" element={<Resources />} />
+                    <Route path="/news/:slug" element={<NewsArticle />} />
+                    <Route path="/shop" element={<Store />} />
+                    <Route path="/shop/:slug" element={<StoreProduct />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/store/payment/callback" element={<StorePaymentCallback />} />
                     <Route path="/membership/">
                         <Route path="/membership/children" element={<ChildrenMembership />} />
                         <Route path="/membership/adult" element={<AdultMembership />} />
@@ -56,6 +68,7 @@ export default function App() {
                         <Route path="/u/coach" element={<YourCoach />} />
                         <Route path="/u/tickets" element={<Tickets />} />
                         <Route path="/u/matches" element={<MatchesPage />} />
+                        <Route path="/u/orders" element={<OrdersPage />} />
                         <Route path="/u/billings/history" element={<BillingHistory />} />
                         <Route path="/u/ticket/:tournamentID" element={<YourTicket />} />
                         <Route path="/u/bills/:type/:subType/:duration/:autoRenew" element={<Billing />} />

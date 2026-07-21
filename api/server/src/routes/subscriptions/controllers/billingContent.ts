@@ -41,15 +41,15 @@ const BillingConfig = {
         standard: {
             name: "Standard Package",
             discount: 7,
-            info: `This is a plan for clients who intend to have some sort of privacy to their training at Rockview Hotels Royale, Wuse II and Lake-view Homes Jabi.`,
-            priceInfo: `Price: N190,000 ($126) for one (1) month; N540,000 ($358) for three (3) months(You save N30,000 if you pay for 3 months). Registered clients in this plan will get a free tennis ball and a limitededition ATP cap.`,
+            info: `This is a plan for clients who intend to have some privacy during their training at Rockview Hotels Royale, Wuse II and Abuja Country Club, Life Camp.`,
+            priceInfo: `Price: N240,000 for one (1) month; N720,000 for three (3) months. Registered clients in this plan will get a free tennis ball and a limited-edition ATP cap.`,
             plans: [
                 {
-                    price: 216000,
+                    price: 240000,
                     dollarPrice: 126,
                 },
                 {
-                    price: 640000,
+                    price: 720000,
                     dollarPrice: 358,
                 }
             ]
@@ -58,14 +58,14 @@ const BillingConfig = {
             name: "Premium Package",
             discount: 10,
             info: `This plan is for exquisite clients who intend to have privacy in their training and meet a different class of people at Transcorp Hilton, Abuja.`,
-            priceInfo: `Price: N250,000 ($166) for one (1) month; N720,000 ($480) for three (3) months(You save N30,000 if you pay for 3 months). Registered clients in this plan will get a free tennis ball and a limitededition ATP cap.`,
+            priceInfo: `Price: N480,000 for one (1) month; N1,440,000 for three (3) months. Registered clients in this plan will get a free tennis ball and a limited-edition ATP cap.`,
             plans: [
                 {
-                    price: 270000,
+                    price: 480000,
                     dollarPrice: 166,
                 },
                 {
-                    price: 792000,
+                    price: 1440000,
                     dollarPrice: 480,
                 }
             ]

@@ -3,18 +3,17 @@ import Card from "../components/card/card"
 // import line2 from "../libs/images/Line.png"
 import line from "../libs/images/Line2.png"
 import "../libs/styles/home.css"
+import "../libs/styles/home-spacing.css"
 import heroImg from "../libs/images/imgUpdate/IMG-20241208-WA0071.jpg"
 import Hero from "../components/hero/hero"
 import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
-import { getTour, subscribeNewsletter } from "../libs/api/api.endpoints"
-import { client } from "../sanityClient"
-import { useEffect, useState } from "react"
+import { getNews, getSiteContent, getTour, subscribeNewsletter } from "../libs/api/api.endpoints"
+import { useState } from "react"
 import Reviews from "../components/reviews/review"
 import round from "/round.svg"
 
 export default function Home() {
-    const [content, setContent] = useState([])
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -23,19 +22,10 @@ export default function Home() {
         queryKey: ["indexTour"]
     })
 
-    useEffect(() => {
-        async function getContent() {
-            client
-                .fetch(`
-                    *[_type == "atpContent"]
-                `)
-                .then((data) => {
-                    setContent(data)
-                })
-                .catch(console.error)
-        }
-        getContent()
-    }, [])
+    const { data: siteContent } = useQuery({ queryFn: getSiteContent, queryKey: ["site-content"] })
+    const content = siteContent?.pages
+
+    const newsQuery = useQuery({ queryFn: getNews, queryKey: ["news"] })
 
     const plans = [
         {
@@ -147,10 +137,10 @@ export default function Home() {
                             </div>
                         </div>
                         <h1>
-                            Welcome to Amateur Tennis Pro (ATP)
+                            {content?.homePageAboutTitle || "Welcome to Amateur Tennis Pro (ATP)"}
                         </h1>
                         <p>
-                            Where passion for tennis meets professional training. Founded with the vision of making tennis accessible and enjoyable for everyone, ATP is dedicated to helping players of all skill levels fall in love with the game, refine their skills, and even reach their dreams of going pro.
+                            {content?.homePageAboutText || "Where passion for tennis meets professional training. Founded with the vision of making tennis accessible and enjoyable for everyone, ATP is dedicated to helping players of all skill levels fall in love with the game, refine their skills, and even reach their dreams of going pro."}
                         </p>
                         <div className="aboutAction">
                             <Link to="/about">
@@ -158,7 +148,7 @@ export default function Home() {
                             </Link>
                         </div>
                     </div>
-                    <div className="aboutImg">
+                    <div className="aboutImg" style={content?.homePageAboutImg ? {backgroundImage:`url(${content.homePageAboutImg})`} : undefined}>
 
                     </div>
                 </div>
@@ -345,7 +335,7 @@ export default function Home() {
                             {content?.homePageCoachTitle || "Find Your Perfect Coach"}
                         </h1>
                         <p>
-                            Our skilled coaches specialize in training amateur players to elevate their game and build confidence on the court. For those with professional ambitions, we offer specialized programs and connections with international tennis organizations, giving talented players the platform to compete and succeed on a global stage.
+                            {content?.homePageCoachText || "Our skilled coaches specialize in training amateur players to elevate their game and build confidence on the court. For those with professional ambitions, we offer specialized programs and connections with international tennis organizations, giving talented players the platform to compete and succeed on a global stage."}
 
                         </p>
                         <div className="aboutAction">
@@ -355,7 +345,7 @@ export default function Home() {
                             </Link>
                         </div>
                     </div>
-                    <div className="aboutImg pairImg">
+                    <div className="aboutImg pairImg" style={content?.homePageCoachImg ? {backgroundImage:`url(${content.homePageCoachImg})`} : undefined}>
 
                     </div>
                 </div>
@@ -363,6 +353,19 @@ export default function Home() {
 
 
             <Reviews />
+
+            {newsQuery.data?.length > 0 && <section className="homeNews">
+                <div className="homeNewsHead">
+                    <div><span>COURTSIDE / LATEST</span><h1>Fresh from the baseline</h1></div>
+                    <Link to="/news">See all news →</Link>
+                </div>
+                <div className="homeNewsGrid">
+                    {newsQuery.data.slice(0, 3).map((article, index) => <Link key={article._id} to={`/news/${article.slug}`} className={index === 0 ? "homeStory homeStoryLead" : "homeStory"}>
+                        <div className="homeStoryImage">{article.imageUrl ? <img src={article.imageUrl} alt="" /> : <span>ATP</span>}</div>
+                        <div className="homeStoryCopy"><small>{article.category}</small><h2>{article.title}</h2><p>{article.excerpt}</p></div>
+                    </Link>)}
+                </div>
+            </section>}
 
             <section className="news">
                 

@@ -188,6 +188,11 @@ export const getPayMe = async () => {
   }
 }
 
+export const getBillingPage = async () => {
+  const response = await api.get('/billing/pay/page');
+  return { user: response.data.user, billing: response.data.billing, config: response.data.config };
+};
+
 // /pay/registration
 export const payRegistration = async () => {
   try {
@@ -303,6 +308,21 @@ export const subscribeNewsletter = async (email) => {
     return response.data;
 };
 
+export const getNews = async () => {
+  const response = await api.get('/news');
+  return response.data.articles;
+};
+
+export const getNewsArticle = async (slug) => {
+  const response = await api.get(`/news/${slug}`);
+  return response.data.article;
+};
+
+export const getSiteContent = async () => {
+  const response = await api.get('/site-content');
+  return response.data.content;
+};
+
 export const deleteUserAccount = async () => {
   try {
     const response = await api.delete('/delUserData');
@@ -312,5 +332,11 @@ export const deleteUserAccount = async () => {
     throw new Error(error.response.data.message);
   }
 };
+
+export const getStoreProducts = async () => (await api.get('/store/products')).data.products;
+export const getStoreProduct = async slug => (await api.get(`/store/products/${slug}`)).data.product;
+export const createStoreCheckout = async payload => (await api.post('/store/checkout', payload)).data;
+export const getMyStoreOrders = async () => (await api.get('/store/orders/me')).data.orders;
+export const verifyStoreOrder = async (id, reference) => (await api.get(`/store/orders/${id}/verify`, { params: { reference } })).data;
 
 

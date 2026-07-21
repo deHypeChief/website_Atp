@@ -1,32 +1,17 @@
-.bCard {
-    text-align: center;
-    .bTop{
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .vBoxbb {
-        height: 300px;
-        width:360px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-
-}
-
-@media screen and (max-width: 600px){
-    .bCard {
-        width: 100%;
-        text-align: center;
-        .bTop{
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .vBoxbb {
-            height: 300px;
-            width:100%;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-    
-    }
-}
+.bCard { background:#fff; border:1px solid #dbe5ee; overflow:hidden; min-width:0; }
+.bCardImage { display:block; aspect-ratio:16/10; background:#083c6d; overflow:hidden; }
+.bCardImage img { width:100%; height:100%; object-fit:cover; transition:transform .45s ease; }
+.bCardImage span { display:grid; place-items:center; height:100%; color:#fff; font-size:3rem; font-weight:800; letter-spacing:-.08em; }
+.bCard:hover .bCardImage img { transform:scale(1.035); }
+.bCardContent { padding:24px; }
+.bCardMeta { display:flex; justify-content:space-between; gap:16px; color:#5d6f7f; font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.bCardMeta span { color:#d6542d; }
+.bCard h2 { margin:14px 0 10px; font-size:clamp(1.3rem,2vw,2rem); line-height:1.08; }
+.bCard h2 a { color:#092f54; text-decoration:none; }
+.bCard p { color:#526474; line-height:1.7; }
+.bCardLink { display:inline-flex; gap:10px; margin-top:20px; color:#006fbd; font-weight:700; text-decoration:none; }
+.bCardLink span { transition:transform .2s ease; }.bCardLink:hover span{transform:translateX(4px)}
+.bCardFeatured { grid-column:span 2; display:grid; grid-template-columns:1.35fr 1fr; }
+.bCardFeatured .bCardImage { aspect-ratio:auto; min-height:390px; }
+@media(max-width:700px){.bCardFeatured{grid-column:auto;display:block}.bCardFeatured .bCardImage{min-height:0;aspect-ratio:16/10}}
+@media(prefers-reduced-motion:reduce){.bCardImage img,.bCardLink span{transition:none}}

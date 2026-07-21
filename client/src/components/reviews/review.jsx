@@ -1,32 +1,14 @@
-import { useEffect, useState } from "react";
-import { client, urlFor } from "../../sanityClient";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getSiteContent } from "../../libs/api/api.endpoints";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import line from "../../libs/images/Line2.png"
 
 
 export default function Reviews() {
 	const [currentView, setCurrentView] = useState(0);
-	const [reviews, setReviews] = useState([]);
-	const [loading, setLoading] = useState(true); // Loading state
-	const [error, setError] = useState(null); // Error state
-
-	// Fetch reviews once on component mount
-	useEffect(() => {
-		async function getReviews() {
-			setLoading(true); // Set loading state to true
-			try {
-				const data = await client.fetch(`
-					*[_type == "reviews"]
-				`);
-				setReviews(data);
-			} catch (err) {
-				setError("Failed to load reviews");
-			} finally {
-				setLoading(false); // Set loading state to false after fetching is done
-			}
-		}
-		getReviews();
-	}, []); // Empty dependency array ensures it runs only once
+	const { data, isLoading:loading, isError:error } = useQuery({ queryKey:["site-content"], queryFn:getSiteContent });
+	const reviews = data?.reviews || [];
 
 	// Go to the next review
 	function countUp() {
@@ -80,9 +62,7 @@ export default function Reviews() {
 				<div className="aboutImgRe">
 					<img
 						src={
-							reviews[currentView]?.image?.asset?._ref
-								? urlFor(reviews[currentView].image.asset._ref).url()
-								: "" // Default image path if no image
+							reviews[currentView]?.imageUrl || ""
 						}
 						style={{
 							height: '100%',

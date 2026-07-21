@@ -1,0 +1,7 @@
+.userOrders .orderEmpty { display: flex; align-items: center; justify-content: space-between; gap: 24px; border: 1px dashed #b8c8d3; padding: 28px; }
+.userOrders .orderEmpty h2 { margin: 0 0 7px; color: #0b3353; font-size: 1.15rem; }
+.userOrders .orderEmpty p { margin: 0; color: #647b8c; }
+.userOrders .orderEmpty a { flex: 0 0 auto; padding: 13px 18px; background: #8bd000; color: #0b3353; font-size: .82rem; font-weight: 900; text-decoration: none; }
+.userOrders .orderEmpty a:hover { background: #78b800; }
+.userOrders .orderEmpty a:focus-visible { outline: 3px solid #0878bc; outline-offset: 3px; }
+@media (max-width: 600px) { .userOrders .orderEmpty { align-items: flex-start; flex-direction: column; } }

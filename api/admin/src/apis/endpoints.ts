@@ -181,3 +181,49 @@ export async function createMatchCustom(payload) {
 		throw error;
 	}
 }
+
+export async function getNewsAdmin() {
+	const response = await api.get('/news/admin');
+	return response.data.articles;
+}
+
+export async function createNewsArticle(payload) {
+	const response = await api.post('/news/admin', payload);
+	return response.data;
+}
+
+export async function updateNewsArticle(id, payload) {
+	const response = await api.put(`/news/admin/${id}`, payload);
+	return response.data;
+}
+
+export async function deleteNewsArticle(id) {
+	const response = await api.delete(`/news/admin/${id}`);
+	return response.data;
+}
+
+export async function getSiteContentAdmin() {
+	const response = await api.get('/site-content');
+	return response.data.content;
+}
+
+export async function updateSiteContent(payload) {
+	const response = await api.put('/site-content/admin', payload);
+	return response.data.content;
+}
+
+export async function createSiteReview(payload) {
+	const response = await api.post('/site-content/admin/reviews', payload);
+	return response.data.content;
+}
+
+export async function deleteSiteReview(id) {
+	const response = await api.delete(`/site-content/admin/reviews/${id}`);
+	return response.data.content;
+}
+
+export const getStoreOverview = async () => (await api.get('/store/admin/overview')).data;
+export const createStoreProduct = async (payload:any) => (await api.post('/store/admin/products', payload)).data;
+export const updateStoreProduct = async ({id,payload}:{id:string,payload:any}) => (await api.put(`/store/admin/products/${id}`, payload)).data;
+export const archiveStoreProduct = async (id:string) => (await api.delete(`/store/admin/products/${id}`)).data;
+export const updateStoreOrderStatus = async ({id,status}:{id:string,status:string}) => (await api.put(`/store/admin/orders/${id}/status`, {status})).data;

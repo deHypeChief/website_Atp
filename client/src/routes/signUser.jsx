@@ -12,6 +12,7 @@ import { getMembershPayLink } from "../libs/api/api.endpoints";
 
 export function Login() {
     const navigate = useNavigate()
+    const location = useLocation()
     const { isAuthenticated, userLogin } = useAuth()
     const [payQuery, setPayQuery] = useState("")
 
@@ -42,7 +43,7 @@ export function Login() {
             console.log(auth)
 
             if (auth) {
-                navigate(`/u`)
+                navigate(new URLSearchParams(location.search).get("redirect") || `/u`)
             }
         }
         checkAuth()
@@ -52,7 +53,7 @@ export function Login() {
         mutationFn: userLogin,
         onSuccess: (data) => {
             console.log(data);
-            navigate(`/u/billings?pay=${payQuery}`)
+            navigate(new URLSearchParams(location.search).get("redirect") || (payQuery ? `/u/billings?pay=${payQuery}` : "/u"))
         },
         onError: (err) => {
             setError(err.response.data.message)
@@ -197,7 +198,8 @@ export function SignUp() {
     const { mutateAsync: createUserMu, isPending } = useMutation({
         mutationFn: userRegister,
         onSuccess: () => {
-            navigate(`/login${payQuery}`)
+            const redirect = new URLSearchParams(location.search).get("redirect");
+            navigate(redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : `/login${payQuery}`)
         },
         onError: (err) => {
             setError(err.response.data.message)

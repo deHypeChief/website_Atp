@@ -9,18 +9,21 @@ export const isUser_Authenticated = (app: Elysia) =>
             const authorization = headers.get("authorization");
             const token = authorization?.split(" ")[1];
             if (!token) {
+                set.status = 401;
                 throw new Error('Unauthorized User');
             }
 
             // Type the payload as UserJWTPayload
             const payload = await userJwt.verify(token);
             if (!payload || !payload.userId) {
+                set.status = 401;
                 throw new Error('Invalid user token');
             }
 
             const { userId } = payload;
             const user = await User.findById(userId).select('-password');
             if (!user) {
+                set.status = 401;
                 throw new Error('User not found');
             }
 

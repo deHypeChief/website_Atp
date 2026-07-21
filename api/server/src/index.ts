@@ -18,6 +18,10 @@ import CoachAssignmentPlugin from "./routes/coachAssigments/plugin";
 import subscriptionsPlugin from "./routes/subscriptions/plugin";
 import transPlugin from "./routes/transactions/plugin";
 import cMatchPlugins from "./routes/customMatch/plugins";
+import newsPlugin from "./routes/news/plugin";
+import siteContentPlugin from "./routes/siteContent/plugin";
+import storePlugin from "./routes/store/plugin";
+import uploadsPlugin from "./routes/uploads/plugin";
 
 // Connect to the database
 connectDb();
@@ -43,6 +47,10 @@ app
   .use(subscriptionsPlugin)
   .use(transPlugin)
   .use(cMatchPlugins)
+  .use(newsPlugin)
+  .use(siteContentPlugin)
+  .use(storePlugin)
+  .use(uploadsPlugin)
   .get("/", () => "Server is Up and running 🦊")
   .listen(Bun.env.PORT || 3002);
 

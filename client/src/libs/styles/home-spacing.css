@@ -1,0 +1,9 @@
+.homeNews {
+  margin-top: 80px;
+}
+
+@media (max-width: 650px) {
+  .homeNews {
+    margin-top: 48px;
+  }
+}

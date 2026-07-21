@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import './style.css'
 import Button from "../button/button"
 import logo from "../../libs/images/logo.svg"
@@ -7,8 +7,17 @@ import { Icon } from "@iconify/react"
 
 import { useEffect, useState } from "react"
 import useScrollToTop from "../../libs/hooks/use-scrollTop"
+import { useCart } from "../../libs/store/cart"
+import { useAuth } from "../../libs/hooks/use-auth"
 
 export default function Navbar() {
+    const { count } = useCart()
+    const { user } = useAuth()
+    const location = useLocation()
+    const currentUser = user()
+    const profileName = currentUser?.fullName?.trim() || currentUser?.username?.trim() || "Player"
+    const firstName = profileName.split(/\s+/)[0]
+    const initial = firstName.charAt(0).toUpperCase()
     const [open, setOpen] = useState(false)
     useScrollToTop()
     const link = [
@@ -28,10 +37,14 @@ export default function Navbar() {
             name: "Coaching",
             link: "/coaching"
         },
-        // {
-        //     name: "Resources",
-        //     link: "/resources"
-        // },
+        {
+            name: "News",
+            link: "/news"
+        },
+        {
+            name: "Shop",
+            link: "/shop"
+        },
         // {
         //     name: "Video Library",
         //     link: "/videos"
@@ -92,6 +105,9 @@ export default function Navbar() {
         };
     }, [open]);
 
+    if (location.pathname === "/u" || location.pathname.startsWith("/u/")) {
+        return null
+    }
 
     return (
         <nav style={{ background: "white" }}>
@@ -111,9 +127,13 @@ export default function Navbar() {
                     }
                 </div>
                 <div className="navAction">
-                    <Link to="/login">
+                    <Link to="/cart" style={{color:"#073f6d",fontWeight:800,marginRight:16}}>Cart ({count})</Link>
+                    {currentUser ? <Link className="navProfile" to="/u" aria-label={`Open ${profileName}'s account`}>
+                        <span className="navProfileAvatar">{currentUser.picture ? <img src={currentUser.picture} alt=""/> : initial}</span>
+                        <span className="navProfileName">{firstName}</span>
+                    </Link> : <Link to="/login">
                         <Button>Login</Button>
-                    </Link>
+                    </Link>}
                 </div>
                 <div className="hamBox" onClick={() => {
                     setOpen(!open)
@@ -138,7 +158,10 @@ export default function Navbar() {
                                 </ul>
                             ))
                         }
-                        <Link to={"/signup"} onClick={() => {
+                        {currentUser ? <Link className="mobileProfile" to="/u" onClick={()=>setOpen(false)}>
+                            <span className="navProfileAvatar">{currentUser.picture ? <img src={currentUser.picture} alt=""/> : initial}</span>
+                            <span><small>Signed in as</small><strong>{profileName}</strong></span>
+                        </Link> : <><Link to={"/signup"} onClick={() => {
                             setOpen(!open)
                         }}>
                             <Button full >Get Started</Button>
@@ -148,7 +171,7 @@ export default function Navbar() {
                             setOpen(!open)
                         }}>
                             <Button full >Login</Button>
-                        </Link>
+                        </Link></>}
                     </div>
 
                 ) : null

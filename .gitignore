@@ -19,6 +19,8 @@ info.txt*
 # Caches
 
 .cache
+.verify-dist/
+.verify-profile/
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 

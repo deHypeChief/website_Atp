@@ -418,7 +418,10 @@
 
 
 
+.homeNews{padding:100px 7vw;background:#092f54;color:#fff}.homeNewsHead{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:42px}.homeNewsHead span{color:#f47a4e;font-size:.75rem;font-weight:800;letter-spacing:.14em}.homeNewsHead h1{font-size:clamp(2.5rem,5vw,5rem);line-height:.95;letter-spacing:-.055em;margin-top:14px}.homeNewsHead>a{color:#fff;text-decoration:none;font-weight:700;border-bottom:1px solid #5f82a0;padding-bottom:6px}.homeNewsGrid{display:grid;grid-template-columns:1.3fr .7fr;gap:20px}.homeStory{display:grid;grid-template-columns:180px 1fr;text-decoration:none;color:#fff;background:#123d63;min-width:0;overflow:hidden}.homeStoryLead{grid-row:span 2;display:block}.homeStoryImage{background:#d6542d;overflow:hidden;min-height:170px;display:grid;place-items:center;font-size:2rem;font-weight:800}.homeStoryLead .homeStoryImage{height:360px}.homeStoryImage img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}.homeStory:hover img{transform:scale(1.035)}.homeStoryCopy{padding:24px}.homeStoryCopy small{color:#f69a78;text-transform:uppercase;font-weight:800;letter-spacing:.09em}.homeStoryCopy h2{font-size:clamp(1.2rem,2vw,2rem);line-height:1.1;margin:12px 0}.homeStoryCopy p{color:#c7d6e2;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
 @media screen and (max-width: 700px) {
+    .homeNews{padding:70px 20px}.homeNewsHead{align-items:start;flex-direction:column}.homeNewsGrid{grid-template-columns:1fr}.homeStory,.homeStoryLead{display:block;grid-row:auto}.homeStoryImage,.homeStoryLead .homeStoryImage{height:220px}.homeStoryCopy{padding:22px}
     .mon{
     margin: 0 0px;
 }

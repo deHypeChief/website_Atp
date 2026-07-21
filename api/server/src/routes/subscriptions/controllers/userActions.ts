@@ -32,6 +32,32 @@ const subscriptions = new Elysia()
             return { message: "Error getting billing info" };
         }
     })
+    .get("/pay/page", async ({ set, user }) => {
+        try {
+            const billing = await Subscription.findOne({ user: user._id }).lean();
+            if (!billing) {
+                set.status = 404;
+                return { message: "User billing not found" };
+            }
+            set.headers["cache-control"] = "private, max-age=60";
+            return {
+                message: "Billing page retrieved successfully",
+                user: {
+                    _id: user._id,
+                    fullName: user.fullName,
+                    username: user.username,
+                    email: user.email,
+                    picture: user.picture,
+                },
+                billing: { message: "Billing retrieved successfully", data: billing },
+                config: BillingConfig,
+            };
+        } catch (err) {
+            console.error(err);
+            set.status = 500;
+            return { message: "Error getting billing page" };
+        }
+    })
     .get("/pay/info", async ({ set }) => {
         try {
             set.status = 200;

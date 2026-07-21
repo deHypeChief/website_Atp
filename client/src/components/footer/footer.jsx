@@ -1,26 +1,12 @@
-import { useEffect, useState } from "react"
 import logo from "../../libs/images/logo.svg"
 import "./style.css"
-import { client } from "../../sanityClient"
 import { Link } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
+import { getSiteContent } from "../../libs/api/api.endpoints"
 
 export default function Footer() {
-    const [footerData, setFooterData] = useState()
-    useEffect(() => {
-        async function FooterLinks() {
-            client.fetch(
-                `
-                    *[_type == "footerLinks"]
-                `
-            ).then((data)=>{
-                setFooterData(data)
-
-            }).catch((err)=>{
-                console.log(err)
-            })
-        }
-        FooterLinks()
-    }, [])
+    const { data } = useQuery({ queryKey:["site-content"], queryFn:getSiteContent })
+    const footerData = data?.links
     return (
         <footer>
             <div className="logoFooter">
@@ -44,6 +30,9 @@ export default function Footer() {
                     <Link to="/coaching">
                     <p>Coaching</p>
                     </Link>
+                    <Link to="/news">
+                        <p>News</p>
+                    </Link>
                     <Link to="/contact">
                         <p>Contact Us</p>
                     </Link>
@@ -52,10 +41,10 @@ export default function Footer() {
                 </div>
                 <div className="lBox">
                     <h4>Social Media</h4>
-                    <a href="https://www.facebook.com/share/1AMAxGUvo7/?mibextid=wwXIfr">
+                    <a href={footerData?.facebookLink || "https://www.facebook.com/share/1AMAxGUvo7/?mibextid=wwXIfr"}>
                         <p>Facebook</p>
                     </a>
-                    <a href="https://www.instagram.com/amateurtennispro?igsh=MXRtY2IzczRvMW41dg==">
+                    <a href={footerData?.instagramLink || "https://www.instagram.com/amateurtennispro?igsh=MXRtY2IzczRvMW41dg=="}>
                         <p>Instagram</p>
                     </a>
                     {/* <a href={footerData?.linkedinLink || "/"}>
@@ -65,7 +54,7 @@ export default function Footer() {
                         <p>X (Twitter)</p>
                     </a> */}
 
-                    <a href="https://youtube.com/@afropowerent?si=K7f88Fwa_se3vakr">
+                    <a href={footerData?.youtubeLink || "https://youtube.com/@afropowerent?si=K7f88Fwa_se3vakr"}>
                         <p>YouTube</p>
                     </a>
                 </div>

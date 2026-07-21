@@ -78,6 +78,12 @@ html {
   display: initial;
 }
 
+.rich-text-editor:empty::before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+}
+
 @media screen and (max-width: 700px) {
   .hidden_sm {
     display: none;

@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import "../assets/style/routes/adminLayout.css"
 import { Header4 } from '@/components/typography'
-import { BadgeInfo, Database, LayoutDashboard, Settings } from 'lucide-react'
+import { BadgeInfo, Newspaper, PanelsTopLeft, ShoppingBag } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useAuth } from '@/hooks/use-auth'
 import { useState } from 'react'
@@ -20,6 +20,21 @@ export const Route = createFileRoute('/_admin')({
 function AdminLayout() {
     const { admin } = useAuth()
     const links = [
+        {
+            name: "E-commerce",
+            link: "/store",
+            icon: <ShoppingBag size={20} />
+        },
+        {
+            name: "Site Content",
+            link: "/content",
+            icon: <PanelsTopLeft size={20} />
+        },
+        {
+            name: "News",
+            link: "/cms",
+            icon: <Newspaper size={20} />
+        },
         {
             name: "Users",
             link: "/users",

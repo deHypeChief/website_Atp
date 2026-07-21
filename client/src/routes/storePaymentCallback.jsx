@@ -1,0 +1,6 @@
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { verifyStoreOrder } from "../libs/api/api.endpoints";
+import { clearCart } from "../libs/store/cart";
+import "../libs/styles/store.css";
+export default function StorePaymentCallback(){const [params]=useSearchParams();const [state,setState]=useState({loading:true,error:""});useEffect(()=>{const id=params.get("orderId"),reference=params.get("reference")||params.get("trxref");if(!id||!reference){setState({loading:false,error:"Payment details are incomplete."});return}verifyStoreOrder(id,reference).then(()=>{clearCart();setState({loading:false,error:""})}).catch(err=>setState({loading:false,error:err.response?.data?.message||"We could not confirm this payment."}))},[]);return <main className="paymentResult"><span>{state.loading?"VERIFYING PAYMENT":state.error?"PAYMENT NEEDS ATTENTION":"ORDER CONFIRMED"}</span><h1>{state.loading?"Checking with Paystack…":state.error?state.error:"Thank you. Your order is in."}</h1><p>{state.loading?"Please keep this page open.":"You can follow every update from your ATP account."}</p>{!state.loading&&<Link to={state.error?"/cart":"/u/orders"}>{state.error?"Return to cart":"Track your order"}</Link>}</main>}

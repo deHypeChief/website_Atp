@@ -18,6 +18,7 @@ import { Route as AuthCreateAdminImport } from './routes/_auth/createAdmin'
 import { Route as AdminUsersImport } from './routes/_admin/users'
 import { Route as AdminTournamentsImport } from './routes/_admin/tournaments'
 import { Route as AdminSubscriptionsImport } from './routes/_admin/subscriptions'
+import { Route as AdminStoreImport } from './routes/_admin/store'
 import { Route as AdminSettingsImport } from './routes/_admin/settings'
 import { Route as AdminPlanImport } from './routes/_admin/plan'
 import { Route as AdminMatchesImport } from './routes/_admin/matches'
@@ -25,9 +26,11 @@ import { Route as AdminLinkedPlayersImport } from './routes/_admin/linkedPlayers
 import { Route as AdminLeaderboardImport } from './routes/_admin/leaderboard'
 import { Route as AdminDashboardImport } from './routes/_admin/dashboard'
 import { Route as AdminCustomMatchesImport } from './routes/_admin/customMatches'
+import { Route as AdminContentImport } from './routes/_admin/content'
 import { Route as AdminCoachesImport } from './routes/_admin/coaches'
 import { Route as AdminCmsImport } from './routes/_admin/cms'
 import { Route as AdminBillingsImport } from './routes/_admin/billings'
+import { Route as AdminCmsNewImport } from './routes/_admin/cms_.new'
 
 // Create/Update Routes
 
@@ -66,6 +69,11 @@ const AdminSubscriptionsRoute = AdminSubscriptionsImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 
+const AdminStoreRoute = AdminStoreImport.update({
+  path: '/store',
+  getParentRoute: () => AdminRoute,
+} as any)
+
 const AdminSettingsRoute = AdminSettingsImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
@@ -101,6 +109,11 @@ const AdminCustomMatchesRoute = AdminCustomMatchesImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 
+const AdminContentRoute = AdminContentImport.update({
+  path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+
 const AdminCoachesRoute = AdminCoachesImport.update({
   path: '/coaches',
   getParentRoute: () => AdminRoute,
@@ -113,6 +126,11 @@ const AdminCmsRoute = AdminCmsImport.update({
 
 const AdminBillingsRoute = AdminBillingsImport.update({
   path: '/billings',
+  getParentRoute: () => AdminRoute,
+} as any)
+
+const AdminCmsNewRoute = AdminCmsNewImport.update({
+  path: '/cms/new',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -153,6 +171,13 @@ declare module '@tanstack/react-router' {
       path: '/coaches'
       fullPath: '/coaches'
       preLoaderRoute: typeof AdminCoachesImport
+      parentRoute: typeof AdminImport
+    }
+    '/_admin/content': {
+      id: '/_admin/content'
+      path: '/content'
+      fullPath: '/content'
+      preLoaderRoute: typeof AdminContentImport
       parentRoute: typeof AdminImport
     }
     '/_admin/customMatches': {
@@ -204,6 +229,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsImport
       parentRoute: typeof AdminImport
     }
+    '/_admin/store': {
+      id: '/_admin/store'
+      path: '/store'
+      fullPath: '/store'
+      preLoaderRoute: typeof AdminStoreImport
+      parentRoute: typeof AdminImport
+    }
     '/_admin/subscriptions': {
       id: '/_admin/subscriptions'
       path: '/subscriptions'
@@ -239,6 +271,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordImport
       parentRoute: typeof rootRoute
     }
+    '/_admin/cms/new': {
+      id: '/_admin/cms/new'
+      path: '/cms/new'
+      fullPath: '/cms/new'
+      preLoaderRoute: typeof AdminCmsNewImport
+      parentRoute: typeof AdminImport
+    }
   }
 }
 
@@ -248,6 +287,7 @@ interface AdminRouteChildren {
   AdminBillingsRoute: typeof AdminBillingsRoute
   AdminCmsRoute: typeof AdminCmsRoute
   AdminCoachesRoute: typeof AdminCoachesRoute
+  AdminContentRoute: typeof AdminContentRoute
   AdminCustomMatchesRoute: typeof AdminCustomMatchesRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminLeaderboardRoute: typeof AdminLeaderboardRoute
@@ -255,15 +295,18 @@ interface AdminRouteChildren {
   AdminMatchesRoute: typeof AdminMatchesRoute
   AdminPlanRoute: typeof AdminPlanRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStoreRoute: typeof AdminStoreRoute
   AdminSubscriptionsRoute: typeof AdminSubscriptionsRoute
   AdminTournamentsRoute: typeof AdminTournamentsRoute
   AdminUsersRoute: typeof AdminUsersRoute
+  AdminCmsNewRoute: typeof AdminCmsNewRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBillingsRoute: AdminBillingsRoute,
   AdminCmsRoute: AdminCmsRoute,
   AdminCoachesRoute: AdminCoachesRoute,
+  AdminContentRoute: AdminContentRoute,
   AdminCustomMatchesRoute: AdminCustomMatchesRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminLeaderboardRoute: AdminLeaderboardRoute,
@@ -271,9 +314,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMatchesRoute: AdminMatchesRoute,
   AdminPlanRoute: AdminPlanRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminStoreRoute: AdminStoreRoute,
   AdminSubscriptionsRoute: AdminSubscriptionsRoute,
   AdminTournamentsRoute: AdminTournamentsRoute,
   AdminUsersRoute: AdminUsersRoute,
+  AdminCmsNewRoute: AdminCmsNewRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -284,6 +329,7 @@ export interface FileRoutesByFullPath {
   '/billings': typeof AdminBillingsRoute
   '/cms': typeof AdminCmsRoute
   '/coaches': typeof AdminCoachesRoute
+  '/content': typeof AdminContentRoute
   '/customMatches': typeof AdminCustomMatchesRoute
   '/dashboard': typeof AdminDashboardRoute
   '/leaderboard': typeof AdminLeaderboardRoute
@@ -291,11 +337,13 @@ export interface FileRoutesByFullPath {
   '/matches': typeof AdminMatchesRoute
   '/plan': typeof AdminPlanRoute
   '/settings': typeof AdminSettingsRoute
+  '/store': typeof AdminStoreRoute
   '/subscriptions': typeof AdminSubscriptionsRoute
   '/tournaments': typeof AdminTournamentsRoute
   '/users': typeof AdminUsersRoute
   '/createAdmin': typeof AuthCreateAdminRoute
   '/forgotPassword': typeof AuthForgotPasswordRoute
+  '/cms/new': typeof AdminCmsNewRoute
 }
 
 export interface FileRoutesByTo {
@@ -304,6 +352,7 @@ export interface FileRoutesByTo {
   '/billings': typeof AdminBillingsRoute
   '/cms': typeof AdminCmsRoute
   '/coaches': typeof AdminCoachesRoute
+  '/content': typeof AdminContentRoute
   '/customMatches': typeof AdminCustomMatchesRoute
   '/dashboard': typeof AdminDashboardRoute
   '/leaderboard': typeof AdminLeaderboardRoute
@@ -311,11 +360,13 @@ export interface FileRoutesByTo {
   '/matches': typeof AdminMatchesRoute
   '/plan': typeof AdminPlanRoute
   '/settings': typeof AdminSettingsRoute
+  '/store': typeof AdminStoreRoute
   '/subscriptions': typeof AdminSubscriptionsRoute
   '/tournaments': typeof AdminTournamentsRoute
   '/users': typeof AdminUsersRoute
   '/createAdmin': typeof AuthCreateAdminRoute
   '/forgotPassword': typeof AuthForgotPasswordRoute
+  '/cms/new': typeof AdminCmsNewRoute
 }
 
 export interface FileRoutesById {
@@ -325,6 +376,7 @@ export interface FileRoutesById {
   '/_admin/billings': typeof AdminBillingsRoute
   '/_admin/cms': typeof AdminCmsRoute
   '/_admin/coaches': typeof AdminCoachesRoute
+  '/_admin/content': typeof AdminContentRoute
   '/_admin/customMatches': typeof AdminCustomMatchesRoute
   '/_admin/dashboard': typeof AdminDashboardRoute
   '/_admin/leaderboard': typeof AdminLeaderboardRoute
@@ -332,11 +384,13 @@ export interface FileRoutesById {
   '/_admin/matches': typeof AdminMatchesRoute
   '/_admin/plan': typeof AdminPlanRoute
   '/_admin/settings': typeof AdminSettingsRoute
+  '/_admin/store': typeof AdminStoreRoute
   '/_admin/subscriptions': typeof AdminSubscriptionsRoute
   '/_admin/tournaments': typeof AdminTournamentsRoute
   '/_admin/users': typeof AdminUsersRoute
   '/_auth/createAdmin': typeof AuthCreateAdminRoute
   '/_auth/forgotPassword': typeof AuthForgotPasswordRoute
+  '/_admin/cms/new': typeof AdminCmsNewRoute
 }
 
 export interface FileRouteTypes {
@@ -347,6 +401,7 @@ export interface FileRouteTypes {
     | '/billings'
     | '/cms'
     | '/coaches'
+    | '/content'
     | '/customMatches'
     | '/dashboard'
     | '/leaderboard'
@@ -354,11 +409,13 @@ export interface FileRouteTypes {
     | '/matches'
     | '/plan'
     | '/settings'
+    | '/store'
     | '/subscriptions'
     | '/tournaments'
     | '/users'
     | '/createAdmin'
     | '/forgotPassword'
+    | '/cms/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -366,6 +423,7 @@ export interface FileRouteTypes {
     | '/billings'
     | '/cms'
     | '/coaches'
+    | '/content'
     | '/customMatches'
     | '/dashboard'
     | '/leaderboard'
@@ -373,11 +431,13 @@ export interface FileRouteTypes {
     | '/matches'
     | '/plan'
     | '/settings'
+    | '/store'
     | '/subscriptions'
     | '/tournaments'
     | '/users'
     | '/createAdmin'
     | '/forgotPassword'
+    | '/cms/new'
   id:
     | '__root__'
     | '/'
@@ -385,6 +445,7 @@ export interface FileRouteTypes {
     | '/_admin/billings'
     | '/_admin/cms'
     | '/_admin/coaches'
+    | '/_admin/content'
     | '/_admin/customMatches'
     | '/_admin/dashboard'
     | '/_admin/leaderboard'
@@ -392,11 +453,13 @@ export interface FileRouteTypes {
     | '/_admin/matches'
     | '/_admin/plan'
     | '/_admin/settings'
+    | '/_admin/store'
     | '/_admin/subscriptions'
     | '/_admin/tournaments'
     | '/_admin/users'
     | '/_auth/createAdmin'
     | '/_auth/forgotPassword'
+    | '/_admin/cms/new'
   fileRoutesById: FileRoutesById
 }
 
@@ -441,6 +504,7 @@ export const routeTree = rootRoute
         "/_admin/billings",
         "/_admin/cms",
         "/_admin/coaches",
+        "/_admin/content",
         "/_admin/customMatches",
         "/_admin/dashboard",
         "/_admin/leaderboard",
@@ -448,9 +512,11 @@ export const routeTree = rootRoute
         "/_admin/matches",
         "/_admin/plan",
         "/_admin/settings",
+        "/_admin/store",
         "/_admin/subscriptions",
         "/_admin/tournaments",
-        "/_admin/users"
+        "/_admin/users",
+        "/_admin/cms/new"
       ]
     },
     "/_admin/billings": {
@@ -463,6 +529,10 @@ export const routeTree = rootRoute
     },
     "/_admin/coaches": {
       "filePath": "_admin/coaches.tsx",
+      "parent": "/_admin"
+    },
+    "/_admin/content": {
+      "filePath": "_admin/content.tsx",
       "parent": "/_admin"
     },
     "/_admin/customMatches": {
@@ -493,6 +563,10 @@ export const routeTree = rootRoute
       "filePath": "_admin/settings.tsx",
       "parent": "/_admin"
     },
+    "/_admin/store": {
+      "filePath": "_admin/store.tsx",
+      "parent": "/_admin"
+    },
     "/_admin/subscriptions": {
       "filePath": "_admin/subscriptions.tsx",
       "parent": "/_admin"
@@ -510,6 +584,10 @@ export const routeTree = rootRoute
     },
     "/_auth/forgotPassword": {
       "filePath": "_auth/forgotPassword.tsx"
+    },
+    "/_admin/cms/new": {
+      "filePath": "_admin/cms_.new.tsx",
+      "parent": "/_admin"
     }
   }
 }

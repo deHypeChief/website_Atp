@@ -1,26 +1,23 @@
+import { useQuery } from "@tanstack/react-query";
 import BlogCard from "../components/blogCard/blogCard";
-import Hero from "../components/hero/hero";
-import "../libs/styles/resources.css"
-import img from "../libs/images/main/IMG_3302.jpg";
+import { getNews } from "../libs/api/api.endpoints";
+import "../libs/styles/resources.css";
 
-
-export default function Resources(){
-    return(
-        <>
-            <Hero title={"Blog and Resources"} subTitle={"Read what we have for you"} noAction imageUrl={img}/>
-        
-            <section className="blogBox">
-                <div className="blogTopText">
-                    <h1>Tennis Tips</h1>
-                    <p>Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat. Aenean pulvinar, nisi vitae malesuada efficitur. volutpat justo laoreet sit amet.</p>
-                </div>
-                <div className="blogWrap">
-                    <BlogCard title={"blog title"}/>
-                    <BlogCard title={"blog title"}/>
-                    <BlogCard title={"blog title"}/>
-                    <BlogCard title={"blog title"}/>
-                </div>
+export default function Resources() {
+    const { data: articles = [], isLoading, isError } = useQuery({ queryKey: ["news"], queryFn: getNews });
+    return (
+        <main className="newsPage">
+            <header className="newsMasthead">
+                <p className="newsEyebrow">The ATP baseline</p>
+                <h1>News from the court</h1>
+                <p>Match reports, community stories and practical notes for players building their game.</p>
+            </header>
+            <section className="newsGrid" aria-live="polite">
+                {isLoading && <p className="newsState">Fetching the latest from court…</p>}
+                {isError && <p className="newsState">News could not be loaded. Please try again shortly.</p>}
+                {!isLoading && !isError && articles.length === 0 && <p className="newsState">The first courtside report is being prepared.</p>}
+                {articles.map((article, index) => <BlogCard key={article._id} article={article} featured={index === 0} />)}
             </section>
-        </>
-    )
+        </main>
+    );
 }

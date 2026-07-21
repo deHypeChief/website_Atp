@@ -10,7 +10,7 @@ const api = axios.create({
 
 // Intercept requests to add token (if available)
 api.interceptors.request.use((config) => {
-  const token = JSON.parse(localStorage.getItem('admin-payload') as string)?.auth.token;
+  const token = JSON.parse(localStorage.getItem('admin-payload') as string)?.auth?.token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

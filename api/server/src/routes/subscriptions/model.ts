@@ -26,7 +26,7 @@ interface ISubscription {
 }
 
 const SubscriptionSchema = new mongoose.Schema<ISubscription>({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     membership: {
         status: { type: String, default: "Not Paid" },
         plan: { type: String, enum: ["monthly", "quarterly", "yearly", "none"], required: true },

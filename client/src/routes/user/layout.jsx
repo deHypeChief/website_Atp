@@ -5,7 +5,7 @@ import "../../libs/styles/userLayout.css"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../libs/hooks/use-auth"
 import { useQuery } from "@tanstack/react-query"
-import { getMe, getPayMe } from "../../libs/api/api.endpoints";
+import { getBillingPage } from "../../libs/api/api.endpoints";
 
 
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -21,36 +21,26 @@ dayjs.extend(relativeTime);
 export default function DashboardLayout() {
     const [open, setOpen] = useState(false)
     const navigate = useNavigate()
-    const { isAuthenticated } = useAuth()
-
-
     useEffect(() => {
-        document.getElementsByTagName("nav")[0].style.display = "none"
-        document.getElementsByTagName("footer")[0].style.display = "none"
+        const footer = document.getElementsByTagName("footer")[0]
+        if (footer) footer.style.display = "none"
+        return () => { if (footer) footer.style.display = "" }
     }, [])
     const { userLogout } = useAuth();
 
 
 
-    const { data } = useQuery({
-        queryFn: () => {
-            async function moreFn() {
-                const payload = {
-                    user: await getMe(),
-                    billing: await getPayMe(),
-                }
-                // console.log(payload);
-                return payload
-            }
-            return moreFn()
-        },
-        staleTime: 1000 * 60 * 5, // 5 minutes
+    const { data: billingPage, isError: billingError } = useQuery({
+        queryFn: getBillingPage,
+        staleTime: 1000 * 60 * 15,
         refetchOnWindowFocus: false,
-        queryKey: ["moreData"]
+        queryKey: ["billing-page-v2"]
     })
+    const data = { user: billingPage?.user, billing: billingPage?.billing }
 
     function hamFunction() {
-        document.getElementById("hamSide").style.display = open ? "flex" : null
+        const sidebar = document.getElementById("hamSide")
+        if (sidebar) sidebar.style.display = open ? "flex" : ""
         setOpen(!open)
     }
 
@@ -63,23 +53,14 @@ export default function DashboardLayout() {
 
 
     useEffect(() => {
-        async function checkAuth() {
-            const auth = await isAuthenticated()
-            if (!auth) {
-                navigate("/login")
-            }
-        }
-        checkAuth()
-    }, [])
+        if (billingError) navigate("/login")
+    }, [billingError, navigate])
 
     return (
         <div className="useNov">
             <div className="dashTopNav">
                 <div className="logoTop">
-                    <Link to="/" onClick={() => {
-                        document.getElementsByTagName("nav")[0].style.display = "block"
-                        document.getElementsByTagName("footer")[0].style.display = "block"
-                    }}>
+                    <Link to="/">
                         <div className="logoc">
                             <img src={logo} alt="" />
                         </div>
@@ -87,7 +68,7 @@ export default function DashboardLayout() {
                 </div>
                 <div className="upUserInfo">
                     {
-                        data?.billing.data.membership.plan === "none" ? <></> : (
+                        data?.billing?.data?.membership?.plan === "none" || !data?.billing ? <></> : (
                             <div className="badge"
                                 style={{
                                     display: "flex",
@@ -104,20 +85,17 @@ export default function DashboardLayout() {
                         {
                             data?.user?.picture ? (
                                 <img src={data.user.picture} />
-                            ) : <p>{data?.user?.fullName.split(" ")[0].split("")[0]}</p>
+                            ) : <p>{(data?.user?.fullName || data?.user?.username || "A").trim().charAt(0).toUpperCase()}</p>
                         }
                     </div>
                     <div className="membershipPill">
                         <p style={{ textTransform: "capitalize" }}>
-                            {data?.billing?.data?.training?.plan && data.billing.data.training.plan !== "none"
-                                ? `${data.billing.data.training.plan} Training Plan`
+                            {data?.billing?.data?.training?.plan && data?.billing?.data?.training?.plan !== "none"
+                                ? `${data?.billing?.data?.training?.plan} Training Plan`
                                 : "No Training Plan"}
                         </p>
                     </div>
-                    <Link to={"/"} onClick={() => {
-                        document.getElementsByTagName("nav")[0].style.display = "block"
-                        document.getElementsByTagName("footer")[0].style.display = "block"
-                    }}>
+                    <Link to={"/"}>
                         <div className="membershipPill">
                             <p style={{ textTransform: "capitalize" }}>
                                 Go Home
@@ -127,10 +105,7 @@ export default function DashboardLayout() {
                 </div>
 
                 <div className="ham" onClick={hamFunction}>
-                    <Link to="/" onClick={() => {
-                        document.getElementsByTagName("nav")[0].style.display = "block"
-                        document.getElementsByTagName("footer")[0].style.display = "block"
-                    }}>Home</Link>
+                    <Link to="/">Home</Link>
                     <Icon icon="gg:menu" width="40px" height="40px" style={{ color: "black" }} />
                 </div>
             </div>
@@ -165,6 +140,11 @@ export default function DashboardLayout() {
                                 <p>Tournaments</p>
                             </div>
                         </Link>
+                        <Link to={"/u/orders"} onClick={hamFunction}>
+                            <div className={`sideContent_Bttn ${location.pathname.includes("orders") ? "active" : "sc_BttnClosed"}`}>
+                                <p>Shop Orders</p>
+                            </div>
+                        </Link>
                         <Link to={"/u/notifications"} onClick={hamFunction}>
                             <div className={`sideContent_Bttn ${location.pathname.includes("notifications") ? "active" : "sc_BttnClosed"}`}>
                                 <p>Notifications</p>
@@ -183,8 +163,6 @@ export default function DashboardLayout() {
                     <div className="sideBottomContent">
                         <Link to={"/login"} onClick={() => {
                             userLogout()
-                            document.getElementsByTagName("nav")[0].style.display = "block"
-                            document.getElementsByTagName("footer")[0].style.display = "block"
                         }}>
                             <div className="sideContent_Bttn sc_BttnClosed">
                                 <p>Logout</p>

@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useQuery } from "@tanstack/react-query";
-import { billingInfo, getPayMe, deleteUserAccount } from "../../libs/api/api.endpoints";
+import { getBillingPage, deleteUserAccount } from "../../libs/api/api.endpoints";
 import { useState, useEffect } from "react";
 import Button from "../../components/button/button";
 import { BillingContent, BillingContent2, BillingSummary } from "./billingSuport";
 import { Link, useNavigate } from "react-router-dom";
+import "../../libs/styles/billing-loading.css";
 
 export function Billings() {
     const [isSummaryOpen, setIsSummaryOpen] = useState(false);
@@ -15,22 +16,14 @@ export function Billings() {
     const [resultModal, setResultModal] = useState({ type: '', title: '', message: '', emailInfo: '' });
     const navigate = useNavigate();
 
-    const { data, isLoading: billingLoading } = useQuery({
-        queryKey: ["billingData"],
-        queryFn: () => getPayMe(),
-        staleTime: 1000 * 60 * 5,
+    const { data: billingPage, isLoading: billingLoading } = useQuery({
+        queryKey: ["billing-page-v2"],
+        queryFn: getBillingPage,
+        staleTime: 1000 * 60 * 15,
         refetchOnWindowFocus: false,
     });
-
-    const {
-        data: payData,
-        isLoading: payLoading,
-    } = useQuery({
-        queryKey: ["payInfo"],
-        queryFn: () => billingInfo(),
-        staleTime: 1000 * 60 * 5,
-        refetchOnWindowFocus: false,
-    });
+    const data = billingPage?.billing;
+    const payData = billingPage?.config;
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -103,10 +96,13 @@ export function Billings() {
         setShowDeleteWarning(false);
     };
 
-    if (billingLoading || payLoading) {
+    if (billingLoading) {
         return (
-            <div className="loadingContainer">
-                <p>Loading billing information...</p>
+            <div className="billingLoading" aria-label="Loading billing information" aria-busy="true">
+                <div className="billingLoadingHead"><span></span><span></span></div>
+                <div className="billingLoadingCard billingLoadingCurrent"><span></span><strong></strong></div>
+                <div className="billingLoadingCard"></div>
+                <div className="billingLoadingCard"></div>
             </div>
         );
     }

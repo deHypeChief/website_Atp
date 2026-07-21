@@ -1,7 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import Button from "../../components/button/button";
-import { useState, useRef } from "react";
-import { useQuery } from "@tanstack/react-query"
+import { useEffect, useRef } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { validateBilling } from "../../libs/api/api.endpoints";
 
 
@@ -10,6 +10,7 @@ export default function Billing() {
     const { type, subType, duration } = useParams();
     // const [isValid, setIsValid] = useState(false)
     const hasRunRef = useRef(false);
+    const queryClient = useQueryClient();
 
 
     const billingQuery = useQuery({
@@ -34,6 +35,12 @@ export default function Billing() {
         staleTime: Infinity,
         cacheTime: 0,
     });
+
+    useEffect(() => {
+        if (billingQuery.isSuccess) {
+            queryClient.invalidateQueries({ queryKey: ["billing-page-v2"] });
+        }
+    }, [billingQuery.isSuccess, queryClient]);
 
     return (
         <div className="ticketWrap">

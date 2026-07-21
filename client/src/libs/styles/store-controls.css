@@ -1,0 +1,34 @@
+.productQuantity {
+  display: grid;
+  grid-template-columns: 36px 38px 36px;
+  min-height: 38px;
+  border: 1px solid #8bd000;
+  background: #f7fbe9;
+}
+
+.productQuantity button {
+  padding: 0;
+  border: 0;
+  background: #8bd000;
+  color: #0b3353;
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.productQuantity button:disabled {
+  background: #d7dfc5;
+  cursor: not-allowed;
+}
+
+.productQuantity span {
+  display: grid;
+  place-items: center;
+  color: #0b3353;
+  font-size: .9rem;
+  font-weight: 900;
+}
+
+.productQuantity button:focus-visible {
+  outline: 3px solid #0878bc;
+  outline-offset: 2px;
+}

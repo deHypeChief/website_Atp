@@ -1,6 +1,6 @@
 import { toast } from '@/hooks/use-toast';
-import axios from 'axios';
 import { useError } from './use-error';
+import api from '@/lib/axios';
 
 export const useCloudinary = () => {
     const { error } = useError()
@@ -9,33 +9,25 @@ export const useCloudinary = () => {
         if (!file) {
             toast({
                 variant: "destructive",
-                title: "Missing profile image",
+                title: "Choose an image first",
             });
             throw new Error("No file selected.");
         }
 
         const formData = new FormData();
-        formData.append('file', file);
-
-        // Request signature from backend
-        formData.append('api_key', import.meta.env.VITE_CLOUDINARY_APIKEY);
-        formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_PRESET);
-
-        console.log(formData,  import.meta.env)
+        formData.append('image', file);
 
         try {
-            // Upload the image to Cloudinary
-            const res = await axios.post(
-                import.meta.env.VITE_CLOUDINARY_UPLOAD_KEY,
-                formData
-            );
+            const res = await api.post('/uploads/image', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
 
-            const imageUrl = res.data.secure_url;
+            const imageUrl = res.data.imageUrl;
             toast({
                 variant: "default",
-                title: "Coach image uploaded",
+                title: "Image uploaded",
             });
-            return imageUrl;  // Correctly returning the image URL here
+            return imageUrl;
         } catch (err: any) {
             error(err, "Error uploading image")  // Throw the error so it can be handled upstream
         }
