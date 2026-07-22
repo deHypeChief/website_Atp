@@ -1,30 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserMatchesC } from "../../libs/api/api.endpoints";
-
-function MatchesPage() {
-    const { data } = useQuery({
-        queryKey: ["userMatches"],
-        queryFn: getUserMatchesC(),
-        staleTime: Infinity, // Matches data doesn't change frequently
-    });
-
-    return (
-        <div className="coContent">
-            <div className="header">
-                <h1>Your Matches</h1>
-                <p>List of your matches</p>
-            </div>
-
-            <div className="eWrap">
-                <div className="ebound eSplit">
-                    <div className="cleft">
-                        <p>Matches Played</p>
-                        <h1>{0}</h1>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-export default MatchesPage;
+import { PlayerEmpty, PlayerLoading, PlayerMetric, PlayerPageHeader } from "../../components/system/player-system";
+export default function MatchesPage(){const {data={},isLoading}=useQuery({queryKey:["userMatches"],queryFn:getUserMatchesC,staleTime:300000});const matches=data.matches||data.data||[];return <main className="playerUtility"><PlayerPageHeader eyebrow="MATCH RECORD" title="Your matches" text="A clear record of your competitive time on court."/><section className="metricRow"><PlayerMetric icon="solar:chart-2-linear" label="Matches played" value={data.totalMatches??matches.length??0}/><PlayerMetric icon="solar:cup-star-linear" label="Wins" value={data.totalWins??0}/><PlayerMetric icon="solar:ranking-linear" label="Club rank" value={data.rank||"Unranked"}/></section>{isLoading?<PlayerLoading/>:!matches.length?<PlayerEmpty icon="solar:tennis-2-linear" title="No results yet." text="Your match record starts when you play your first ATP competition." to="/u/tournaments" label="Find a tournament"/>:<section className="matchList">{matches.map((match,index)=><article key={match._id||index}><time>{match.date?new Date(match.date).toLocaleDateString():"ATP match"}</time><div><small>{match.tournament?.name||match.competition||"Club match"}</small><h2>{match.opponent||"Match result"}</h2></div><strong>{match.result||match.status||"Recorded"}</strong></article>)}</section>}</main>}

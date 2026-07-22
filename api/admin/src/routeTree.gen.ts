@@ -24,9 +24,11 @@ import { Route as AdminPlanImport } from './routes/_admin/plan'
 import { Route as AdminMatchesImport } from './routes/_admin/matches'
 import { Route as AdminLinkedPlayersImport } from './routes/_admin/linkedPlayers'
 import { Route as AdminLeaderboardImport } from './routes/_admin/leaderboard'
+import { Route as AdminEngagementImport } from './routes/_admin/engagement'
 import { Route as AdminDashboardImport } from './routes/_admin/dashboard'
 import { Route as AdminCustomMatchesImport } from './routes/_admin/customMatches'
 import { Route as AdminContentImport } from './routes/_admin/content'
+import { Route as AdminCommunityImport } from './routes/_admin/community'
 import { Route as AdminCoachesImport } from './routes/_admin/coaches'
 import { Route as AdminCmsImport } from './routes/_admin/cms'
 import { Route as AdminBillingsImport } from './routes/_admin/billings'
@@ -99,6 +101,11 @@ const AdminLeaderboardRoute = AdminLeaderboardImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 
+const AdminEngagementRoute = AdminEngagementImport.update({
+  path: '/engagement',
+  getParentRoute: () => AdminRoute,
+} as any)
+
 const AdminDashboardRoute = AdminDashboardImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRoute,
@@ -111,6 +118,11 @@ const AdminCustomMatchesRoute = AdminCustomMatchesImport.update({
 
 const AdminContentRoute = AdminContentImport.update({
   path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+
+const AdminCommunityRoute = AdminCommunityImport.update({
+  path: '/community',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -173,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCoachesImport
       parentRoute: typeof AdminImport
     }
+    '/_admin/community': {
+      id: '/_admin/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof AdminCommunityImport
+      parentRoute: typeof AdminImport
+    }
     '/_admin/content': {
       id: '/_admin/content'
       path: '/content'
@@ -192,6 +211,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AdminDashboardImport
+      parentRoute: typeof AdminImport
+    }
+    '/_admin/engagement': {
+      id: '/_admin/engagement'
+      path: '/engagement'
+      fullPath: '/engagement'
+      preLoaderRoute: typeof AdminEngagementImport
       parentRoute: typeof AdminImport
     }
     '/_admin/leaderboard': {
@@ -287,9 +313,11 @@ interface AdminRouteChildren {
   AdminBillingsRoute: typeof AdminBillingsRoute
   AdminCmsRoute: typeof AdminCmsRoute
   AdminCoachesRoute: typeof AdminCoachesRoute
+  AdminCommunityRoute: typeof AdminCommunityRoute
   AdminContentRoute: typeof AdminContentRoute
   AdminCustomMatchesRoute: typeof AdminCustomMatchesRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminEngagementRoute: typeof AdminEngagementRoute
   AdminLeaderboardRoute: typeof AdminLeaderboardRoute
   AdminLinkedPlayersRoute: typeof AdminLinkedPlayersRoute
   AdminMatchesRoute: typeof AdminMatchesRoute
@@ -306,9 +334,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBillingsRoute: AdminBillingsRoute,
   AdminCmsRoute: AdminCmsRoute,
   AdminCoachesRoute: AdminCoachesRoute,
+  AdminCommunityRoute: AdminCommunityRoute,
   AdminContentRoute: AdminContentRoute,
   AdminCustomMatchesRoute: AdminCustomMatchesRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminEngagementRoute: AdminEngagementRoute,
   AdminLeaderboardRoute: AdminLeaderboardRoute,
   AdminLinkedPlayersRoute: AdminLinkedPlayersRoute,
   AdminMatchesRoute: AdminMatchesRoute,
@@ -329,9 +359,11 @@ export interface FileRoutesByFullPath {
   '/billings': typeof AdminBillingsRoute
   '/cms': typeof AdminCmsRoute
   '/coaches': typeof AdminCoachesRoute
+  '/community': typeof AdminCommunityRoute
   '/content': typeof AdminContentRoute
   '/customMatches': typeof AdminCustomMatchesRoute
   '/dashboard': typeof AdminDashboardRoute
+  '/engagement': typeof AdminEngagementRoute
   '/leaderboard': typeof AdminLeaderboardRoute
   '/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/matches': typeof AdminMatchesRoute
@@ -352,9 +384,11 @@ export interface FileRoutesByTo {
   '/billings': typeof AdminBillingsRoute
   '/cms': typeof AdminCmsRoute
   '/coaches': typeof AdminCoachesRoute
+  '/community': typeof AdminCommunityRoute
   '/content': typeof AdminContentRoute
   '/customMatches': typeof AdminCustomMatchesRoute
   '/dashboard': typeof AdminDashboardRoute
+  '/engagement': typeof AdminEngagementRoute
   '/leaderboard': typeof AdminLeaderboardRoute
   '/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/matches': typeof AdminMatchesRoute
@@ -376,9 +410,11 @@ export interface FileRoutesById {
   '/_admin/billings': typeof AdminBillingsRoute
   '/_admin/cms': typeof AdminCmsRoute
   '/_admin/coaches': typeof AdminCoachesRoute
+  '/_admin/community': typeof AdminCommunityRoute
   '/_admin/content': typeof AdminContentRoute
   '/_admin/customMatches': typeof AdminCustomMatchesRoute
   '/_admin/dashboard': typeof AdminDashboardRoute
+  '/_admin/engagement': typeof AdminEngagementRoute
   '/_admin/leaderboard': typeof AdminLeaderboardRoute
   '/_admin/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/_admin/matches': typeof AdminMatchesRoute
@@ -401,9 +437,11 @@ export interface FileRouteTypes {
     | '/billings'
     | '/cms'
     | '/coaches'
+    | '/community'
     | '/content'
     | '/customMatches'
     | '/dashboard'
+    | '/engagement'
     | '/leaderboard'
     | '/linkedPlayers'
     | '/matches'
@@ -423,9 +461,11 @@ export interface FileRouteTypes {
     | '/billings'
     | '/cms'
     | '/coaches'
+    | '/community'
     | '/content'
     | '/customMatches'
     | '/dashboard'
+    | '/engagement'
     | '/leaderboard'
     | '/linkedPlayers'
     | '/matches'
@@ -445,9 +485,11 @@ export interface FileRouteTypes {
     | '/_admin/billings'
     | '/_admin/cms'
     | '/_admin/coaches'
+    | '/_admin/community'
     | '/_admin/content'
     | '/_admin/customMatches'
     | '/_admin/dashboard'
+    | '/_admin/engagement'
     | '/_admin/leaderboard'
     | '/_admin/linkedPlayers'
     | '/_admin/matches'
@@ -504,9 +546,11 @@ export const routeTree = rootRoute
         "/_admin/billings",
         "/_admin/cms",
         "/_admin/coaches",
+        "/_admin/community",
         "/_admin/content",
         "/_admin/customMatches",
         "/_admin/dashboard",
+        "/_admin/engagement",
         "/_admin/leaderboard",
         "/_admin/linkedPlayers",
         "/_admin/matches",
@@ -531,6 +575,10 @@ export const routeTree = rootRoute
       "filePath": "_admin/coaches.tsx",
       "parent": "/_admin"
     },
+    "/_admin/community": {
+      "filePath": "_admin/community.tsx",
+      "parent": "/_admin"
+    },
     "/_admin/content": {
       "filePath": "_admin/content.tsx",
       "parent": "/_admin"
@@ -541,6 +589,10 @@ export const routeTree = rootRoute
     },
     "/_admin/dashboard": {
       "filePath": "_admin/dashboard.tsx",
+      "parent": "/_admin"
+    },
+    "/_admin/engagement": {
+      "filePath": "_admin/engagement.tsx",
       "parent": "/_admin"
     },
     "/_admin/leaderboard": {

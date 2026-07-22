@@ -22,6 +22,8 @@ import newsPlugin from "./routes/news/plugin";
 import siteContentPlugin from "./routes/siteContent/plugin";
 import storePlugin from "./routes/store/plugin";
 import uploadsPlugin from "./routes/uploads/plugin";
+import engagementPlugin from "./routes/engagement/plugin";
+import communityPlugin from "./routes/community/plugin";
 
 // Connect to the database
 connectDb();
@@ -51,6 +53,8 @@ app
   .use(siteContentPlugin)
   .use(storePlugin)
   .use(uploadsPlugin)
+  .use(engagementPlugin)
+  .use(communityPlugin)
   .get("/", () => "Server is Up and running 🦊")
   .listen(Bun.env.PORT || 3002);
 

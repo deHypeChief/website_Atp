@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types, react-hooks/exhaustive-deps */
 
 import { useEffect, useState } from "react"
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -88,17 +88,22 @@ const plans = [
 export function BillingContent({ setAction }) {
     const [opens, setOpens] = useState(false)
     return (
-        <div className="topWrapContent">
+        <div className="topWrapContent billingChoice billingChoiceMembership">
             <div className="firste ebound eSplit">
 
-                <div className="toHeader" onClick={() => { setOpens(!opens) }}>
-                    <h2>Membership Package</h2>
+                <button className="toHeader" type="button" aria-expanded={opens} onClick={() => { setOpens(!opens) }}>
+                    <span className="billingChoiceIcon"><Icon icon="solar:users-group-rounded-linear" /></span>
+                    <span className="billingChoiceCopy">
+                        <small>ATP MEMBERSHIP</small>
+                        <h2>Membership packages</h2>
+                        <span>Unlock club access, member benefits and priority tournament entry.</span>
+                    </span>
                     <Icon icon="iconamoon:arrow-down-2-bold" width="24" height="24" style={{
-                        transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                        transform: opens ? "rotate(180deg)" : "rotate(0deg)",
                         transition: "transform 0.3s ease-in-out"
                     }} />
-                </div>
-                <p>If you are currently on a payment plan and you wish to switch to another plan, just click on the new plan you wish to subscribe to.</p>
+                </button>
+                <p className="billingChoiceHint">Choose a new membership below whenever you are ready to join or switch plans.</p>
 
                 {
                     opens && (
@@ -188,11 +193,11 @@ export function BillingContent({ setAction }) {
                                                             }}
                                                         ></div>
 
-                                                        <h2>₦{item.priceNGN}/${item.priceUSD}</h2>
+                                                        <h2>₦{item.priceNGN} / ${item.priceUSD}</h2>
                                                         <p>{item.duration || "per month"}</p>
                                                     </div>
 
-                                                    <div className="priceButton" onClick={() => {
+                                                    <button type="button" className="priceButton" onClick={() => {
                                                         setAction({
                                                             key: item.duration,
                                                             type: "Membership Package",
@@ -202,7 +207,7 @@ export function BillingContent({ setAction }) {
                                                         })
                                                     }}>
                                                         <p style={{ fontSize: ".9rem" }}>{index <= 0 ? "Free " : "Join"}</p>
-                                                    </div>
+                                                    </button>
                                                 </div>
 
                                             </div>
@@ -239,17 +244,22 @@ export function BillingContent2({ data, setAction, userSubData }) {
 
 
     return (
-        <div className="topWrapContent">
+        <div className="topWrapContent billingChoice billingChoiceTraining">
             <div className="firste ebound eSplit">
 
-                <div className="toHeader" onClick={() => { setOpens(!opens) }}>
-                    <h2>Training Package</h2>
+                <button className="toHeader" type="button" aria-expanded={opens} onClick={() => { setOpens(!opens) }}>
+                    <span className="billingChoiceIcon"><Icon icon="solar:tennis-2-linear" /></span>
+                    <span className="billingChoiceCopy">
+                        <small>COURT DEVELOPMENT</small>
+                        <h2>Training packages</h2>
+                        <span>Book structured coaching built around your level and goals.</span>
+                    </span>
                     <Icon icon="iconamoon:arrow-down-2-bold" width="24" height="24" style={{
-                        transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                        transform: opens ? "rotate(180deg)" : "rotate(0deg)",
                         transition: "transform 0.3s ease-in-out"
                     }} />
-                </div>
-                <p>If you are currently on a payment plan and you wish to switch to another plan, just click on the new plan you wish to subscribe to.</p>
+                </button>
+                <p className="billingChoiceHint">Compare available training packages and select the plan that fits your schedule.</p>
 
                 {
                     opens && (
@@ -456,7 +466,16 @@ export function BillingContent2({ data, setAction, userSubData }) {
 export function BillingSummary({ action, dataFn, payDataRec, subData }) {
     const [status, setStatus] = useState(false)
     const [loading, setLoading] = useState(false);
+    const [paymentError, setPaymentError] = useState("");
     const [expData, setExpDate] = useState("");
+
+    useEffect(() => {
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = previousOverflow;
+        };
+    }, []);
 
     const [payData, setPayData] = useState({
         key: dataFn.key,
@@ -476,6 +495,8 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
     };
 
     useEffect(() => {
+        if (dataFn.key !== "Ticket" || !dataFn._id || !dataFn.userData?._id) return;
+
         const checkfn = async () => {
             const checkData = await checkMatch({
                 tournament: dataFn._id,
@@ -485,7 +506,7 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
             setStatus(stat)
         }
         checkfn()
-    }, [])
+    }, [dataFn])
 
 
     useEffect(() => {
@@ -531,58 +552,55 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
     }, [payData.planType]);
 
     async function handleSubmit() {
-        console.log("Submitting payment data", payData);
+        setPaymentError("");
         setLoading(true)
         try {
-            let payLink;
+            let authorizationUrl;
+
+            if (payData.key === "Ticket") {
+                authorizationUrl = await getTourPayLink(dataFn._id);
+            }
+
             if (payData.type === "Training Package") {
-                payLink = await payTraining(
+                const payLink = await payTraining(
                     payData.key,
                     Number(payData.planType) === 0 ? "1month" : "3months"
                 );
+                authorizationUrl = payLink?.paystackResponse?.data?.authorization_url;
             }
+
             if (payData.type === "Membership Package") {
                 await setAutoRenew(payData.autoRenew)
-                payLink = await payDues(payData.key, payData.autoRenew);
+                const payLink = await payDues(payData.key, payData.autoRenew);
+                authorizationUrl = payLink?.paystackResponse?.data?.authorization_url;
             }
 
-            if (payData.key === "Ticket") {
-                await getTourPayLink(dataFn._id)
-                    .then((link) => {
-                        if (link === undefined) {
-                            setLoading(false)
-                            alert("Network error during payment. Try reloading the page.");
-                            return;
-                        }
-                        window.location.href = link;
-                    })
+            if (!authorizationUrl) {
+                throw new Error("The payment provider did not return a checkout link. Please try again.");
             }
 
-            setLoading(false);
-            window.location.href = payLink.paystackResponse.data.authorization_url;
+            window.location.assign(authorizationUrl);
         } catch (err) {
-            setLoading(false)
-
             console.error(err);
+            setPaymentError(err.message || "Payment could not be started. Please try again.");
+        } finally {
             setLoading(false);
         }
     }
 
 
     return (
-        <div className="layoutOverlay">
-            <div className="layoutBase">
+        <div className="layoutOverlay" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && action(false)}>
+            <div className="layoutBase" role="dialog" aria-modal="true" aria-labelledby="payment-summary-title">
                 <div className="headerLL">
-                    <h2>Payment Summary</h2>
-                    <Button alt onClick={() => action(false)}>
-                        Close
-                    </Button>
+                    <div><span>SECURE CHECKOUT</span><h2 id="payment-summary-title">Payment Summary</h2></div>
+                    <button type="button" className="paymentClose" aria-label="Close payment summary" onClick={() => action(false)}><Icon icon="solar:close-circle-linear" /></button>
                 </div>
 
                 <div className="pawyWrap">
                     <div className="paContent">
                         <div className="payfType">
-                            <h3>{dataFn.type.toUpperCase()}</h3>
+                            <span className="paymentType">{dataFn.type.toUpperCase()}</span>
 
                             <div className="cmo vm">
                                 {
@@ -590,11 +608,7 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                                         <div className="toVVWrap">
                                             <h3>{dataFn.plan}</h3>
                                             <div className="saveBo">
-                                                <Icon
-                                                    icon="fluent-emoji-flat:party-popper"
-                                                    width="20"
-                                                    height="20"
-                                                />
+                                                <Icon icon="solar:tag-price-linear" width="20" height="20" />
                                                 {payData.type === "Training Package" && subData?.data?.membership?.plan !== "none" && (
                                                     <p className="saveText">Save {payDataRec?.packages?.[payData.key]?.discount}%</p>
                                                 )}
@@ -608,13 +622,10 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                                         "This plan offers full dashboard access, tournament insights, community support, progress tracking, exclusive training perks, social events, priority tournament benefits, and a premium badge to showcase your status."}
                                 </p>
                             </div>
-                            <br />
-
                             <div className="cmo vv">
-                                <Icon icon="fluent-color:alert-urgent-20" width="50" height="50" />
+                                <Icon icon="solar:shield-check-linear" width="26" height="26" />
                                 <p>
-                                    Please carefully review the selected payment before you
-                                    proceed to make your payment.
+                                    Review your selection before continuing to Paystack.
                                 </p>
                             </div>
                         </div>
@@ -637,28 +648,26 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                                 <p>{expData}</p>
                             </div>
 
-                            <br />
-
                             <div className="orderContent">
                                 <p className="textO">Total Amount:</p>
                                 <p className="textTotal">
                                     ₦
                                     {(() => {
-                                        const isOnPlan =
-                                            subData?.data.membership?.plan !== "none";
-                                        const basePrice =
-                                            dataFn.price[payData.planType]?.price || 0;
-                                        const discount =
-                                            payDataRec?.packages?.[payData.key]?.discount || 0;
+                                        if (dataFn.type === "Membership Package") {
+                                            return Number(dataFn.price || 0).toLocaleString();
+                                        }
 
                                         if (dataFn.type === "Training Package") {
+                                            const isOnPlan = subData?.data?.membership?.plan !== "none";
+                                            const basePrice = dataFn.price?.[Number(payData.planType)]?.price || 0;
+                                            const discount = payDataRec?.packages?.[payData.key]?.discount || 0;
                                             const finalPrice = isOnPlan
                                                 ? basePrice * (1 - discount / 100)
                                                 : basePrice;
                                             return finalPrice.toLocaleString();
                                         }
 
-                                        return dataFn.price;
+                                        return Number(dataFn.price || 0).toLocaleString();
                                     })()}
                                 </p>
                             </div>
@@ -732,6 +741,7 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                                 )
                             )
                         }
+                        {paymentError && <p className="paymentError" role="alert">{paymentError}</p>}
                     </div>
                 </div>
             </div>

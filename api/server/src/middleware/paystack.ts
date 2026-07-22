@@ -12,8 +12,10 @@ export const paystack = (app: Elysia) => app
             reference?: string,
             callback_url?: string
         }) {
+            if (!process.env.PAYSTACK_SECRET_KEY?.startsWith("sk_")) {
+                throw new Error("PAYSTACK_SECRET_KEY must be a Paystack secret key (sk_test_... or sk_live_...).");
+            }
             const paystackResponse = await PAYSTACK.post("/transaction/initialize", payConfig)
-            console.log(payConfig)
             return paystackResponse.data
         }
 
@@ -28,8 +30,10 @@ export const paystack = (app: Elysia) => app
             email: string,
             authorization_code: string,
         }) {
+            if (!process.env.PAYSTACK_SECRET_KEY?.startsWith("sk_")) {
+                throw new Error("PAYSTACK_SECRET_KEY must be a Paystack secret key (sk_test_... or sk_live_...).");
+            }
             const paystackResponse = await PAYSTACK.post("/transaction/charge_authorization", payConfig)
-            console.log(payConfig)
             return paystackResponse.data
         }
 

@@ -138,7 +138,11 @@ const subscriptions = new Elysia()
         } catch (err) {
             console.error(err);
             set.status = 500;
-            return { message: "Error creating membership subscription" };
+            return {
+                message: err instanceof Error && err.message.startsWith("PAYSTACK_SECRET_KEY")
+                    ? "Payment setup is incomplete. Add a valid Paystack secret key to the API environment."
+                    : "Unable to start membership payment. Please try again."
+            };
         }
     })
     .post("/pay/training/:type/:duration", async ({ paystack_Transaction, set, user, params: { type, duration } }) => {

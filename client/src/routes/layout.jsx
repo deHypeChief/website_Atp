@@ -30,6 +30,10 @@ import Cart from "./cart";
 import StorePaymentCallback from "./storePaymentCallback";
 import OrdersPage from "./user/ordersPage";
 import StoreProduct from "./storeProduct";
+import Community from "./community";
+import PlayerCommunity from "./user/community";
+import "../libs/styles/routes-v2.css";
+import "../libs/styles/pages-v3.css";
 
 export default function App() {
     return (
@@ -47,6 +51,7 @@ export default function App() {
                     <Route path="/news/:slug" element={<NewsArticle />} />
                     <Route path="/shop" element={<Store />} />
                     <Route path="/shop/:slug" element={<StoreProduct />} />
+                    <Route path="/community" element={<Community />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/store/payment/callback" element={<StorePaymentCallback />} />
                     <Route path="/membership/">
@@ -69,6 +74,7 @@ export default function App() {
                         <Route path="/u/tickets" element={<Tickets />} />
                         <Route path="/u/matches" element={<MatchesPage />} />
                         <Route path="/u/orders" element={<OrdersPage />} />
+                        <Route path="/u/community" element={<PlayerCommunity />} />
                         <Route path="/u/billings/history" element={<BillingHistory />} />
                         <Route path="/u/ticket/:tournamentID" element={<YourTicket />} />
                         <Route path="/u/bills/:type/:subType/:duration/:autoRenew" element={<Billing />} />

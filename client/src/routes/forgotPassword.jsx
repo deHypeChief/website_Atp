@@ -1,44 +1,6 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Icon } from "@iconify/react";
 import { forgotPassword } from "../libs/api/api.endpoints";
-import "../libs/styles/forgotPassword.css";
 
-export default function ForgotPassword() {
-    const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setMessage("");
-        setError("");
-
-        try {
-            const response = await forgotPassword(email);
-            setMessage(response.message);
-            setTimeout(() => {
-                window.location.href = '/reset-password';
-            }, 2000); // Redirect after 2 seconds
-        } catch (err) {
-            setError(err.message);
-        }
-    };
-
-    return (
-        <div className="forgot-password-container">
-            <h1>Forgot Password</h1>
-            <form onSubmit={handleSubmit} className="forgot-password-form">
-                <label htmlFor="email">Email:</label>
-                <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <button type="submit">Submit</button>
-            </form>
-            {message && <p className="success-message">{message}</p>}
-            {error && <p className="error-message">{error}</p>}
-        </div>
-    );
-}
+export default function ForgotPassword(){const [email,setEmail]=useState("");const [message,setMessage]=useState("");const [error,setError]=useState("");const navigate=useNavigate();const submit=async e=>{e.preventDefault();setMessage("");setError("");try{const response=await forgotPassword(email);setMessage(response.message||"Reset instructions sent.");setTimeout(()=>navigate("/reset-password"),1800)}catch(err){setError(err.message)}};return <main className="recoveryV3"><section><Link to="/login"><Icon icon="solar:arrow-left-linear"/> Back to sign in</Link><p>ACCOUNT RECOVERY</p><h1>Reset your password.</h1><span>Enter the email connected to your ATP account. We’ll send the code you need for the next step.</span><form onSubmit={submit}><label>Email address<input required type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com"/></label><button>Send reset code <Icon icon="solar:arrow-right-linear"/></button>{message&&<p className="formMessage success">{message}</p>}{error&&<p className="formMessage error">{error}</p>}</form></section><aside><Icon icon="solar:shield-keyhole-linear"/><h2>Your player account stays protected.</h2><p>Reset codes expire and can only be used once.</p></aside></main>}

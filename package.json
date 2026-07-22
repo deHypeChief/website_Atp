@@ -7,7 +7,8 @@
     "api": "cd ./api/server && bun run dev",
     "admin": "cd ./api/admin && bun run dev  --port 3001",
     "client": "cd ./client && bun run dev --port 3000",
-    "dev": "concurrently 'bun run api' 'bun run client' 'bun run admin'"
+    "shop": "cd ./shop && bun run dev --port 3003",
+    "dev": "concurrently --names api,client,admin,shop 'bun run api' 'bun run client' 'bun run admin' 'bun run shop'"
   },
   "devDependencies": {
     "@types/bun": "latest"

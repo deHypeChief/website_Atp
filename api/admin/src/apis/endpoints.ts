@@ -227,3 +227,14 @@ export const createStoreProduct = async (payload:any) => (await api.post('/store
 export const updateStoreProduct = async ({id,payload}:{id:string,payload:any}) => (await api.put(`/store/admin/products/${id}`, payload)).data;
 export const archiveStoreProduct = async (id:string) => (await api.delete(`/store/admin/products/${id}`)).data;
 export const updateStoreOrderStatus = async ({id,status}:{id:string,status:string}) => (await api.put(`/store/admin/orders/${id}/status`, {status})).data;
+
+export const getEngagementAdmin = async () => (await api.get('/engagement/admin')).data.items;
+export const createEngagement = async (payload:any) => (await api.post('/engagement/admin', payload)).data;
+export const updateEngagement = async ({id,payload}:{id:string,payload:any}) => (await api.put(`/engagement/admin/${id}`, payload)).data;
+export const deleteEngagement = async (id:string) => (await api.delete(`/engagement/admin/${id}`)).data;
+export const getCommunityTopicsAdmin = async () => (await api.get('/community/admin/topics')).data.topics;
+export const createCommunityTopic = async (payload:any) => (await api.post('/community/admin/topics', payload)).data;
+export const updateCommunityTopic = async ({id,payload}:{id:string,payload:any}) => (await api.put(`/community/admin/topics/${id}`, payload)).data;
+export const deleteCommunityTopic = async (id:string) => (await api.delete(`/community/admin/topics/${id}`)).data;
+export const getCommunityCommentsAdmin = async () => (await api.get('/community/admin/comments')).data.comments;
+export const moderateCommunityComment = async ({id,status}:{id:string,status:string}) => (await api.put(`/community/admin/comments/${id}/status`, {status})).data;

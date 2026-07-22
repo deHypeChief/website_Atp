@@ -12,7 +12,9 @@
     /* background: rgba(255, 0, 0, 0.123); */
 }
 body{
-    background: #F5F5F5;
+    background: var(--atp-chalk, #F7F8F4);
+    color: var(--atp-navy, #06182E);
+    overflow-x: hidden;
 }
 :root {
     --color-main: #92CD0C;
@@ -21,7 +23,21 @@ body{
 
     --set-spacing: 0 90px;
     --set-border: 1px solid white;
+    --atp-navy:#06182e;
+    --atp-blue:#0a4e78;
+    --atp-lime:#9be229;
+    --atp-chalk:#f7f8f4;
+    --atp-clay:#ff6433;
+    --atp-mist:#e8f0f3;
+    --atp-line:#bfd0d8;
+    --atp-muted:#587080;
+    --atp-body:Montserrat,Arial,sans-serif;
+    --atp-display:Impact,"Arial Narrow",sans-serif;
+    --atp-gutter:max(24px,6vw);
 }
+
+::selection{background:var(--atp-lime);color:var(--atp-navy)}
+:focus-visible{outline:3px solid var(--atp-clay);outline-offset:3px}
 
 
 h1 {
@@ -136,4 +152,52 @@ img {
 section {
     padding: var(--set-spacing);
 }
+}
+
+@media (max-width: 760px) {
+    .atpPageHeroCopy h1 {
+        font-size: clamp(3.25rem, 16vw, 4.5rem) !important;
+        line-height: .96 !important;
+        letter-spacing: -.045em;
+    }
+}
+
+.dashV2 .playerWelcome h1 {
+    font-size: clamp(2.75rem, 5vw, 5rem);
+    line-height: .94;
+    letter-spacing: -.035em;
+}
+
+@media (max-width: 600px) {
+    .dashV2 .playerWelcome h1 {
+        font-size: clamp(2.8rem, 14vw, 3.6rem);
+        line-height: .94;
+    }
+}
+
+/* Keep the condensed display face energetic without letting multiline titles collide. */
+:where(
+    .atpPageHeroCopy h1,
+    .atpSectionHead h2,
+    .featureCopy h2,
+    .homeCommunity h2,
+    .homeNewsletter h2,
+    .footerLead h2,
+    .dashCommunity > header h1,
+    .dashThread > header h2,
+    .aboutInfoBig h1,
+    .storyText h1,
+    .upComs h1,
+    .pickHeader h1,
+    .contact .chatHeader h1,
+    .mo .actTop h1,
+    .authHeader h1,
+    .newsMasthead h1,
+    .articlePage > header h1,
+    .storeHero h1,
+    .cartTitle h1,
+    .productDetailInfo h1
+) {
+    line-height: .96 !important;
+    letter-spacing: -.025em !important;
 }

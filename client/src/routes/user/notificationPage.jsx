@@ -1,51 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
+import { Icon } from "@iconify/react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { getNotify } from "../../libs/api/api.endpoints";
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-
+import { PlayerEmpty, PlayerLoading, PlayerPageHeader } from "../../components/system/player-system";
 dayjs.extend(relativeTime);
-
-
-export default function Notifications() {
-    const notifyMutation = useQuery({
-        queryKey: ["notify"],
-        queryFn: () => getNotify()
-    })
-    return (
-        <>
-            {
-                notifyMutation.data?.length <= 0 ? (
-                    <div className="noContent">
-                        <div className="ebound ">
-                            <div className="cleft">
-                                <h1>No Notifications Yet</h1>
-                                <p>We will keep you updated</p>
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="coContent">
-                        <div className="header">
-                            <h1>Notifications</h1>
-                        </div>
-
-                        <div className="notiBoxi">
-                            {
-                                notifyMutation.data?.map((item, index) => (
-                                    <div className="notiB" key={item.title + index}>
-                                        <div key={"noytif" + index} className="titNotiB">
-                                            <h2>{item.title}</h2>
-                                            <p>{dayjs(item.createdAt).format("MMMM D, YYYY h:mm A")}</p>
-                                        </div>
-                                        <p>{item.message}</p>
-                                    </div>
-                                )
-                                )
-                            }
-                        </div>
-                    </div>
-                )
-            }
-        </>
-    )
-}
+export default function Notifications(){const {data:items=[],isLoading}=useQuery({queryKey:["notify"],queryFn:getNotify});return <main className="playerUtility"><PlayerPageHeader eyebrow="PLAYER UPDATES" title="Notifications" text="Tournament, membership and account updates in one place."/>{isLoading?<PlayerLoading text="Checking for updates…"/>:!items.length?<PlayerEmpty icon="solar:bell-off-linear" title="You’re all caught up." text="New ATP updates will appear here as soon as they arrive."/>:<section className="notificationList">{items.map((item,index)=><article key={item._id||index}><span><Icon icon="solar:bell-bing-linear"/></span><div><small>{item.type||"ATP update"}</small><h2>{item.title}</h2><p>{item.message||item.description}</p></div><time>{dayjs(item.createdAt).fromNow()}</time></article>)}</section>}</main>}

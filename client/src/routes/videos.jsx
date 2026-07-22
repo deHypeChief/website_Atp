@@ -1,52 +1,8 @@
-import Button from "../components/button/button";
-import Hero from "../components/hero/hero";
-import VideoCard from "../components/videoCard/videoCard";
-import "../libs/styles/videos.css"
-import img from "../libs/images/main/IMG_3243.jpg";
+import { Icon } from "@iconify/react";
+import { AtpButton, PageHero, Reveal, SectionHeading } from "../components/system/system";
+import heroImage from "../assets/brand/pro-serve.png";
+import youthImage from "../assets/brand/youth-training.png";
+import communityImage from "../assets/brand/club-community.png";
 
-
-export default function Videos() {
-    const tags = [
-        "Kids Amatuer",
-        "Kids Mid-Level",
-        "Kids Professional",
-        "Adult Amatuer",
-        "Adult Mid-Level",
-        "Adult Professional",
-    ]
-    return (
-        <>
-            <Hero title="Video Library (Instructional Content)" subTitle={"Practice at your convinience"} imageUrl={img}/>
-
-            <section className="upcomings">
-                <div className="upComs">
-                    <h1>Upcoming Tournaments</h1>
-                    <p>Choose your level and will find a tournament that suits you best</p>
-                </div>
-                <div className="upActions">
-                    {
-                        tags.map((item) => (
-                            <div key={item} className="tAc">
-                                <Button>{item}</Button>
-                            </div>
-                        ))
-                    }
-                </div>
-
-                {/* <div className="sercBox">
-                    <p>You can’t find a video? Use the search button to look for specific videos</p>
-                    <div className="inputN">
-                        <input type="text" placeholder="Your Email Address" />
-                        <Button>Join Our Mailing List</Button>
-                    </div>
-                </div> */}
-
-                <div className="vbo">
-                    <VideoCard name="How to hit a proper back hand"/>
-                    <VideoCard name="How to hit a proper back hand"/>
-                    <VideoCard name="How to hit a proper back hand"/>
-                </div>
-            </section>
-        </>
-    )
-}
+const lessons=[{title:"Build a reliable backhand",level:"Adult · Foundation",time:"08:24",image:heroImage},{title:"Serve rhythm without rushing",level:"Performance",time:"11:10",image:communityImage},{title:"First rally fundamentals",level:"Junior · Foundation",time:"06:42",image:youthImage}];
+export default function Videos(){return <main className="editorialPage videosV3"><PageHero eyebrow="ATP video room" title={<>Learn. Rewatch.<br/>Take it to court.</>} text="Short, practical lessons designed to make the next training session more useful." image={heroImage} actions={<AtpButton to="/coaching">Train with a coach</AtpButton>}/><section className="lessonShelf pagePad"><SectionHeading eyebrow="Instructional library" title="Start with one detail." text="Choose a lesson, take one cue to court and repeat until it feels natural."/><div className="lessonFilters"><button className="active">All lessons</button><button>Juniors</button><button>Adult foundation</button><button>Performance</button></div><div className="lessonGrid">{lessons.map((lesson,index)=><Reveal key={lesson.title} delay={index*80}><article className="lessonCard"><div><img src={lesson.image} alt=""/><button aria-label={`Play ${lesson.title}`}><Icon icon="solar:play-bold"/></button><time>{lesson.time}</time></div><small>{lesson.level}</small><h2>{lesson.title}</h2><p>Coach-led cues, a clear demonstration and one drill to practise next.</p></article></Reveal>)}</div></section><section className="videoNote"><Icon icon="solar:videocamera-record-linear"/><div><small>MORE LESSONS ARE COMING</small><h2>A library that grows with your game.</h2></div><AtpButton to="/contact" variant="ghost">Request a topic</AtpButton></section></main>}

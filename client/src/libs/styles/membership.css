@@ -123,7 +123,7 @@
     grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
     .durImg{
-        height: 400px;,
+        height: 400px;
         width: 100%;
         overflow: hidd;
         img{

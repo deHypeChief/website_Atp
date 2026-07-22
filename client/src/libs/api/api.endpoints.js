@@ -75,6 +75,7 @@ export const getTourPayLink = async (tornamentId) => {
     return response.data.paystackResponse.data.authorization_url;
   } catch (error) {
     console.error("Error fetching payment link:", error);
+    throw new Error(error.response?.data?.message || "Unable to start tournament payment. Please try again.");
   }
 };
 
@@ -224,7 +225,7 @@ export const payDues = async (type, autoRenew) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching billing info:", error);
-    throw new Error(error.response.data.message);
+    throw new Error(error.response?.data?.message || "Unable to start membership payment. Please try again.");
   }
 }
 
@@ -234,7 +235,7 @@ export const payTraining = async (type, duration) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching billing info:", error);
-    throw new Error(error.response.data.message);
+    throw new Error(error.response?.data?.message || "Unable to start training payment. Please try again.");
   }
 }
 
@@ -338,5 +339,11 @@ export const getStoreProduct = async slug => (await api.get(`/store/products/${s
 export const createStoreCheckout = async payload => (await api.post('/store/checkout', payload)).data;
 export const getMyStoreOrders = async () => (await api.get('/store/orders/me')).data.orders;
 export const verifyStoreOrder = async (id, reference) => (await api.get(`/store/orders/${id}/verify`, { params: { reference } })).data;
+
+export const getEngagementItems = async () => (await api.get('/engagement')).data.items || [];
+export const respondToEngagement = async ({id, optionId, participantId}) => (await api.post(`/engagement/${id}/respond`, {optionId, participantId})).data;
+export const getCommunityTopics = async () => (await api.get('/community/topics')).data.topics || [];
+export const getCommunityTopic = async id => (await api.get(`/community/topics/${id}`)).data;
+export const postCommunityComment = async ({topicId, body, parentId}) => (await api.post(`/community/topics/${topicId}/comments`, {body, parentId})).data;
 
 

@@ -1,55 +1,5 @@
-import { useState } from "react"
-import Button from "../../components/button/button"
-import "../../libs/styles/ticket.css"
-import { Link, useParams } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
-import { useQuery } from "@tanstack/react-query"
+import { useLocation, useParams, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Icon } from "@iconify/react";
 import { validateMatch } from "../../libs/api/api.endpoints";
-
-export default function YourTicket() {
-    const location = useLocation();
-    const { tournamentID } = useParams();
-    const [isValid, setIsValid] = useState(false)
-
-    const matchQuery = useQuery({
-        queryFn: () => {
-            const params = new URLSearchParams(location.search);
-
-            const matchQueryString = `?tx_ref=${params.get('trxref')}&reference=${params.get('reference')}`;
-            return validateMatch(tournamentID, matchQueryString)
-        },
-        queryKey: ["validateTicket"],
-        refetchOnWindowFocus: false
-    })
-
-    return (
-        <>
-            <div className="ticketWrap">
-                {
-                    matchQuery.isSuccess && (
-                        <div className="ticketplaceValid">
-                            <h1>{matchQuery.data.message}</h1>
-                            <p>You can check your mail to see your ticket code</p>
-                            <Link to="/u">
-                                <Button>View Ticket</Button>
-                            </Link>
-                            <p>Note: Ticket code would be needed at the tournament</p>
-                        </div>
-                    )
-                }
-                {
-                    matchQuery.isError && (
-                        <div className="ticketplaceValid">
-                            <h1>{matchQuery.error.message}</h1>
-                            <p>Sorry Payment for the ticket could not go through</p>
-
-                            <Link to="/u">
-                                <Button>Back to Dashboard</Button>
-                            </Link>
-                        </div>
-                    )
-                }
-            </div>
-        </>
-    )
-}
+export default function YourTicket(){const location=useLocation();const {tournamentID}=useParams();const query=useQuery({queryKey:["validateTicket",tournamentID,location.search],queryFn:()=>{const params=new URLSearchParams(location.search);return validateMatch(tournamentID,`?tx_ref=${params.get("trxref")}&reference=${params.get("reference")}`)},retry:false,refetchOnWindowFocus:false});return <main className={`paymentStatusV3 ${query.isError?"error":""}`}><Icon icon={query.isLoading?"solar:refresh-circle-linear":query.isError?"solar:danger-circle-linear":"solar:ticket-linear"}/><small>{query.isLoading?"VERIFYING TICKET":query.isError?"PAYMENT NEEDS ATTENTION":"TICKET CONFIRMED"}</small><h1>{query.isLoading?"Confirming your entry…":query.isError?query.error.message:query.data?.message||"You’re in the draw."}</h1><p>{query.isLoading?"Keep this page open while ATP confirms the transaction.":query.isError?"The ticket payment could not be confirmed.":"Your digital pass is ready inside the player desk. Bring it with you on match day."}</p>{!query.isLoading&&<Link to={query.isError?"/u/tournaments":"/u/tickets"}>{query.isError?"Return to tournaments":"Open my tickets"}<Icon icon="solar:arrow-right-linear"/></Link>}</main>}

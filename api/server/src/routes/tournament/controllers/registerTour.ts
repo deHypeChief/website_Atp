@@ -36,7 +36,11 @@ const registerTour = new Elysia()
             // Error handling and logging
             set.status = 500;
             console.log(err)
-            return { message: "Error while making payment", error: err };
+            return {
+                message: err instanceof Error && err.message.startsWith("PAYSTACK_SECRET_KEY")
+                    ? "Payment setup is incomplete. Add a valid Paystack secret key to the API environment."
+                    : "Unable to start tournament payment. Please try again."
+            };
         }
     });
 

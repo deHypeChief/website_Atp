@@ -1,93 +1,18 @@
-import Card from "../components/card/card";
-import Hero from "../components/hero/hero";
-import "../libs/styles/about.css"
-
-
-import heroImg from "../libs/images/main/IMG_2800.jpg"
-import heroImg2 from "../libs/images/main/IMG_2809.jpg"
 import { useQuery } from "@tanstack/react-query";
+import { Icon } from "@iconify/react";
 import { getSiteContent } from "../libs/api/api.endpoints";
+import { AtpButton, PageHero, Reveal, SectionHeading } from "../components/system/system";
+import heroImage from "../assets/brand/pro-serve.png";
+import youthImage from "../assets/brand/youth-training.png";
 
 export default function About() {
-    const { data } = useQuery({ queryKey:["site-content"], queryFn:getSiteContent });
-    const about = data?.pages || {};
-    return (
-        <>
-            <Hero title={about?.aboutStoryHeader || "About us"} subTitle={"Who and what we are"} imageUrl={about?.aboutPageImg || heroImg} noAction />
-
-            <section className="aboutInfoBig">
-                <h1>
-                    We’re on a mission to make tennis
-                    accessible and rewarding
-                    for everyone, fostering
-                    a community where passion and skill
-                    thrive.
-                </h1>
-            </section>
-
-
-            <section className="ourStory">
-                <div className="storywrap">
-                    <div className="storyText">
-                        <h1>{about?.aboutStoryHeader || "Our Story"}</h1>
-                        {about?.aboutStoryText ? <p style={{whiteSpace:"pre-line"}}>{about.aboutStoryText}</p> : <>
-                        <p>
-                            At ATP, we believe tennis is more than just a sport; it’s a lifestyle and a lifelong pursuit of mastery. That’s why we offer high-quality training tailored to each player’s unique level and goals. Whether you’re a complete beginner discovering the thrill of tennis for the first time, or an experienced player looking to polish your technique, ATP provides the guidance, resources, and community support to help you reach new heights.
-
-                        </p>
-                        <br /><br />
-                        <p>
-                            What makes ATP special is our inclusive, welcoming community. Here, anyone—male or female, young or seasoned—can experience the joy of tennis. We are proud to serve players at our premium training locations, including Transcorp Hilton, Rockview Hotels (Royale), and the Moshood Abiola National Stadium, providing state-of-the-art facilities for training and recreation.
-
-                        </p></>}
-                    </div>
-                    <div className="storyImg" style={about?.aboutPageImg ? {backgroundImage:`url(${about.aboutPageImg})`} : undefined}>
-
-                    </div>
-                </div>
-            </section>
-
-            <section className="aims">
-                <div className="aimfBox">
-                    <h1>{about?.aboutVisionHeader || "Our Vision"}</h1>
-                    <p>
-                        {about?.aboutVisionText || ""}
-
-                    </p>
-                </div>
-                <div className="aimfBox">
-                    <h1>{about?.aboutMissionHeader || "Our Mission"}</h1>
-                    <p>
-                        {about?.aboutMissionText || ""}
-                    </p>
-                </div>
-            </section>
-
-
-            {/* <section className="teams">
-                <div className="teamText">
-                    <h1>Our Team</h1>
-                    <p>
-                        {about?.teamText || ""}
-
-                    </p>
-                </div>
-
-                <div className="teamCards">
-                    <Card teamCard />
-                    <Card teamCard />
-                    <Card teamCard />
-                </div>
-            </section> */}
-
-            <Hero
-                title={"Don’t just think, just do it."}
-                imageUrl={heroImg2}
-                altText={"Contact Us"}
-                altLink={"/contact"}
-            // text={"Cras tincidunt ligula ac enim posuere venenatis. In luctus biben dum nisl, in luctus dolor ultrices volutpat."}
-            />
-
-        </>
-    )
+  const { data } = useQuery({ queryKey: ["site-content"], queryFn: getSiteContent });
+  const about = data?.pages || {};
+  return <main className="editorialPage aboutV3">
+    <PageHero eyebrow="The ATP story" title={<>Built for the<br/>love of tennis.</>} text="A Lagos tennis community where serious coaching, healthy competition and genuine belonging meet." image={about.aboutPageImg || heroImage} actions={<AtpButton to="/membership/adult">Join ATP</AtpButton>}/>
+    <section className="manifestoBand"><Reveal><p>Our purpose</p><h2>Make the game accessible. Make every session count. Make every player feel they belong.</h2></Reveal></section>
+    <section className="storySplit pagePad"><Reveal className="storyMedia"><img src={youthImage} alt="Young tennis players learning with an ATP coach"/><span><strong>Every level</strong><small>One tennis community</small></span></Reveal><Reveal className="storyCopy"><SectionHeading eyebrow="Who we are" title={about.aboutStoryHeader || "A club with a clear point of view."}/><p>{about.aboutStoryText || "ATP is built around the belief that tennis is more than a sport. It is a lifelong practice of movement, focus and confidence. We connect beginners, developing juniors and experienced competitors with coaching and match play designed around their next step."}</p><p>From structured sessions to club tournaments, the experience is welcoming, ambitious and unmistakably local.</p></Reveal></section>
+    <section className="principleGrid pagePad"><Reveal><Icon icon="solar:eye-linear"/><small>OUR VISION</small><h2>{about.aboutVisionHeader || "Tennis within reach."}</h2><p>{about.aboutVisionText || "A thriving African tennis culture where anyone with the desire to play can find a court, a coach and a community."}</p></Reveal><Reveal delay={100}><Icon icon="solar:flag-2-linear"/><small>OUR MISSION</small><h2>{about.aboutMissionHeader || "Progress with purpose."}</h2><p>{about.aboutMissionText || "Build confident players through excellent coaching, meaningful competition and enduring connections on and off court."}</p></Reveal></section>
+    <section className="pageCta"><p>YOUR NEXT POINT STARTS HERE</p><h2>Come find your game.</h2><AtpButton to="/contact">Talk to ATP</AtpButton></section>
+  </main>;
 }

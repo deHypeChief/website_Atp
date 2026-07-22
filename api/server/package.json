@@ -8,6 +8,7 @@
     "seed:news": "bun run scripts/seed-news.ts",
     "seed:test-user": "bun run scripts/seed-test-user.ts",
     "seed:store": "bun run scripts/seed-store.ts",
+    "seed:community": "bun run scripts/seed-community.ts",
     "dev": "bun run --watch src/index.ts",
     "start": "bun run build/index.js ",
     "build": "bun build ./src/index.ts --outdir ./build  --target bun --sourcemap"

@@ -40,3 +40,5 @@ button {
     align-items: center;
     justify-content: center;
 }
+
+.atpButton{border-radius:999px!important}
