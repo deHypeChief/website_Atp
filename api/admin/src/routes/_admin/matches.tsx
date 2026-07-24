@@ -152,7 +152,7 @@ function Matches() {
         <header className="matchCentreMasthead">
           <div>
             <span><i /> LIVE OPERATIONS</span>
-            <h2>Match Centre desk</h2>
+            <h2>Match Centre</h2>
             <p>Build the draw from paid registrations, then publish every court update to players.</p>
           </div>
           <div className="matchCentreSignal">
