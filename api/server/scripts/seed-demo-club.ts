@@ -68,6 +68,7 @@ async function upsertPlayer(seed: (typeof playerSeeds)[number]) {
     player.set({
       fullName: seed.fullName,
       username: seed.username,
+      password: demoPassword,
       phoneNumber: seed.phoneNumber,
       level: seed.level,
     });
