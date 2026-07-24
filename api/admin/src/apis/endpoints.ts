@@ -238,3 +238,7 @@ export const updateCommunityTopic = async ({id,payload}:{id:string,payload:any})
 export const deleteCommunityTopic = async (id:string) => (await api.delete(`/community/admin/topics/${id}`)).data;
 export const getCommunityCommentsAdmin = async () => (await api.get('/community/admin/comments')).data.comments;
 export const moderateCommunityComment = async ({id,status}:{id:string,status:string}) => (await api.put(`/community/admin/comments/${id}/status`, {status})).data;
+
+export const getMatchCentreAdmin = async () => (await api.get('/match-centre/admin/')).data;
+export const saveMatchCentre = async ({tournamentId,payload}:{tournamentId:string,payload:any}) =>
+	(await api.put(`/match-centre/admin/${tournamentId}`, payload)).data;

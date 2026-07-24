@@ -8,5 +8,104 @@ import { useAuth } from "../../libs/hooks/use-auth";
 import "../../libs/styles/dashboard-v2.css";
 import "../../libs/styles/dashboard-hero-image.css";
 
-const nav=[{label:"Overview",to:"/u",end:true,icon:"solar:widget-5-linear"},{label:"Community",to:"/u/community",icon:"solar:chat-round-dots-linear"},{label:"My coach",to:"/u/coach",icon:"solar:user-heart-rounded-linear"},{label:"Tournaments",to:"/u/tournaments",icon:"solar:cup-star-linear"},{label:"Tickets",to:"/u/tickets",icon:"solar:ticket-linear"},{label:"Orders",to:"/u/orders",icon:"solar:bag-3-linear"},{label:"Notifications",to:"/u/notifications",icon:"solar:bell-linear"},{label:"Billing",to:"/u/billings",icon:"solar:card-2-linear"}];
-export default function DashboardLayout(){const [open,setOpen]=useState(false);const navigate=useNavigate();const {userLogout,user}=useAuth();const localUser=user();const {data,isError}=useQuery({queryKey:["billing-page-v2"],queryFn:getBillingPage,staleTime:900000,refetchOnWindowFocus:false});useEffect(()=>{const footer=document.querySelector("footer");if(footer)footer.style.display="none";return()=>{if(footer)footer.style.display=""}},[]);useEffect(()=>{if(isError)navigate("/login")},[isError,navigate]);const player=data?.user||localUser||{};const name=player.fullName||player.username||"ATP Player";const plan=data?.billing?.data?.membership?.plan||"Free";return <div className="dashV2"><aside className={open?"open":""}><Link className="dashLogo" to="/"><img src={logo} alt="ATP"/></Link><div className="dashPlayer"><span>{player.picture?<img src={player.picture} alt=""/>:name.charAt(0)}</span><div><strong>{name}</strong><small>{plan} member</small></div></div><nav>{nav.map(item=><NavLink key={item.to} to={item.to} end={item.end} onClick={()=>setOpen(false)}><Icon icon={item.icon}/><span>{item.label}</span></NavLink>)}</nav><div className="dashAsideBottom"><Link to="/"><Icon icon="solar:home-2-linear"/>ATP website</Link><button onClick={()=>{userLogout();navigate("/login")}}><Icon icon="solar:logout-2-linear"/>Sign out</button></div></aside><div className="dashMain"><header><button onClick={()=>setOpen(!open)} aria-label="Toggle dashboard menu"><Icon icon={open?"solar:close-circle-linear":"solar:hamburger-menu-linear"}/></button><div><small>PLAYER DESK</small><span>ATP International</span></div><div className="dashHeaderActions"><Link to="/u/community"><Icon icon="solar:chat-round-dots-linear"/><span>Clubhouse</span></Link><Link to="/u/notifications"><Icon icon="solar:bell-linear"/></Link></div></header><div className="dashOutlet"><Outlet/></div></div>{open&&<button className="dashScrim" aria-label="Close menu" onClick={()=>setOpen(false)}/>}</div>}
+const nav = [
+  { label: "Overview", to: "/u", end: true, icon: "solar:widget-5-linear" },
+  { label: "Community", to: "/u/community", icon: "solar:chat-round-dots-linear" },
+  { label: "My coach", to: "/u/coach", icon: "solar:user-heart-rounded-linear" },
+  { label: "Tournaments", to: "/u/tournaments", icon: "solar:cup-star-linear" },
+  { label: "Tickets", to: "/u/tickets", icon: "solar:ticket-linear" },
+  { label: "Orders", to: "/u/orders", icon: "solar:bag-3-linear" },
+  { label: "Notifications", to: "/u/notifications", icon: "solar:bell-linear" },
+  { label: "Billing", to: "/u/billings", icon: "solar:card-2-linear" },
+];
+
+export default function DashboardLayout() {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const { userLogout, user } = useAuth();
+  const localUser = user();
+  const { data, isError } = useQuery({
+    queryKey: ["billing-page-v2"],
+    queryFn: getBillingPage,
+    staleTime: 900000,
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    const footer = document.querySelector("footer");
+    if (footer) footer.style.display = "none";
+    return () => {
+      if (footer) footer.style.display = "";
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isError) navigate("/login");
+  }, [isError, navigate]);
+
+  const player = data?.user || localUser || {};
+  const name = player.fullName || player.username || "ATP Player";
+  const rawPlan = data?.billing?.data?.membership?.plan;
+  const plan = !rawPlan || rawPlan === "none" ? "Free" : rawPlan;
+
+  return (
+    <div className="dashV2">
+      <aside className={open ? "open" : ""}>
+        <Link className="dashLogo" to="/">
+          <img src={logo} alt="ATP" />
+        </Link>
+
+        <nav>
+          {nav.map((item) => (
+            <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setOpen(false)}>
+              <Icon icon={item.icon} />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="dashAsideBottom">
+          <Link to="/">
+            <Icon icon="solar:home-2-linear" />
+            ATP website
+          </Link>
+          <button onClick={() => { userLogout(); navigate("/login"); }}>
+            <Icon icon="solar:logout-2-linear" />
+            Sign out
+          </button>
+          <div className="dashPlayer">
+            <span>{player.picture ? <img src={player.picture} alt="" /> : name.charAt(0)}</span>
+            <div>
+              <strong>{name}</strong>
+              <small>{plan} member</small>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div className="dashMain">
+        <header>
+          <button onClick={() => setOpen(!open)} aria-label="Toggle dashboard menu">
+            <Icon icon={open ? "solar:close-circle-linear" : "solar:hamburger-menu-linear"} />
+          </button>
+          <div>
+            <small>PLAYER DESK</small>
+            <span>ATP International</span>
+          </div>
+          <div className="dashHeaderActions">
+            <Link to="/u/community">
+              <Icon icon="solar:chat-round-dots-linear" />
+              <span>Clubhouse</span>
+            </Link>
+            <Link to="/u/notifications" aria-label="Notifications">
+              <Icon icon="solar:bell-linear" />
+            </Link>
+          </div>
+        </header>
+        <div className="dashOutlet"><Outlet /></div>
+      </div>
+
+      {open && <button className="dashScrim" aria-label="Close menu" onClick={() => setOpen(false)} />}
+    </div>
+  );
+}

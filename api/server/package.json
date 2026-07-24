@@ -7,6 +7,7 @@
   "scripts": {
     "seed:news": "bun run scripts/seed-news.ts",
     "seed:test-user": "bun run scripts/seed-test-user.ts",
+    "seed:demo-club": "bun run scripts/seed-demo-club.ts",
     "seed:store": "bun run scripts/seed-store.ts",
     "seed:community": "bun run scripts/seed-community.ts",
     "dev": "bun run --watch src/index.ts",

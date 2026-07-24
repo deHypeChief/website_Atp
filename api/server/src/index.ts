@@ -24,6 +24,8 @@ import storePlugin from "./routes/store/plugin";
 import uploadsPlugin from "./routes/uploads/plugin";
 import engagementPlugin from "./routes/engagement/plugin";
 import communityPlugin from "./routes/community/plugin";
+import matchCentrePlugin from "./routes/matchCentre/plugin";
+
 
 // Connect to the database
 connectDb();
@@ -55,6 +57,7 @@ app
   .use(uploadsPlugin)
   .use(engagementPlugin)
   .use(communityPlugin)
+  .use(matchCentrePlugin)
   .get("/", () => "Server is Up and running 🦊")
   .listen(Bun.env.PORT || 3002);
 

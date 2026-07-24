@@ -58,7 +58,7 @@ function AdminLayout() {
             )
         },
         {
-            name: "Matches",
+            name: "Match Centre",
             link: "/matches",
             icon: (<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
                 <g fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>

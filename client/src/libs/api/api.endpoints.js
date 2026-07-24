@@ -345,5 +345,6 @@ export const respondToEngagement = async ({id, optionId, participantId}) => (awa
 export const getCommunityTopics = async () => (await api.get('/community/topics')).data.topics || [];
 export const getCommunityTopic = async id => (await api.get(`/community/topics/${id}`)).data;
 export const postCommunityComment = async ({topicId, body, parentId}) => (await api.post(`/community/topics/${topicId}/comments`, {body, parentId})).data;
+export const getLiveDraws = async () => (await api.get('/match-centre/live')).data.draws || [];
 
 

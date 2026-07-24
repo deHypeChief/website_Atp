@@ -1,0 +1,40 @@
+.openLiveDraw{min-width:190px;padding:15px 18px;border:0;border-radius:0;background:var(--atp-lime);color:var(--atp-navy);display:grid;grid-template-columns:1fr auto;gap:5px 16px;text-align:left;text-transform:uppercase;font:900 .7rem var(--atp-body);cursor:pointer;box-shadow:8px 8px 0 rgba(155,226,41,.16)}
+.openLiveDraw>span{grid-column:1/-1;display:flex;align-items:center;gap:7px;color:#416514;font-size:.5rem;letter-spacing:.13em}
+.openLiveDraw i,.liveDraw>header span i{width:7px;height:7px;border-radius:50%;background:#ed4c38;box-shadow:0 0 0 4px rgba(237,76,56,.18);animation:scorePulse 1.8s ease-in-out infinite}
+.openLiveDraw>svg{font-size:1.15rem}
+.drawLayer{position:fixed;inset:0;z-index:700}
+.drawScrim{position:absolute;inset:0;width:100%;height:100%;border:0;background:rgba(2,13,27,.66);backdrop-filter:blur(3px);cursor:pointer}
+.liveDraw{position:absolute;inset:0 0 0 auto;width:min(440px,100%);height:100%;padding:0;background:#101112;color:#f5f6f2;display:grid;grid-template-rows:auto 1fr auto;box-shadow:-24px 0 70px rgba(0,0,0,.34);animation:drawIn .32s cubic-bezier(.22,1,.36,1)}
+.liveDraw>header{padding:24px 0 20px 22px;border-bottom:1px solid #2c2e30;display:flex;align-items:start;justify-content:space-between}
+.liveDraw>header span{display:flex;align-items:center;gap:9px;color:#aeb2b5;font-size:.54rem;font-weight:800;letter-spacing:.15em}
+.liveDraw>header h2{margin-top:8px;color:#fff;font:900 2.4rem/.95 var(--atp-display);letter-spacing:-.02em;text-transform:uppercase}
+.liveDraw>header button{width:42px;height:42px;margin:0;padding:0;border:0;background:none;color:#aeb2b5;font-size:1.65rem;display:grid;place-items:center;align-self:start;cursor:pointer}
+.drawScroll{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 10px 18px;scrollbar-color:#414446 #101112;scrollbar-width:thin}
+.drawState{min-height:55vh;display:grid;place-items:center;align-content:center;gap:10px;padding:34px;color:#858b8f;text-align:center}
+.drawState svg{width:34px;height:34px;color:#9be229}
+.drawState strong{color:#f5f6f2;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+.drawState span{max-width:240px;font-size:.66rem;line-height:1.5}
+.scoreTournament{padding:0;margin-top:10px}
+.scoreTournament>header{min-height:58px;padding:10px 8px;display:grid;grid-template-columns:35px 1fr auto 18px;gap:10px;align-items:center;border-bottom:1px solid #2a2b2d}
+.scoreMark{width:27px;height:27px;display:grid;place-items:center;border:1px solid #7c8185;color:#e6e8e9;font-size:.48rem;font-weight:900;letter-spacing:-.05em}
+.scoreTournament>header div{display:flex;flex-direction:column;min-width:0}
+.scoreTournament>header strong{font-size:.73rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scoreTournament>header small{margin-top:3px;color:#7e8387;font-size:.54rem;text-transform:uppercase;letter-spacing:.08em}
+.scoreTournament>header em{color:#9be229;font-style:normal;font-size:.48rem;font-weight:900;letter-spacing:.1em}
+.scoreTournament>header>svg{color:#a6aaad}
+.scoreMatches{display:grid;gap:4px;padding-top:4px}
+.scoreMatches article{min-height:74px;padding:10px 9px;display:grid;grid-template-columns:38px minmax(0,1fr) auto 27px;gap:9px;align-items:center;background:#17191a;border:1px solid #1e2021}
+.court{height:38px;display:grid;place-items:center;border-right:1px solid #343638;color:#b4b7b9;font-size:.55rem;font-weight:900}
+.court.live{color:#9be229}
+.scorePlayers,.scoreSets{display:grid;grid-template-rows:1fr 1fr;gap:7px}
+.scorePlayers span{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.68rem}
+.scoreSets span{display:flex;justify-content:flex-end;gap:10px}
+.scoreSets b{min-width:9px;color:#d9dcde;font-size:.68rem;text-align:center}
+.scoreMatches article>button{width:27px;min-width:0;padding:0;border:0;background:none;color:#707477;font-size:1.12rem;cursor:pointer}
+.scoreMatches article>button:hover{color:#9be229}
+.liveDraw>footer{padding:14px 20px;border-top:1px solid #2c2e30;display:flex;justify-content:space-between;color:#797e81;font-size:.53rem;text-transform:uppercase;letter-spacing:.08em}
+.liveDraw>footer strong{color:#b8bcbf}
+@keyframes drawIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes scorePulse{50%{opacity:.45;transform:scale(.82)}}
+@media(prefers-reduced-motion:reduce){.liveDraw,.openLiveDraw i,.liveDraw>header span i{animation:none}}
+@media(max-width:700px){.playerPageHeader{align-items:flex-start;flex-direction:column}.openLiveDraw{width:100%}.liveDraw>header{padding-top:20px}.scorePlayers span{max-width:145px}}
