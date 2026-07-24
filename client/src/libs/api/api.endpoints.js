@@ -255,7 +255,7 @@ export const getUserCoachData = async () => {
   try {
     const response = await api.get(`/assigncoach/getUserCoach`);
     // console.log(response)
-    return response.data;
+    return { ...response.data, data: response.data };
   } catch (error) {
     console.error("Error fetching user coach info:", error);
     throw new Error(error.response.data.message);

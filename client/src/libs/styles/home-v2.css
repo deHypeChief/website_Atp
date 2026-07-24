@@ -2,6 +2,24 @@
   background: var(--atp-chalk);
   color: var(--atp-navy);
 }
+.homeV2 > .atpPageHero {
+  height: 100vh;
+  height: 100svh;
+  min-height: 100vh;
+  min-height: 100svh;
+  max-height: 100vh;
+  max-height: 100svh;
+  padding-top: clamp(105px, 13vh, 145px);
+  padding-bottom: clamp(28px, 5vh, 54px);
+}
+.homeV2 > .atpPageHero .atpPageHeroCopy h1 {
+  max-width: min(1050px, 72vw);
+  margin: clamp(12px, 2vh, 20px) 0;
+  font-size: clamp(4rem, min(8vw, 15vh), 9rem);
+}
+.homeV2 > .atpPageHero .atpPageHeroBottom {
+  gap: clamp(14px, 2.5vh, 30px);
+}
 .atpShell {
   padding: 110px var(--atp-gutter);
 }
@@ -342,6 +360,9 @@
   font-size: 0.8rem;
 }
 @media (max-width: 850px) {
+  .homeV2 > .atpPageHero .atpPageHeroCopy h1 {
+    max-width: 100%;
+  }
   .programGrid,
   .membershipGrid,
   .homeStories > div:last-child {

@@ -32,6 +32,7 @@ import OrdersPage from "./user/ordersPage";
 import StoreProduct from "./storeProduct";
 import Community from "./community";
 import PlayerCommunity from "./user/community";
+import LiveScoreTicker from "../components/system/live-score-ticker";
 import "../libs/styles/routes-v2.css";
 import "../libs/styles/pages-v3.css";
 
@@ -40,6 +41,7 @@ export default function App() {
         <>
             <BrowserRouter>
                 <Navbar />
+                <LiveScoreTicker mode="public" />
                 <Routes>
                     <Route index element={<Home />} />
                     <Route path="/signup" element={<SignUp />} />

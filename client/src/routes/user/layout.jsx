@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import logo from "../../libs/images/logo.svg";
 import { getBillingPage } from "../../libs/api/api.endpoints";
 import { useAuth } from "../../libs/hooks/use-auth";
+import LiveScoreTicker from "../../components/system/live-score-ticker";
 import "../../libs/styles/dashboard-v2.css";
 import "../../libs/styles/dashboard-hero-image.css";
 
@@ -102,6 +103,7 @@ export default function DashboardLayout() {
             </Link>
           </div>
         </header>
+        <LiveScoreTicker />
         <div className="dashOutlet"><Outlet /></div>
       </div>
 

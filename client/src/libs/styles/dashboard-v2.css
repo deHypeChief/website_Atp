@@ -4,3 +4,6 @@
 
 /* Keep account controls and identity together at the bottom of the player desk. */
 .dashAsideBottom .dashPlayer{padding:17px 12px 2px;margin:10px 0 0;border-top:1px solid #29445a;border-bottom:0}
+
+.playerNextEvent{display:grid;grid-template-columns:62px minmax(0,1fr) auto 24px;align-items:center;gap:15px;padding:16px 0;border-top:1px solid var(--atp-line);color:var(--atp-navy);text-decoration:none;transition:padding .18s ease,background .18s ease}.playerNextEvent:hover,.playerNextEvent:focus-visible{padding-left:10px;background:var(--atp-mist);outline:none}.playerNextEvent small{font-size:.55rem;text-transform:uppercase;letter-spacing:.08em;color:var(--atp-muted)}.playerNextEvent h3{font-size:.9rem;margin-top:4px}.playerEventStatus{display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid #9cb7c8;color:#41647b;font-size:.5rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}.playerEventStatus svg{font-size:.9rem}.playerNextEvent.isPaid .playerEventStatus{border-color:#9be229;background:#e9fbd1;color:#315706}
+@media(max-width:680px){.playerNextEvent{grid-template-columns:54px minmax(0,1fr) 22px}.playerEventStatus{grid-column:2;justify-self:start}.playerNextEvent>svg:last-child{grid-column:3;grid-row:1/3}}

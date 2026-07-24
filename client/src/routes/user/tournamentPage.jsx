@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Icon } from "@iconify/react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getLiveDraws, getMatches, getMe, getTour } from "../../libs/api/api.endpoints";
 import { BillingSummary } from "./billingSuport";
 import { PlayerEmpty, PlayerLoading, PlayerMetric, PlayerPageHeader } from "../../components/system/player-system";
@@ -9,6 +10,15 @@ import "../../libs/styles/tournament-live-draw.css";
 
 const money = (value) => `₦${Number(value || 0).toLocaleString()}`;
 const displayName = (player) => player?.fullName || player?.username || "ATP player";
+const tournamentId = (ticket) => String(ticket?.tournament?._id || ticket?.tournament || "");
+const paymentDetails = (event, userId) => ({
+  _id: event._id,
+  userData: { _id: userId },
+  type: event.name,
+  key: "Ticket",
+  price: event.price,
+  message: "You are about to pay for the selected tournament",
+});
 
 // This internal panel always receives its state and close handler from Tournaments.
 function LiveDraw({ onClose, draws, isLoading }) {
@@ -75,9 +85,6 @@ function LiveDraw({ onClose, draws, isLoading }) {
                         <span>{match.scoreOne.map((score, index) => <b key={index}>{score}</b>)}</span>
                         <span>{match.scoreTwo.map((score, index) => <b key={index}>{score}</b>)}</span>
                       </div>
-                      <button aria-label={`Favourite ${playerOne} versus ${playerTwo}`}>
-                        <Icon icon="solar:star-linear" />
-                      </button>
                     </article>
                   );
                 })}
@@ -98,6 +105,9 @@ function LiveDraw({ onClose, draws, isLoading }) {
 export default function Tournaments() {
   const [payment, setPayment] = useState(false);
   const [drawOpen, setDrawOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const handledPayment = useRef("");
   const matches = useQuery({ queryKey: ["match"], queryFn: getMatches, staleTime: 300000 });
   const tours = useQuery({ queryKey: ["tour"], queryFn: getTour, staleTime: 300000 });
   const liveDraw = useQuery({
@@ -108,7 +118,23 @@ export default function Tournaments() {
     refetchInterval: drawOpen ? 15000 : false,
   });
   const { data: user } = useQuery({ queryKey: ["user"], queryFn: getMe, staleTime: 300000 });
-  const items = tours.data || [];
+  const items = useMemo(() => tours.data || [], [tours.data]);
+  const ticketByTournament = useMemo(() => new Map((matches.data?.matches || []).map((ticket) => [tournamentId(ticket), ticket])), [matches.data?.matches]);
+
+  useEffect(() => {
+    const requestedTournament = new URLSearchParams(location.search).get("pay");
+    if (!requestedTournament || handledPayment.current === requestedTournament || tours.isLoading || matches.isLoading || !user?._id) return;
+    const event = items.find((item) => String(item._id) === requestedTournament);
+    if (!event) return;
+    handledPayment.current = requestedTournament;
+    const ticket = ticketByTournament.get(requestedTournament);
+    if (ticket) {
+      navigate(`/u/tickets?open=${ticket._id}`, { replace: true });
+      return;
+    }
+    navigate("/u/tournaments", { replace: true });
+    setPayment(paymentDetails(event, user._id));
+  }, [items, location.search, matches.isLoading, navigate, ticketByTournament, tours.isLoading, user?._id]);
 
   return (
     <main className="playerUtility">
@@ -145,8 +171,9 @@ export default function Tournaments() {
         <PlayerEmpty icon="solar:cup-star-linear" title="The next draw is coming." text="New ATP tournaments will appear here when registration opens." />
       ) : (
         <section className="dashTournamentGrid">
-          {items.map((event) => (
-            <article key={event._id}>
+          {items.map((event) => {
+            const ticket = ticketByTournament.get(String(event._id));
+            return <article className={ticket ? "hasTicket" : ""} key={event._id}>
               <div>
                 {event.tournamentImgURL ? <img src={event.tournamentImgURL} alt={event.name} /> : <span>ATP</span>}
                 <small>{event.tournamentType || event.category || "ATP tournament"}</small>
@@ -157,13 +184,19 @@ export default function Tournaments() {
                 <p><Icon icon="solar:map-point-linear" />{event.location || "ATP court"}</p>
                 <footer>
                   <strong>{money(event.price)}</strong>
-                  <button onClick={() => setPayment({ _id: event._id, userData: { _id: user?._id }, type: event.name, key: "Ticket", price: event.price, message: "You are about to pay for the selected tournament" })}>
-                    Buy ticket <Icon icon="solar:arrow-right-linear" />
-                  </button>
+                  {ticket ? (
+                    <Link className="tournamentTicketAction secured" to={`/u/tickets?open=${ticket._id}`}>
+                      Ticket secured <Icon icon="solar:ticket-sale-linear" />
+                    </Link>
+                  ) : (
+                    <button className="tournamentTicketAction" onClick={() => setPayment(paymentDetails(event, user?._id))}>
+                      Buy ticket <Icon icon="solar:arrow-right-linear" />
+                    </button>
+                  )}
                 </footer>
               </section>
-            </article>
-          ))}
+            </article>;
+          })}
         </section>
       )}
     </main>
