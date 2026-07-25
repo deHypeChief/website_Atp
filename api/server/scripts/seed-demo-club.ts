@@ -50,10 +50,10 @@ const coachSeeds = [
 ];
 
 const tournamentSeeds = [
-  { name: "ATP International Open", category: "ATP 250", location: "National Stadium, Lagos", date: new Date("2026-07-24T09:00:00+01:00"), time: "9:00 AM", tournamentImgURL: "/IMG_2807.jpg", price: "12000" },
-  { name: "Lagos Summer Challenge", category: "Club Series", location: "Ikoyi Club 1938", date: new Date("2026-08-15T10:00:00+01:00"), time: "10:00 AM", tournamentImgURL: "/IMG_2807.jpg", price: "8500" },
-  { name: "Atlantic Doubles Cup", category: "Doubles", location: "Lagos Lawn Tennis Club", date: new Date("2026-09-05T08:30:00+01:00"), time: "8:30 AM", tournamentImgURL: "/IMG_2807.jpg", price: "10000" },
-  { name: "Independence Club Finals", category: "Championship", location: "National Stadium, Lagos", date: new Date("2026-10-03T09:00:00+01:00"), time: "9:00 AM", tournamentImgURL: "/IMG_2807.jpg", price: "15000" },
+  { name: "ATP International Open", category: "ATP 250", location: "National Stadium, Abuja", date: new Date("2026-07-24T09:00:00+01:00"), time: "9:00 AM", tournamentImgURL: "/IMG_2807.jpg", price: "12000" },
+  { name: "Abuja Summer Challenge", category: "Club Series", location: "Abuja National Tennis Centre", date: new Date("2026-08-15T10:00:00+01:00"), time: "10:00 AM", tournamentImgURL: "/IMG_2807.jpg", price: "8500" },
+  { name: "Atlantic Doubles Cup", category: "Doubles", location: "Abuja Lawn Tennis Club", date: new Date("2026-09-05T08:30:00+01:00"), time: "8:30 AM", tournamentImgURL: "/IMG_2807.jpg", price: "10000" },
+  { name: "Independence Club Finals", category: "Championship", location: "National Stadium, Abuja", date: new Date("2026-10-03T09:00:00+01:00"), time: "9:00 AM", tournamentImgURL: "/IMG_2807.jpg", price: "15000" },
 ];
 
 async function upsertPlayer(seed: (typeof playerSeeds)[number]) {
@@ -166,7 +166,7 @@ try {
   );
 
   console.log(`Demo club ready: ${players.length} players, ${coaches.length} coaches, ${tournaments.length} tournaments, ${players.length * 2} registrations, 2 published draws.`);
-  console.log("Current test account assigned: testplayer@example.com → Coach Adewale Bello → ATP International Open + Lagos Summer Challenge.");
+  console.log("Current test account assigned: testplayer@example.com → Coach Adewale Bello → ATP International Open + Abuja Summer Challenge.");
 } finally {
   await mongoose.disconnect();
 }

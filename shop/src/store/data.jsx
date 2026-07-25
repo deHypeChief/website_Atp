@@ -3,7 +3,15 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { getProducts, getSettings } from '../lib/api'
 import { DEFAULT_SETTINGS } from '../lib/config'
 
-const StoreDataContext = createContext(null)
+const STORE_DATA_FALLBACK = {
+  products: [],
+  settings: DEFAULT_SETTINGS,
+  loading: true,
+  error: '',
+  reload: () => {},
+}
+
+const StoreDataContext = createContext(STORE_DATA_FALLBACK)
 
 export function StoreDataProvider({ children }) {
   const [products, setProducts] = useState([])
@@ -31,4 +39,4 @@ export function StoreDataProvider({ children }) {
   return <StoreDataContext.Provider value={{ products, settings, loading, error, reload: load }}>{children}</StoreDataContext.Provider>
 }
 
-export const useStoreData = () => useContext(StoreDataContext)
+export const useStoreData = () => useContext(StoreDataContext) || STORE_DATA_FALLBACK

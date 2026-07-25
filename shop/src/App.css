@@ -21,7 +21,7 @@
 .royalAccount button { color: #93a5b1; font-size: .5rem; }
 .royalBag b { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 99px; background: var(--royal-lime); color: var(--royal-navy); font-size: .65rem; }
 .royalMenuButton { display: none; width: 42px; height: 42px; place-items: center; background: none; border: 0; color: #fff; cursor: pointer; }
-.royalMenuButton span { font-size: .52rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+.royalMenuButton svg { font-size: 1.55rem; }
 .royalMobileNav { padding: 5px var(--royal-gutter) 24px; display: grid; background: var(--royal-ink); }
 .royalMobileNav a { padding: 15px 0; display: flex; justify-content: space-between; color: #fff; border-bottom: 1px solid rgba(255,255,255,.15); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 
@@ -71,7 +71,7 @@
 .royalSectionHeader > a { display: inline-flex; align-items: center; gap: 9px; padding-bottom: 7px; border-bottom: 1px solid var(--royal-navy); font-size: .7rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 .royalSectionHeader > span { max-width: 380px; color: var(--royal-muted); line-height: 1.6; }
 .royalProductGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 24px); }
-.royalProductCard { min-width: 0; animation: cardReveal .6s var(--card-delay) ease both; }
+.royalProductCard { min-width: 0; height: 100%; display: flex; flex-direction: column; animation: cardReveal .6s var(--card-delay) ease both; }
 @keyframes cardReveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 .royalProductVisual { position: relative; aspect-ratio: .79; display: block; overflow: hidden; background: #dbe3e7; }
 .royalProductVisual img { width: 100%; height: 100%; object-fit: cover; transition: transform .55s cubic-bezier(.2,.7,.2,1); }
@@ -80,7 +80,7 @@
 .royalProductBadge { position: absolute; top: 12px; left: 12px; padding: 7px 9px; background: #fff; color: var(--royal-navy); font-size: .52rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .royalProductView { position: absolute; right: 12px; bottom: 12px; left: 12px; padding: 12px 13px; display: flex; align-items: center; justify-content: space-between; background: rgba(2,8,14,.9); color: #fff; font-size: .6rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; transform: translateY(calc(100% + 15px)); transition: transform .25s ease; }
 .royalProductVisual:hover .royalProductView { transform: translateY(0); }
-.royalProductMeta { position: relative; padding: 17px 0 48px; }
+.royalProductMeta { position: relative; flex: 1; padding: 17px 0 48px; }
 .royalProductMeta small { color: var(--royal-blue); font-size: .56rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .royalProductMeta h3 { margin-top: 5px; max-width: 92%; font-size: .88rem; line-height: 1.4; font-weight: 750; }
 .royalProductPrice { margin-top: 10px; display: flex; gap: 10px; align-items: center; }

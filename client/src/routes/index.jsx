@@ -28,9 +28,9 @@ export default function Home(){
  const content=siteContent?.pages;
  const subscribe=async e=>{e.preventDefault();try{const result=await subscribeNewsletter(e.currentTarget.email.value);setMessage(result.message)}catch(error){setMessage(error.message)}};
  return <main className="homeV2">
-  <PageHero eyebrow="Amateur Tennis Pro · Lagos" title={<>Own the court.<br/>Build your game.</>} text="Training, competition and a tennis community built for every level of ambition." image={heroImage} actions={<><AtpButton to="/signup">Join the club</AtpButton><AtpButton to="/coaching" variant="ghost">Find training</AtpButton></>}/>
+  <PageHero eyebrow="Amateur Tennis Pro · Abuja" title={<>Own the court.<br/>Build your game.</>} text="Training, competition and a tennis community built for every level of ambition." image={heroImage} actions={<><AtpButton to="/signup">Join the club</AtpButton><AtpButton to="/coaching" variant="ghost">Find training</AtpButton></>}/>
   <StorePromo placement="landing" />
-  <ScoreTape items={[{icon:"solar:users-group-rounded-bold",value:"500+",label:"active players"},{icon:"solar:medal-ribbons-star-bold",value:"20+",label:"ATP coaches"},{icon:"solar:cup-star-bold",value:"12",label:"annual events"},{icon:"solar:map-point-wave-bold",value:"Lagos",label:"home court"}]}/>
+  <ScoreTape items={[{icon:"solar:users-group-rounded-bold",value:"500+",label:"active players"},{icon:"solar:medal-ribbons-star-bold",value:"20+",label:"ATP coaches"},{icon:"solar:cup-star-bold",value:"12",label:"annual events"},{icon:"solar:map-point-wave-bold",value:"Abuja",label:"home court"}]}/>
 
   <section className="homeIntro atpShell"><Reveal><SectionHeading eyebrow="Built around the player" title="More than a place to hit balls." text={hasUsefulCopy(content?.homePageAboutText) ? content.homePageAboutText : "ATP combines structured training, real competition and a welcoming club culture so every player has a clear next step."} action={<AtpButton to="/about" variant="navy">Meet ATP</AtpButton>}/></Reveal><div className="programGrid">{programs.map((program,index)=><Reveal key={program.title} delay={index*90}><SportCard {...program}/></Reveal>)}</div></section>
 

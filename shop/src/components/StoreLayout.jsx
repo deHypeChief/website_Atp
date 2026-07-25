@@ -36,7 +36,7 @@ export default function StoreLayout() {
     <a className="skipLink" href="#royal-main">Skip to products</a>
     <header className="royalHeader">
       <nav aria-label="Main navigation">
-        <button className="royalMenuButton" onClick={() => setMenuOpen(value => !value)} aria-expanded={menuOpen} aria-label="Toggle menu"><span>{menuOpen ? 'Close' : 'Menu'}</span></button>
+        <button className="royalMenuButton" onClick={() => setMenuOpen(value => !value)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Close menu' : 'Open menu'}><Icon aria-hidden="true" icon={menuOpen ? 'solar:close-circle-linear' : 'solar:hamburger-menu-linear'} /></button>
         <div className="royalCategoryNav">{categories.map(([label, to]) => <Link className={isCurrentCategory(to) ? 'active' : undefined} aria-current={isCurrentCategory(to) ? 'page' : undefined} key={label} to={to}>{label}</Link>)}</div>
         <Link className="royalBrand" to="/" aria-label="ATP Royal home"><img src={logo} alt="ATP" /><span><strong>ROYAL</strong><small>OFFICIAL CLUB STORE</small></span></Link>
         <div className="royalTools">
@@ -56,7 +56,7 @@ export default function StoreLayout() {
         <div><h3>ATP International</h3><a href={CLIENT_URL}>Main website</a><a href={`${CLIENT_URL}/coaching`}>Training</a><a href={`${CLIENT_URL}/tournaments`}>Tournaments</a></div>
         <div className="royalFooterNotes"><h3>Club service</h3><p>{settings.deliveryNote}</p><p>{settings.returnsNote}</p></div>
       </div>
-      <div className="royalFooterBottom"><span>© {new Date().getFullYear()} Amateur Tennis Pro</span><span>ATP Royal / Lagos, Nigeria</span></div>
+      <div className="royalFooterBottom"><span>© {new Date().getFullYear()} Amateur Tennis Pro</span><span>ATP Royal / Abuja, Nigeria</span></div>
     </footer>
   </div>
 }

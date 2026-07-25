@@ -21,6 +21,6 @@ export default function Footer() {
       {groups.map(group => <div key={group.title}><h3>{group.title}</h3>{group.links.map(([label, to]) => to.startsWith('http') ? <a key={to} href={to}>{label}</a> : <Link key={to} to={to}>{label}</Link>)}</div>)}
       <div><h3>Follow</h3><a href="https://www.instagram.com/amateurtennispro">Instagram</a><a href="https://www.facebook.com">Facebook</a><a href="https://youtube.com/@afropowerent">YouTube</a></div>
     </div>
-    <div className="footerBottom"><span>© {new Date().getFullYear()} Amateur Tennis Pro</span><span>Lagos, Nigeria</span><div><Link to="/">Privacy</Link><Link to="/">Terms</Link></div></div>
+    <div className="footerBottom"><span>© {new Date().getFullYear()} Amateur Tennis Pro</span><span>Abuja, Nigeria</span><div><Link to="/">Privacy</Link><Link to="/">Terms</Link></div></div>
   </footer>;
 }

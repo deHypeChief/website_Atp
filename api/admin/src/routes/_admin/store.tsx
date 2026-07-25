@@ -25,14 +25,14 @@ const emptyProduct = {
 
 const defaultSettings = {
   name: 'ATP Royal',
-  announcement: 'Complimentary Lagos delivery on orders over ₦75,000',
+  announcement: 'Complimentary Abuja delivery on orders over ₦75,000',
   heroEyebrow: 'ATP Royal / Collection 01',
   heroTitle: 'Dress for the next point.',
   heroSubtitle: 'Court-built essentials and club pieces for the way you play, train and move.',
   heroImage: '',
   primaryCta: 'Shop the collection',
   secondaryCta: 'Explore court gear',
-  deliveryNote: 'Lagos delivery in 1–2 working days. Nationwide delivery in 3–5 working days.',
+  deliveryNote: 'Abuja delivery in 1–2 working days. Nationwide delivery in 3–5 working days.',
   returnsNote: 'Easy exchanges on unworn items within 7 days.',
 }
 

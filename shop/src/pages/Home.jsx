@@ -66,7 +66,7 @@ export default function Home() {
     </section>
 
     <section className="royalManifesto">
-      <div className="royalManifestoCopy"><p>ATP ROYAL / CLUB CULTURE</p><h2>Not merch.<br/>A uniform for<br/>the tennis life.</h2><span>Built around the rhythm of Lagos courts—early drills, hard matches, long conversations after the final point.</span><Link className="royalButton" to="/catalog">Wear the standard <Icon icon="solar:arrow-right-linear" /></Link></div>
+      <div className="royalManifestoCopy"><p>ATP ROYAL / CLUB CULTURE</p><h2>Not merch.<br/>A uniform for<br/>the tennis life.</h2><span>Built around the rhythm of Abuja courts—early drills, hard matches, long conversations after the final point.</span><Link className="royalButton" to="/catalog">Wear the standard <Icon icon="solar:arrow-right-linear" /></Link></div>
       <div className="royalManifestoImage"><img src={communityImage} alt="ATP players together after a match" /><div><strong>PLAY</strong><span>TRAIN · BELONG · REPEAT</span></div></div>
     </section>
 
