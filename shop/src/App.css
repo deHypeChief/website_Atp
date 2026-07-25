@@ -26,9 +26,10 @@
 .royalMobileNav a { padding: 15px 0; display: flex; justify-content: space-between; color: #fff; border-bottom: 1px solid rgba(255,255,255,.15); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 
 .royalHero { position: relative; height: calc(100svh - 78px); min-height: 650px; overflow: hidden; background: var(--royal-navy); color: #fff; }
-.royalHero > img { width: 100%; height: 100%; object-fit: cover; object-position: center 24%; }
-.royalHeroWash { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(2,8,14,.9) 0%, rgba(2,8,14,.52) 46%, rgba(2,8,14,.08) 72%), linear-gradient(0deg, rgba(2,8,14,.56), transparent 40%); }
-.royalHeroCopy { position: absolute; left: var(--royal-gutter); top: 50%; max-width: 700px; transform: translateY(-51%); animation: royalRise .8s cubic-bezier(.2,.7,.2,1) both; }
+.royalHeroImage { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.015); transition: opacity .75s ease, transform 7s linear; }
+.royalHeroImage.active { opacity: 1; transform: scale(1.055); }
+.royalHeroWash { position: absolute; z-index: 1; inset: 0; background: linear-gradient(90deg, rgba(2,8,14,.9) 0%, rgba(2,8,14,.52) 46%, rgba(2,8,14,.08) 72%), linear-gradient(0deg, rgba(2,8,14,.66), transparent 44%); }
+.royalHeroCopy { position: absolute; z-index: 2; left: var(--royal-gutter); top: 50%; max-width: 700px; transform: translateY(-51%); animation: royalRise .8s cubic-bezier(.2,.7,.2,1) both; }
 .royalHeroCopy > p, .royalSectionHeader p, .royalManifestoCopy > p, .royalMailing > div > p, .royalCatalogHead > p, .royalCartHead > div > p, .royalPageState > p, .royalPaymentState > div > p { font-size: .68rem; font-weight: 850; letter-spacing: .17em; text-transform: uppercase; color: var(--royal-lime); }
 .royalHeroCopy h1 { max-width: 680px; margin: 18px 0 22px; font: 900 clamp(4.3rem, 9vw, 9rem)/.78 var(--royal-display); letter-spacing: -.035em; text-transform: uppercase; }
 .royalHeroCopy > span { display: block; max-width: 520px; color: #d5e0e6; font-size: clamp(.95rem, 1.4vw, 1.15rem); line-height: 1.65; }
@@ -37,11 +38,22 @@
 .royalButton:hover { transform: translateY(-2px); background: #b2ef43; }
 .royalButtonLight { background: #fff; }
 .royalTextLink { display: inline-flex; gap: 8px; align-items: center; color: #fff; border-bottom: 1px solid rgba(255,255,255,.55); padding: 9px 0; font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
-.royalDropBoard { position: absolute; top: 8%; right: 0; width: min(250px, 22vw); padding: 20px 24px; display: flex; flex-direction: column; background: var(--royal-gold); color: var(--royal-navy); border-left: 7px solid var(--royal-lime); animation: royalSlide .8s .2s cubic-bezier(.2,.7,.2,1) both; }
+.royalDropBoard { position: absolute; z-index: 2; top: 8%; right: 0; width: min(250px, 22vw); padding: 20px 24px; display: flex; flex-direction: column; background: var(--royal-gold); color: var(--royal-navy); border-left: 7px solid var(--royal-lime); animation: royalSlide .8s .2s cubic-bezier(.2,.7,.2,1) both; }
 .royalDropBoard small { font-size: .52rem; font-weight: 900; letter-spacing: .14em; }
 .royalDropBoard strong { margin: 9px 0 5px; font: 900 clamp(2.5rem, 4.2vw, 4.6rem)/.8 var(--royal-display); letter-spacing: .03em; }
 .royalDropBoard span { font-size: .66rem; font-weight: 650; line-height: 1.4; text-transform: uppercase; }
-.royalScrollCue { position: absolute; right: var(--royal-gutter); bottom: 27px; display: flex; align-items: center; gap: 14px; color: #fff; font-size: .6rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.royalHeroControls { position: absolute; z-index: 3; left: var(--royal-gutter); bottom: 27px; }
+.royalHeroDots { display: flex; align-items: center; gap: 9px; }
+.royalHeroDots button { position: relative; width: 46px; height: 24px; padding: 0; overflow: hidden; border: 0; background: transparent; cursor: pointer; transition: width .3s ease; }
+.royalHeroDots button::before, .royalHeroDots button::after { content: ''; position: absolute; top: 11px; right: 0; left: 0; height: 3px; }
+.royalHeroDots button::before { background: rgba(255,255,255,.35); }
+.royalHeroDots button::after { background: var(--royal-lime); transform: scaleX(0); transform-origin: left; }
+.royalHeroDots button.active { width: 76px; }
+.royalHeroDots button.active::after { animation: royalHeroProgress 6.5s linear forwards; }
+.royalHeroControls.paused .royalHeroDots button.active::after { animation-play-state: paused; }
+.royalHeroDots button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@keyframes royalHeroProgress { to { transform: scaleX(1); } }
+.royalScrollCue { position: absolute; z-index: 2; right: var(--royal-gutter); bottom: 27px; display: flex; align-items: center; gap: 14px; color: #fff; font-size: .6rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .royalScrollCue svg { font-size: 1.25rem; }
 @keyframes royalRise { from { opacity: 0; transform: translateY(-44%); } to { opacity: 1; transform: translateY(-51%); } }
 @keyframes royalSlide { from { opacity: 0; transform: translateX(35px); } to { opacity: 1; transform: translateX(0); } }
@@ -304,7 +316,6 @@
   .royalBrand small { display: none; }
   .royalTools { gap: 14px; }
   .royalHero { height: 83svh; min-height: 600px; }
-  .royalHero > img { object-position: 61% center; }
   .royalHeroWash { background: linear-gradient(90deg, rgba(2,8,14,.9), rgba(2,8,14,.34)), linear-gradient(0deg, rgba(2,8,14,.68), transparent 48%); }
   .royalHeroCopy { max-width: 76%; }
   .royalHeroCopy h1 { font-size: clamp(4.2rem, 15vw, 7rem); }
@@ -348,8 +359,9 @@
   .royalHeroCopy > span { max-width: 90%; font-size: .82rem; line-height: 1.5; }
   .royalHeroCopy > div { margin-top: 22px; gap: 18px; }
   .royalTextLink { display: none; }
-  .royalDropBoard { width: 160px; }
+  .royalDropBoard { display: none; }
   .royalDropBoard strong { font-size: 2.4rem; }
+  .royalHeroControls { bottom: 17px; }
   .royalTicker { min-height: 48px; }
   .royalSectionHeader { align-items: flex-start; flex-direction: column; }
   .royalSectionHeader h2 { font-size: 3.1rem; }

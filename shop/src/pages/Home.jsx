@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import { Link } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
@@ -18,21 +18,38 @@ const categories = [
 export default function Home() {
   const { products, settings, loading, error, reload } = useStoreData()
   const [joined, setJoined] = useState(false)
+  const [activeSlide, setActiveSlide] = useState(0)
+  const [carouselFocused, setCarouselFocused] = useState(false)
   const featured = products.filter(product => product.featured).slice(0, 4)
   const drop = featured.length ? featured : products.slice(0, 4)
   const heroImage = settings.heroImage || heroPlayer
+  const slides = [
+    { image: heroImage, position: 'center 24%', alt: 'ATP player wearing the club collection', eyebrow: settings.heroEyebrow, title: settings.heroTitle, subtitle: settings.heroSubtitle, primaryCta: settings.primaryCta, primaryTo: '/catalog', secondaryCta: settings.secondaryCta, secondaryTo: '/catalog?category=Equipment', boardLabel: 'The club standard', boardTitle: 'Royal', boardNote: <>Made for court days<br/>and everything after.</> },
+    { image: apparelImage, position: 'center 34%', alt: 'ATP player serving in navy court apparel', eyebrow: 'ATP ROYAL / COURT UNIFORM', title: 'Move in club colours.', subtitle: 'Breathable layers built for first serves, long rallies and the work between matches.', primaryCta: 'Shop apparel', primaryTo: '/catalog?category=Apparel', secondaryCta: 'See the full drop', secondaryTo: '/catalog', boardLabel: 'The court uniform', boardTitle: 'Move', boardNote: <>Cut for match speed<br/>and training rhythm.</> },
+    { image: equipmentImage, position: 'center center', alt: 'ATP coach and young players training with court equipment', eyebrow: 'ATP ROYAL / MATCH DAY', title: 'Ready for every rally.', subtitle: 'Court-tested equipment and daily essentials for practice, match day and the next generation.', primaryCta: 'Shop equipment', primaryTo: '/catalog?category=Equipment', secondaryCta: 'Build your kit', secondaryTo: '/catalog?category=Accessories', boardLabel: 'The match kit', boardTitle: 'Ready', boardNote: <>Everything the next point<br/>asks you to bring.</> },
+  ]
+  const slide = slides[activeSlide]
+
+  useEffect(() => {
+    if (carouselFocused) return undefined
+    const timer = window.setTimeout(() => setActiveSlide(current => (current + 1) % slides.length), 6500)
+    return () => window.clearTimeout(timer)
+  }, [activeSlide, carouselFocused, slides.length])
 
   return <div className="royalHome">
-    <section className="royalHero">
-      <img src={heroImage} alt="ATP player wearing the club collection" />
+    <section className="royalHero" aria-roledescription="carousel" aria-label="ATP Royal featured collections" onMouseEnter={() => setCarouselFocused(true)} onMouseLeave={() => setCarouselFocused(false)} onFocus={() => setCarouselFocused(true)} onBlur={() => setCarouselFocused(false)}>
+      {slides.map((item, index) => <img className={`royalHeroImage ${activeSlide === index ? 'active' : ''}`} style={{ objectPosition: item.position }} src={item.image} alt={activeSlide === index ? item.alt : ''} aria-hidden={activeSlide !== index} key={`${item.title}-${index}`} />)}
       <span className="royalHeroWash" />
-      <div className="royalHeroCopy">
-        <p>{settings.heroEyebrow}</p>
-        <h1>{settings.heroTitle}</h1>
-        <span>{settings.heroSubtitle}</span>
-        <div><Link className="royalButton royalButtonLight" to="/catalog">{settings.primaryCta} <Icon icon="solar:arrow-right-linear" /></Link><Link className="royalTextLink" to="/catalog?category=Equipment">{settings.secondaryCta} <Icon icon="solar:arrow-right-up-linear" /></Link></div>
+      <div className="royalHeroCopy" role="group" aria-roledescription="slide" aria-label={`${activeSlide + 1} of ${slides.length}`} key={`hero-copy-${activeSlide}`}>
+        <p>{slide.eyebrow}</p>
+        <h1>{slide.title}</h1>
+        <span>{slide.subtitle}</span>
+        <div><Link className="royalButton royalButtonLight" to={slide.primaryTo}>{slide.primaryCta} <Icon icon="solar:arrow-right-linear" /></Link><Link className="royalTextLink" to={slide.secondaryTo}>{slide.secondaryCta} <Icon icon="solar:arrow-right-up-linear" /></Link></div>
       </div>
-      <div className="royalDropBoard"><small>THE CLUB STANDARD</small><strong>ROYAL</strong><span>Made for court days<br/>and everything after.</span></div>
+      <div className="royalDropBoard" key={`hero-board-${activeSlide}`}><small>{slide.boardLabel}</small><strong>{slide.boardTitle}</strong><span>{slide.boardNote}</span></div>
+      <div className={`royalHeroControls ${carouselFocused ? 'paused' : ''}`} aria-label="Choose a featured collection">
+        <div className="royalHeroDots">{slides.map((item, index) => <button type="button" className={activeSlide === index ? 'active' : ''} aria-label={`Show slide ${index + 1}: ${item.title}`} aria-current={activeSlide === index ? 'true' : undefined} onClick={() => setActiveSlide(index)} key={item.title} />)}</div>
+      </div>
       <a className="royalScrollCue" href="#fresh-drop"><span>Scroll to shop</span><Icon icon="solar:arrow-down-linear" /></a>
     </section>
 
