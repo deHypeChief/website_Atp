@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { getCommunityTopics, getMatches, getPayMe, getTour, getUserMatchesC } from "../../libs/api/api.endpoints";
 import { useAuth } from "../../libs/hooks/use-auth";
 import communityImage from "../../assets/brand/club-community.png";
+import StorePromo from "../../components/store-promo/store-promo";
 
 const tournamentId = (ticket) => String(ticket?.tournament?._id || ticket?.tournament || "");
 
@@ -33,6 +34,7 @@ export default function Dashboard() {
         <div><p>PLAYER OVERVIEW</p><h1>Ready for your<br />next point, {firstName}?</h1><span>Your training, competition and ATP community together in one place.</span></div>
         <Link to="/u/tournaments">Find a tournament <Icon icon="solar:arrow-right-up-linear" /></Link>
       </section>
+      <StorePromo placement="dashboard" />
       <section className="playerStats">
         <Stat icon="solar:ranking-linear" label="Club rank" value={matches.rank || "—"} />
         <Stat icon="solar:cup-star-linear" label="Match wins" value={matches.totalWins ?? "—"} />

@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
   user: { type:mongoose.Schema.Types.ObjectId, ref:"User", required:true },
   items: [{
     product: { type:mongoose.Schema.Types.ObjectId, ref:"Product", required:true },
-    name: String, image: String, price: Number, quantity: Number,
+    name: String, image: String, price: Number, quantity: Number, size: String, color: String,
   }],
   subtotal: { type:Number, required:true },
   total: { type:Number, required:true },

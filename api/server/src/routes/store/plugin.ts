@@ -4,6 +4,7 @@ import { isAdmin_Authenticated } from "../../middleware/isAdminAuth";
 import { paystack } from "../../middleware/paystack";
 import Product from "./product.model";
 import StoreOrder from "./order.model";
+import StoreSettings from "./settings.model";
 
 const slugify=(value:string)=>value.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
 
@@ -21,13 +22,17 @@ const customerStore = new Elysia()
       const quantity=Math.max(1,Math.floor(Number(requestedItem.quantity)||1));
       if(!product){set.status=400;return {message:"A product in your cart is unavailable"}}
       if(product.stock<quantity){set.status=409;return {message:`Only ${product.stock} ${product.name} left in stock`}}
-      items.push({product:product._id,name:product.name,image:product.images?.[0]||"",price:product.price,quantity});
+      const size=String(requestedItem.size||""); const color=String(requestedItem.color||"");
+      if(product.sizes?.length&&!product.sizes.includes(size)){set.status=400;return {message:`Choose an available size for ${product.name}`}}
+      if(product.colors?.length&&!product.colors.includes(color)){set.status=400;return {message:`Choose an available colour for ${product.name}`}}
+      items.push({product:product._id,name:product.name,image:product.images?.[0]||"",price:product.price,quantity,size,color});
     }
     const subtotal=items.reduce((sum,item)=>sum+(item.price*item.quantity),0);
     const reference=`ATP-STORE-${Date.now()}-${Math.random().toString(36).slice(2,8).toUpperCase()}`;
     const order=await StoreOrder.create({orderNumber:`ATP-${Date.now().toString().slice(-8)}`,user:user._id,items,subtotal,total:subtotal,delivery:payload.delivery,paymentReference:reference});
     try{
-      const payment=await paystack_Transaction({amount:String(subtotal*100),email:user.email,reference,callback_url:`${Bun.env.ACTIVE_ORIGIN}/store/payment/callback?orderId=${order._id}`});
+      const shopOrigin=(Bun.env.SHOP_ORIGIN||"http://localhost:3003").replace(/\/$/,"");
+      const payment=await paystack_Transaction({amount:String(subtotal*100),email:user.email,reference,callback_url:`${shopOrigin}/payment/callback?orderId=${order._id}`});
       return {order,paymentUrl:payment.data.authorization_url};
     }catch(error){await StoreOrder.findByIdAndDelete(order._id);set.status=502;return {message:"Payment could not be started"}}
   })
@@ -51,15 +56,17 @@ const customerStore = new Elysia()
 const adminStore = new Elysia({prefix:"/admin"})
   .use(isAdmin_Authenticated)
   .get("/overview", async () => {
-    const [products,orders,revenue]=await Promise.all([Product.find().sort({createdAt:-1}),StoreOrder.find().populate("user","fullName email").sort({createdAt:-1}),StoreOrder.aggregate([{$match:{paymentStatus:"Paid"}},{$group:{_id:null,total:{$sum:"$total"},count:{$sum:1}}}])]);
-    return {products,orders,revenue:revenue[0]?.total||0,paidOrders:revenue[0]?.count||0};
+    const [products,orders,revenue,settings]=await Promise.all([Product.find().sort({createdAt:-1}),StoreOrder.find().populate("user","fullName email").sort({createdAt:-1}),StoreOrder.aggregate([{$match:{paymentStatus:"Paid"}},{$group:{_id:null,total:{$sum:"$total"},count:{$sum:1}}}]),StoreSettings.findOne({key:"primary"})]);
+    return {products,orders,revenue:revenue[0]?.total||0,paidOrders:revenue[0]?.count||0,settings};
   })
   .post("/products", async ({body,set})=>{try{const data=body as any;const product=await Product.create({...data,slug:slugify(data.slug||data.name)});set.status=201;return {message:"Product created",product}}catch(error:any){set.status=error?.code===11000?409:400;return {message:error?.code===11000?"That product slug already exists":"Product could not be created"}}})
   .put("/products/:id", async ({params:{id},body,set})=>{const data=body as any;const product=await Product.findByIdAndUpdate(id,{...data,...(data.name||data.slug?{slug:slugify(data.slug||data.name)}:{})},{new:true,runValidators:true});if(!product){set.status=404;return {message:"Product not found"}}return {message:"Product updated",product}})
   .delete("/products/:id", async ({params:{id},set})=>{const product=await Product.findByIdAndUpdate(id,{active:false},{new:true});if(!product){set.status=404;return {message:"Product not found"}}return {message:"Product archived",product}})
+  .put("/settings", async ({body})=>({message:"Store settings updated",settings:await StoreSettings.findOneAndUpdate({key:"primary"},{...(body as any),key:"primary"},{new:true,upsert:true,runValidators:true})}))
   .put("/orders/:id/status", async ({params:{id},body,set})=>{const status=String((body as any).status);if(!["Processing","Shipped","Delivered","Cancelled"].includes(status)){set.status=400;return {message:"Invalid order status"}}const order=await StoreOrder.findByIdAndUpdate(id,{status},{new:true});if(!order){set.status=404;return {message:"Order not found"}}return {message:"Order updated",order}});
 
 export default new Elysia({prefix:"/store"})
+  .get("/settings", async ()=>({settings:await StoreSettings.findOne({key:"primary"})}))
   .get("/products", async ()=>({products:await Product.find({active:true}).sort({createdAt:-1})}))
   .get("/products/:slug", async ({params:{slug},set})=>{const product=await Product.findOne({slug,active:true});if(!product){set.status=404;return {message:"Product not found"}}return {product}})
   .use(customerStore).use(adminStore);

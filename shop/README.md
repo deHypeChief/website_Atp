@@ -1,16 +1,17 @@
-# React + Vite
+# ATP Royal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ATP Royal is the dedicated ATP International ecommerce frontend. It uses the existing store API and ATP player accounts while keeping merchandise routes out of the main client app.
 
-Currently, two official plugins are available:
+## Local development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+From the repository root, run `bun run dev`. ATP Royal opens on `http://localhost:3003`, the client app on `http://localhost:3000`, the API on `http://localhost:3002`, and admin on `http://localhost:3001`.
 
-## React Compiler
+The Vite development server proxies `/api` to the local API, so local shop requests do not require an extra CORS origin.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Deployment variables
 
-## Expanding the ESLint configuration
+- Shop: `VITE_SERVER_API` is the public API URL; `VITE_CLIENT_URL` is the ATP client URL; `VITE_SHOP_URL` is the ATP Royal URL.
+- Client: `VITE_SHOP_URL` is the ATP Royal URL used by banners, navigation and the secure authentication handoff.
+- API: `SHOP_ORIGIN` is the ATP Royal origin used for Paystack callbacks. When the shop calls the API cross-origin, include that origin in `ALLOWED_ORIGINS`.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Shop login and signup go through the ATP client. The client only hands the session back to the configured ATP Royal callback origin, and direct client login still routes to `/u`.

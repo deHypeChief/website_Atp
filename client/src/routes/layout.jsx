@@ -1,4 +1,6 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+/* eslint-disable react/prop-types */
+import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
+import { useEffect } from "react";
 import Home from "./index";
 import Navbar from "../components/navbar/navbar";
 import Footer from "../components/footer/footer";
@@ -25,16 +27,16 @@ import MatchesPage from "./user/matchesPage";
 import ForgotPassword from "./forgotPassword";
 import ResetPassword from "./resetPassword";
 import NewsArticle from "./newsArticle";
-import Store from "./store";
-import Cart from "./cart";
-import StorePaymentCallback from "./storePaymentCallback";
 import OrdersPage from "./user/ordersPage";
-import StoreProduct from "./storeProduct";
 import Community from "./community";
 import PlayerCommunity from "./user/community";
 import LiveScoreTicker from "../components/system/live-score-ticker";
 import "../libs/styles/routes-v2.css";
 import "../libs/styles/pages-v3.css";
+import { shopHref } from "../libs/shop";
+
+function ShopRedirect({ path = "/catalog" }) { useEffect(() => { window.location.replace(shopHref(path)); }, [path]); return null; }
+function ProductRedirect() { const { slug } = useParams(); return <ShopRedirect path={`/product/${slug}`} />; }
 
 export default function App() {
     return (
@@ -51,11 +53,11 @@ export default function App() {
                     <Route path="/resources" element={<Resources />} />
                     <Route path="/news" element={<Resources />} />
                     <Route path="/news/:slug" element={<NewsArticle />} />
-                    <Route path="/shop" element={<Store />} />
-                    <Route path="/shop/:slug" element={<StoreProduct />} />
+                    <Route path="/shop" element={<ShopRedirect />} />
+                    <Route path="/shop/:slug" element={<ProductRedirect />} />
                     <Route path="/community" element={<Community />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/store/payment/callback" element={<StorePaymentCallback />} />
+                    <Route path="/cart" element={<ShopRedirect path="/cart" />} />
+                    <Route path="/store/payment/callback" element={<ShopRedirect path={`/payment/callback${window.location.search}`} />} />
                     <Route path="/membership/">
                         <Route path="/membership/children" element={<ChildrenMembership />} />
                         <Route path="/membership/adult" element={<AdultMembership />} />

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft } from 'lucide-react'
 
-export const Route = createFileRoute('/_admin/cms/new')({
+export const Route = createFileRoute('/_admin/cms_/new')({
   component: NewArticle,
 })
 

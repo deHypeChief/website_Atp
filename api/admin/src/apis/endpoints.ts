@@ -227,6 +227,7 @@ export const createStoreProduct = async (payload:any) => (await api.post('/store
 export const updateStoreProduct = async ({id,payload}:{id:string,payload:any}) => (await api.put(`/store/admin/products/${id}`, payload)).data;
 export const archiveStoreProduct = async (id:string) => (await api.delete(`/store/admin/products/${id}`)).data;
 export const updateStoreOrderStatus = async ({id,status}:{id:string,status:string}) => (await api.put(`/store/admin/orders/${id}/status`, {status})).data;
+export const updateStoreSettings = async (payload:any) => (await api.put('/store/admin/settings', payload)).data;
 
 export const getEngagementAdmin = async () => (await api.get('/engagement/admin')).data.items;
 export const createEngagement = async (payload:any) => (await api.post('/engagement/admin', payload)).data;

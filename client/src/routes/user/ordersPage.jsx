@@ -2,10 +2,10 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
 import { getMyStoreOrders } from "../../libs/api/api.endpoints";
 import { PlayerEmpty, PlayerLoading, PlayerPageHeader } from "../../components/system/player-system";
 import "../../libs/styles/orders-v4.css";
+import { shopHref } from "../../libs/shop";
 
 const money = (value) => `₦${Number(value || 0).toLocaleString("en-NG")}`;
 const normalizedStatus = (order) => (order.status || order.paymentStatus || "Processing").toString();
@@ -45,8 +45,8 @@ export default function OrdersPage() {
     const totalSpent = orders.reduce((total, order) => total + Number(order.total || 0), 0);
 
     return <main className="playerUtility ordersPageV4">
-        <PlayerPageHeader eyebrow="ATP club shop" title="Order desk" text="Track every club-shop purchase from payment through fulfilment." action={<Link className="ordersShopLink" to="/shop">Shop equipment <Icon icon="solar:arrow-right-up-linear" /></Link>} />
-        {isLoading ? <PlayerLoading text="Loading your orders…" /> : isError ? <PlayerEmpty icon="solar:danger-circle-linear" title="Orders are unavailable." text="We could not load your order history. Refresh the page to try again." /> : !orders.length ? <PlayerEmpty icon="solar:bag-cross-linear" title="Your order list is empty." text="Court essentials and ATP club pieces are waiting in the shop." to="/shop" label="Shop products" /> : <>
+        <PlayerPageHeader eyebrow="ATP Royal" title="Order desk" text="Track every ATP Royal purchase from payment through fulfilment." action={<a className="ordersShopLink" href={shopHref('/catalog')}>Shop ATP Royal <Icon icon="solar:arrow-right-up-linear" /></a>} />
+        {isLoading ? <PlayerLoading text="Loading your orders…" /> : isError ? <PlayerEmpty icon="solar:danger-circle-linear" title="Orders are unavailable." text="We could not load your order history. Refresh the page to try again." /> : !orders.length ? <PlayerEmpty icon="solar:bag-cross-linear" title="Your order list is empty." text="Court essentials and ATP Royal club pieces are waiting in the shop." to={shopHref('/catalog')} label="Shop products" /> : <>
             <section className="orderMetricsV4" aria-label="Order summary">
                 <article><Icon icon="solar:box-linear" /><div><small>All orders</small><strong>{String(orders.length).padStart(2, "0")}</strong></div></article>
                 <article><Icon icon="solar:verified-check-linear" /><div><small>Paid orders</small><strong>{String(paidOrders).padStart(2, "0")}</strong></div></article>
