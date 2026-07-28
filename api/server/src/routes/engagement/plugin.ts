@@ -1,13 +1,23 @@
 import Elysia from "elysia";
 import { isAdmin_Authenticated } from "../../middleware/isAdminAuth";
+import { isUser_Authenticated } from "../../middleware/isUserAuth";
 import Engagement from "./model";
 
 const publicEngagement = new Elysia()
-  .get("/", async () => ({
-    items: await Engagement.find({ status: { $in: ["published", "closed"] } })
-      .select("-participants -options.isCorrect")
-      .sort({ featured: -1, createdAt: -1 }),
-  }))
+  .get("/", async ({ query }) => {
+    const participantId = ((query as { participantId?: string }).participantId || "").trim().slice(0, 128);
+    const items = await Engagement.find({ status: { $in: ["published", "closed"] } })
+      .select("-options.isCorrect")
+      .populate("author", "fullName username picture")
+      .sort({ featured: -1, createdAt: -1 })
+      .lean();
+    return {
+      items: items.map(({ participants = [], ...item }) => ({
+        ...item,
+        hasResponded: Boolean(participantId && participants.includes(participantId)),
+      })),
+    };
+  })
   .post("/:id/respond", async ({ params: { id }, body, set }) => {
     const { optionId, participantId } = body as { optionId?: string; participantId?: string };
     if (!optionId || !participantId) { set.status = 400; return { message: "Choose an answer before continuing." }; }
@@ -27,6 +37,19 @@ const publicEngagement = new Elysia()
     };
   });
 
+const memberEngagement = new Elysia()
+  .use(isUser_Authenticated)
+  .post("/", async ({ body, user, set }) => {
+    const payload = body as { question?: string; options?: Array<{ label?: string }> };
+    const question = payload.question?.trim();
+    const options = (payload.options || []).map(option => ({ label: option.label?.trim() })).filter(option => option.label);
+    if (!question || question.length > 220) { set.status = 400; return { message: "Add a poll question under 220 characters." }; }
+    if (options.length < 2 || options.length > 6) { set.status = 400; return { message: "A poll needs between two and six options." }; }
+    const item = await Engagement.create({ author: user._id, kind: "poll", question, kicker: "Member poll", options, status: "published" });
+    await item.populate("author", "fullName username picture");
+    set.status = 201; return { message: "Poll published.", item };
+  });
+
 const adminEngagement = new Elysia({ prefix: "/admin" })
   .use(isAdmin_Authenticated)
   .get("/", async () => ({ items: await Engagement.find().select("-participants").sort({ createdAt: -1 }) }))
@@ -44,4 +67,4 @@ const adminEngagement = new Elysia({ prefix: "/admin" })
   })
   .delete("/:id", async ({ params: { id }, set }) => { const item = await Engagement.findByIdAndDelete(id); if (!item) { set.status = 404; return { message: "Question not found." }; } return { message: "Question deleted." }; });
 
-export default new Elysia({ prefix: "/engagement" }).use(publicEngagement).use(adminEngagement);
+export default new Elysia({ prefix: "/engagement" }).use(publicEngagement).use(memberEngagement).use(adminEngagement);

@@ -10,7 +10,6 @@ const links = [
   { name: "Home", to: "/" },
   { name: "Training", to: "/coaching" },
   { name: "Tournaments", to: "/tournaments" },
-  { name: "Community", to: "/community" },
   { name: "News", to: "/news" },
 ];
 

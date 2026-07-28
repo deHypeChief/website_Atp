@@ -7,6 +7,7 @@ const optionSchema = new mongoose.Schema({
 }, { _id: true });
 
 const engagementSchema = new mongoose.Schema({
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
   kind: { type: String, enum: ["quiz", "poll"], required: true },
   question: { type: String, required: true, trim: true },
   kicker: { type: String, default: "Clubhouse question", trim: true },

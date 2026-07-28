@@ -38,7 +38,7 @@ export default function StorePromo({ placement = 'landing' }) {
       <button className="atpRoyalDialogClose" onClick={dismiss} aria-label="Close ATP Royal message"><Icon icon="solar:close-circle-linear" /></button>
       <div className="atpRoyalDialogLabel"><span>ATP</span><strong>ROYAL</strong></div>
       <p>NEW FROM ATP INTERNATIONAL</p>
-      <h2 id="atp-royal-title">Your club store<br/>has a new home.</h2>
+      <h2 id="atp-royal-title"><span>Your club</span><span>store has a</span><span>new home.</span></h2>
       <span>Discover ATP Royal for court-ready apparel, equipment and members’ essentials. Your existing ATP account works there too.</span>
       <div><button onClick={visit}>Visit ATP Royal <Icon icon="solar:arrow-right-up-linear" /></button><button onClick={dismiss}>Maybe later</button></div>
     </section></div>}

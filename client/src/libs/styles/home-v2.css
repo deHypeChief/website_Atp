@@ -457,3 +457,7 @@
 .youthCopy > .atpButton {
   margin-top: 4px;
 }
+
+.homeIntro .atpSectionSide .atpButton {
+  margin-top: 1rem;
+}

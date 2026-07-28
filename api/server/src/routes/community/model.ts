@@ -1,12 +1,17 @@
 import mongoose from "mongoose";
 
 const topicSchema = new mongoose.Schema({
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
   title: { type: String, required: true, trim: true },
   prompt: { type: String, required: true, trim: true },
   tag: { type: String, default: "Open court", trim: true },
   status: { type: String, enum: ["draft", "published", "locked"], default: "draft" },
   pinned: { type: Boolean, default: false },
   replyCount: { type: Number, default: 0, min: 0 },
+  likeCount: { type: Number, default: 0, min: 0 },
+  viewCount: { type: Number, default: 0, min: 0 },
+  likedBy: { type: [String], default: [], select: false },
+  viewers: { type: [String], default: [], select: false },
   lastActivityAt: { type: Date, default: Date.now },
 }, { timestamps: true });
 

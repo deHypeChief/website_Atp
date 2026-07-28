@@ -4,16 +4,66 @@ import { isUser_Authenticated } from "../../middleware/isUserAuth";
 import { CommunityComment, CommunityTopic } from "./model";
 
 const publicCommunity = new Elysia()
-  .get("/topics", async () => ({ topics: await CommunityTopic.find({ status: { $in: ["published", "locked"] } }).sort({ pinned: -1, lastActivityAt: -1 }) }))
-  .get("/topics/:id", async ({ params: { id }, set }) => {
-    const topic = await CommunityTopic.findOne({ _id: id, status: { $in: ["published", "locked"] } });
+  .get("/topics", async ({ query }) => {
+    const participantId = ((query as { participantId?: string }).participantId || "").trim().slice(0, 128);
+    const topics = await CommunityTopic.find({ status: { $in: ["published", "locked"] } })
+      .select("+likedBy")
+      .populate("author", "fullName username picture")
+      .sort({ pinned: -1, lastActivityAt: -1 })
+      .lean();
+    const previews = await Promise.all(topics.map(topic => CommunityComment.find({ topic: topic._id, status: "visible" })
+      .select("body author createdAt")
+      .populate("author", "fullName username picture")
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .lean()));
+    return {
+      topics: topics.map(({ likedBy = [], ...topic }, index) => ({
+        ...topic,
+        likeCount: topic.likeCount || 0,
+        viewCount: topic.viewCount || 0,
+        hasLiked: Boolean(participantId && likedBy.includes(participantId)),
+        previewComments: previews[index],
+      })),
+    };
+  })
+  .get("/topics/:id", async ({ params: { id }, query, set }) => {
+    const viewerId = ((query as { viewerId?: string }).viewerId || "").trim().slice(0, 128);
+    let topic = viewerId ? await CommunityTopic.findOneAndUpdate(
+      { _id: id, status: { $in: ["published", "locked"] }, viewers: { $ne: viewerId } },
+      { $addToSet: { viewers: viewerId }, $inc: { viewCount: 1 } },
+      { new: true },
+    ).populate("author", "fullName username picture") : null;
+    if (!topic) topic = await CommunityTopic.findOne({ _id: id, status: { $in: ["published", "locked"] } }).populate("author", "fullName username picture");
     if (!topic) { set.status = 404; return { message: "Discussion not found." }; }
     const comments = await CommunityComment.find({ topic: id }).populate("author", "fullName username picture").sort({ createdAt: 1 });
     return { topic, comments: comments.map(comment => { const value = comment.toObject(); return value.status === "removed" ? { ...value, body: "" } : value; }) };
+  })
+  .post("/topics/:id/like", async ({ params: { id }, body, set }) => {
+    const participantId = ((body as { participantId?: string }).participantId || "").trim().slice(0, 128);
+    if (!participantId) { set.status = 400; return { message: "Your like could not be recorded." }; }
+    const topic = await CommunityTopic.findOne({ _id: id, status: { $in: ["published", "locked"] } }).select("+likedBy");
+    if (!topic) { set.status = 404; return { message: "Discussion not found." }; }
+    const liked = topic.likedBy.includes(participantId);
+    if (liked) topic.likedBy.pull(participantId);
+    else topic.likedBy.addToSet(participantId);
+    topic.likeCount = topic.likedBy.length;
+    await topic.save();
+    return { liked: !liked, likeCount: topic.likeCount };
   });
 
 const memberCommunity = new Elysia()
   .use(isUser_Authenticated)
+  .post("/topics", async ({ body, user, set }) => {
+    const payload = body as { title?: string; prompt?: string; tag?: string };
+    const title = payload.title?.trim();
+    const prompt = payload.prompt?.trim();
+    if (!title || !prompt) { set.status = 400; return { message: "Add a title and something to discuss." }; }
+    if (title.length > 140 || prompt.length > 2500) { set.status = 400; return { message: "Keep the title under 140 characters and the post under 2,500." }; }
+    const topic = await CommunityTopic.create({ author: user._id, title, prompt, tag: payload.tag?.trim() || "Open court", status: "published" });
+    await topic.populate("author", "fullName username picture");
+    set.status = 201; return { message: "Post published.", topic };
+  })
   .post("/topics/:id/comments", async ({ params: { id }, body, user, set }) => {
     const payload = body as { body?: string; parentId?: string };
     const text = payload.body?.trim();

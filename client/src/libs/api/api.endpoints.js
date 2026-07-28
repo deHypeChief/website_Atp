@@ -340,10 +340,13 @@ export const createStoreCheckout = async payload => (await api.post('/store/chec
 export const getMyStoreOrders = async () => (await api.get('/store/orders/me')).data.orders;
 export const verifyStoreOrder = async (id, reference) => (await api.get(`/store/orders/${id}/verify`, { params: { reference } })).data;
 
-export const getEngagementItems = async () => (await api.get('/engagement')).data.items || [];
+export const getEngagementItems = async participantId => (await api.get('/engagement', { params: { participantId: typeof participantId === 'string' ? participantId : undefined } })).data.items || [];
+export const createMemberPoll = async payload => (await api.post('/engagement', payload)).data;
 export const respondToEngagement = async ({id, optionId, participantId}) => (await api.post(`/engagement/${id}/respond`, {optionId, participantId})).data;
-export const getCommunityTopics = async () => (await api.get('/community/topics')).data.topics || [];
-export const getCommunityTopic = async id => (await api.get(`/community/topics/${id}`)).data;
+export const getCommunityTopics = async participantId => (await api.get('/community/topics', { params: { participantId: typeof participantId === 'string' ? participantId : undefined } })).data.topics || [];
+export const createCommunityPost = async payload => (await api.post('/community/topics', payload)).data;
+export const getCommunityTopic = async (id, viewerId) => (await api.get(`/community/topics/${id}`, { params: { viewerId } })).data;
+export const likeCommunityTopic = async ({topicId, participantId}) => (await api.post(`/community/topics/${topicId}/like`, {participantId})).data;
 export const postCommunityComment = async ({topicId, body, parentId}) => (await api.post(`/community/topics/${topicId}/comments`, {body, parentId})).data;
 export const getLiveDraws = async () => (await api.get('/match-centre/live')).data.draws || [];
 
