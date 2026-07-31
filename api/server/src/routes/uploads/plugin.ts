@@ -1,7 +1,8 @@
 import Elysia from "elysia";
-import S3 from "aws-sdk/clients/s3";
 import { isAdmin_Authenticated } from "../../middleware/isAdminAuth";
+import { buildObjectKey, deleteFromR2, isR2Configured, r2KeyFromUrl, uploadToR2 } from "../../config/r2.config";
 
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const extensionFor = (file: File) => {
   const fromName = file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -21,42 +22,45 @@ export default new Elysia({ prefix: "/uploads" })
       set.status = 415;
       return { message: "Upload a JPG, PNG, WebP or GIF image" };
     }
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > MAX_IMAGE_BYTES) {
       set.status = 413;
       return { message: "Images must be 10 MB or smaller" };
     }
-
-    const accountId = Bun.env.CLOUDFLARE_R2_ACCOUNT_ID;
-    const accessKeyId = Bun.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
-    const secretAccessKey = Bun.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
-    const bucket = Bun.env.CLOUDFLARE_R2_BUCKET_NAME;
-    const publicBaseUrl = Bun.env.CLOUDFLARE_R2_PUBLIC_URL?.replace(/\/$/, "");
-    if (!accountId || !accessKeyId || !secretAccessKey || !bucket || !publicBaseUrl) {
+    if (!isR2Configured) {
       set.status = 503;
       return { message: "Cloudflare R2 image storage is not configured" };
     }
 
-    const s3 = new S3({
-      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-      accessKeyId,
-      secretAccessKey,
-      signatureVersion: "v4",
-      region: "auto",
-    });
-    const key = `atp/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${extensionFor(file)}`;
+    const key = buildObjectKey(extensionFor(file));
 
     try {
-      await s3.putObject({
-        Bucket: bucket,
-        Key: key,
-        Body: Buffer.from(await file.arrayBuffer()),
-        ContentType: file.type,
-        CacheControl: "public, max-age=31536000, immutable",
-      }).promise();
-      return { message: "Image uploaded", imageUrl: `${publicBaseUrl}/${key}`, key };
+      const imageUrl = await uploadToR2(key, Buffer.from(await file.arrayBuffer()), file.type);
+      return { message: "Image uploaded", imageUrl, key };
     } catch (error) {
       console.error("Cloudflare R2 upload failed", error);
       set.status = 502;
       return { message: "Image upload failed" };
+    }
+  })
+  .delete("/image", async ({ body, set }) => {
+    // Accepts either the stored public URL or the raw object key.
+    const { imageUrl, key: rawKey } = (body ?? {}) as { imageUrl?: string; key?: string };
+    const key = rawKey ?? (imageUrl ? r2KeyFromUrl(imageUrl) : null);
+    if (!key) {
+      set.status = 400;
+      return { message: "Provide the image key or a URL from this bucket" };
+    }
+    if (!isR2Configured) {
+      set.status = 503;
+      return { message: "Cloudflare R2 image storage is not configured" };
+    }
+
+    try {
+      await deleteFromR2(key);
+      return { message: "Image deleted", key };
+    } catch (error) {
+      console.error("Cloudflare R2 delete failed", error);
+      set.status = 502;
+      return { message: "Image delete failed" };
     }
   });

@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Icon } from "@iconify/react";
 import { useAuth } from "../libs/hooks/use-auth";
 import { completeAuthRedirect } from "../libs/shop";
-import heroImage from "../assets/brand/hero-pro-player.png";
+import heroImage from "../assets/brand/hero-pro-player.jpg";
 
 function AuthShell({ mode, children }) {
   return <main className="authV3"><section><Link className="authBack" to="/"><Icon icon="solar:arrow-left-linear" /> ATP website</Link><div><p>ATP PLAYER ACCOUNT</p><h1>{mode === "login" ? "Welcome back." : "Join the club."}</h1><span>{mode === "login" ? "Your training, tournaments and tennis community are waiting." : "Create your player profile and put everything ATP in one place."}</span>{children}</div></section><aside><img src={heroImage} alt="Professional tennis player" /><span /><div><small>PLAY · TRAIN · BELONG</small><h2>Own your next point.</h2></div></aside></main>;

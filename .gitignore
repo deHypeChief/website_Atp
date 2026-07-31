@@ -181,3 +181,15 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Raw photo/video source material dropped into client/public.
+# Nothing imports these, and Vite copies everything in public/ into dist/, so keeping
+# them out of git avoids ~257MB of permanent history and build bloat. Images the site
+# actually uses live in client/src/assets/ and are committed.
+client/public/*.jpg
+client/public/*.jpeg
+client/public/*.JPG
+client/public/*.HEIC
+client/public/*.MOV
+client/public/*.mp4
+client/public/Slide images/

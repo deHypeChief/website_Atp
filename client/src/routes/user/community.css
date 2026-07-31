@@ -14,4 +14,5 @@
 @media(max-width:600px){.clubhouseThreadLead>footer{align-items:center;flex-direction:row;flex-wrap:wrap;gap:16px}}
 @media(max-width:600px){.clubhouseComposerStart{display:none}}
 @media(max-width:600px){.clubhouseCard>footer>button{min-height:40px;padding-block:10px}}
+@media(max-width:600px){.clubhouseRail{display:contents}.clubhouseProfile{grid-row:1}.clubhouseMain{grid-row:2}.clubhousePulse{grid-row:3}.clubhouseCode{grid-row:4}}
 @media(prefers-reduced-motion:reduce){.clubhouseLoading i{animation:none}}

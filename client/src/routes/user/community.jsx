@@ -40,7 +40,8 @@ const errorMessage = error => error?.response?.data?.message || "That could not 
 export default function PlayerCommunity() {
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
-  const [topicId, setTopicId] = useState(null);
+  // Notifications link here as /u/community?topic=<id> so a reply opens its thread directly.
+  const [topicId, setTopicId] = useState(() => new URLSearchParams(window.location.search).get("topic"));
   const voterId = participantId();
   const qc = useQueryClient();
   const topics = useQuery({ queryKey: ["community-topics", voterId], queryFn: () => getCommunityTopics(voterId) });

@@ -1,6 +1,15 @@
 import Elysia from "elysia";
+import mongoose from "mongoose";
 import { CustomMatch } from "../model";
 import User from "../../user/model";
+import { sendNotifications } from "../../notifications/service";
+
+// Tells each player who else is on the court, so the notification is useful on its own.
+const opponentLine = (names: string[]) => {
+    if (!names.length) return "";
+    if (names.length === 1) return ` You are up against ${names[0]}.`;
+    return ` You are up against ${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}.`;
+};
 
 const adminMatchCreate = new Elysia()
     .post("/matchCustom/create", async ({ set, body }) => {
@@ -41,6 +50,36 @@ const adminMatchCreate = new Elysia()
             });
 
             await match.save();
+
+            // Draft matches are not assignments yet — only tell players once the match is live.
+            // The match is already saved at this point, so notifying must never fail the request:
+            // a malformed participant id would otherwise make User.find throw and report a 500
+            // for a match that was created successfully.
+            if (status !== "draft") {
+                try {
+                    const participantIds = participants.map(p => p.userId);
+                    const players = await User.find({ _id: { $in: participantIds.filter(id => mongoose.isValidObjectId(id)) } })
+                        .select("fullName username")
+                        .lean();
+                    const nameById = new Map(players.map(player => [
+                        player._id.toString(),
+                        player.fullName || player.username || "an ATP player",
+                    ]));
+
+                    await sendNotifications(participantIds.map(userId => ({
+                        userID: userId,
+                        title: "You have a new match",
+                        message: `You have been assigned to a ${matchType} match.${opponentLine(
+                            participantIds.filter(id => id !== userId).map(id => nameById.get(id) || "an ATP player"),
+                        )}`,
+                        type: "success" as const,
+                        category: "match" as const,
+                        link: "/u/matches",
+                    })));
+                } catch (notifyError) {
+                    console.error("Failed to notify match participants", notifyError);
+                }
+            }
 
             set.status = 201;
             return { message: "Custom match created", match };

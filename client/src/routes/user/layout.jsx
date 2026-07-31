@@ -3,11 +3,12 @@ import { NavLink, Outlet, Link, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { useQuery } from "@tanstack/react-query";
 import logo from "../../libs/images/logo.svg";
-import { getBillingPage } from "../../libs/api/api.endpoints";
+import { getBillingPage, getNotify } from "../../libs/api/api.endpoints";
 import { useAuth } from "../../libs/hooks/use-auth";
 import LiveScoreTicker from "../../components/system/live-score-ticker";
 import "../../libs/styles/dashboard-v2.css";
 import "../../libs/styles/dashboard-hero-image.css";
+import "../../libs/styles/notifications.css";
 
 const nav = [
   { label: "Overview", to: "/u", end: true, icon: "solar:widget-5-linear" },
@@ -31,6 +32,15 @@ export default function DashboardLayout() {
     staleTime: 900000,
     refetchOnWindowFocus: false,
   });
+  // Shares the "notify" cache with the notifications page, so marking one read
+  // updates the badge immediately rather than waiting for the next poll.
+  const { data: notifications } = useQuery({
+    queryKey: ["notify"],
+    queryFn: getNotify,
+    refetchInterval: 60000,
+  });
+  const unreadCount = notifications?.unreadCount || 0;
+  const unreadLabel = unreadCount > 99 ? "99+" : unreadCount;
 
   useEffect(() => {
     const footer = document.querySelector("footer");
@@ -61,6 +71,7 @@ export default function DashboardLayout() {
             <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setOpen(false)}>
               <Icon icon={item.icon} />
               <span>{item.label}</span>
+              {item.to === "/u/notifications" && unreadCount > 0 && <i className="dashBadge">{unreadLabel}</i>}
             </NavLink>
           ))}
         </nav>
@@ -98,8 +109,9 @@ export default function DashboardLayout() {
               <Icon icon="solar:chat-round-dots-linear" />
               <span>Clubhouse</span>
             </Link>
-            <Link to="/u/notifications" aria-label="Notifications">
-              <Icon icon="solar:bell-linear" />
+            <Link className="dashBellLink" to="/u/notifications" aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications"}>
+              <Icon icon={unreadCount > 0 ? "solar:bell-bing-bold" : "solar:bell-linear"} />
+              {unreadCount > 0 && <i className="dashBadge">{unreadLabel}</i>}
             </Link>
           </div>
         </header>

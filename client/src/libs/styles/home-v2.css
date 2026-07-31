@@ -200,6 +200,40 @@
   min-height: 620px;
   object-fit: cover;
 }
+/* Stacked slides: the active one is opaque and settled, the rest wait one step to the
+   right. Cross-fading avoids the long reverse sweep a translated track makes when it
+   wraps from the last image back to the first. */
+.atpSlideShow {
+  position: relative;
+  min-height: 620px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  background: var(--atp-navy);
+}
+.atpSlideShow > li {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateX(5%);
+  transition: opacity 0.9s ease, transform 1.1s cubic-bezier(0.2, 0.75, 0.25, 1);
+}
+.atpSlideShow > li.isActive {
+  opacity: 1;
+  transform: none;
+}
+.atpSlideShow img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .atpSlideShow > li {
+    transition: none;
+  }
+}
 .youthImage > div {
   position: absolute;
   left: 0;
@@ -264,23 +298,36 @@
 }
 .homeStories > div:last-child {
   display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
+  align-items: stretch;
+}
+/* The reveal wrapper sits between the grid and the card, so pass the row height down. */
+.homeStories > div:last-child > .atpReveal {
+  height: 100%;
 }
 .storyCard {
   color: var(--atp-navy);
   text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .storyCard > div {
   height: 280px;
+  flex: none;
   overflow: hidden;
   background: var(--atp-blue);
   color: #fff;
   display: grid;
+  /* A definite row, otherwise the track sizes to the image's intrinsic height
+     and the img's height:100% resolves against that instead of the 280px band. */
+  grid-template-rows: minmax(0, 1fr);
   place-items: center;
   font: 900 2rem var(--atp-display);
 }
 .storyCard img {
+  width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s;
@@ -296,15 +343,28 @@
   letter-spacing: 0.12em;
   margin: 18px 0 8px;
 }
+/* Titles and excerpts are clamped to a fixed number of lines so every card
+   ends on the same baseline regardless of how long the story copy is. */
 .storyCard h3 {
   font: 900 1.7rem/1 var(--atp-display);
   text-transform: uppercase;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: 2em;
 }
 .storyCard p {
   color: var(--atp-muted);
   font-size: 0.85rem;
   line-height: 1.55;
   margin-top: 12px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
 }
 .homeNewsletter {
   padding: 90px var(--atp-gutter);

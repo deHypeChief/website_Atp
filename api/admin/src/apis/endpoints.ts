@@ -204,7 +204,20 @@ export async function deleteNewsArticle(id) {
 
 export async function getSiteContentAdmin() {
 	const response = await api.get('/site-content');
-	return response.data.content;
+	// `copy` holds the resolved website text keyed by the copy registry.
+	return { ...response.data.content, copy: response.data.copy || {} };
+}
+
+/** The list of editable website copy fields, grouped by page. Drives the content editor form. */
+export async function getSiteCopySchema() {
+	const response = await api.get('/site-content/schema');
+	return response.data.groups || [];
+}
+
+/** Saves changed website copy. Payload is a flat { "home.hero.title": "..." } map. */
+export async function updateSiteCopy(payload) {
+	const response = await api.put('/site-content/admin/copy', payload);
+	return response.data;
 }
 
 export async function updateSiteContent(payload) {

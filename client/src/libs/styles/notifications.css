@@ -1,0 +1,83 @@
+/* Unread badge on the sidebar nav item and the header bell. */
+.dashBadge {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 99px;
+  background: var(--atp-lime);
+  color: var(--atp-navy);
+  font: 900 0.6rem/1 var(--atp-body);
+  font-style: normal;
+}
+.dashV2 aside nav a .dashBadge {
+  margin-left: auto;
+}
+.dashBellLink {
+  position: relative;
+}
+.dashBellLink .dashBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  border: 2px solid #f7f8f4;
+}
+
+/* Mark-all-read action in the notifications page header. */
+.notificationReadAll {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 19px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--atp-lime);
+  color: var(--atp-navy);
+  font: 900 0.65rem var(--atp-body);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.notificationReadAll:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.notificationReadAll strong {
+  display: grid;
+  place-items: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: var(--atp-navy);
+  color: #fff;
+  font-size: 0.6rem;
+}
+
+/* Unread rows carry a tint and a left accent so the state reads at a glance. */
+.notificationList article.isUnread {
+  background: #f1f7ff;
+  box-shadow: inset 3px 0 0 var(--atp-blue);
+}
+.notificationList article.isUnread > span {
+  background: var(--atp-blue);
+  color: #fff;
+}
+.notificationList article.isUnread h2 {
+  font-weight: 900;
+}
+.notificationList article[role="button"] {
+  cursor: pointer;
+}
+.notificationList article[role="button"]:hover {
+  background: var(--atp-mist);
+}
+.notificationList article[role="button"]:focus-visible {
+  outline: 2px solid var(--atp-blue);
+  outline-offset: -2px;
+}
+.notificationList small {
+  text-transform: uppercase;
+}

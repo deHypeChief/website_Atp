@@ -21,6 +21,9 @@ const siteContentSchema = new mongoose.Schema({
     facebookLink: String, instagramLink: String, linkedinLink: String, xLink: String,
     youtubeLink: String, privacyLink: String, termsLink: String, cookieLink: String,
   },
+  // Free-form key/value store for every string in copy.registry.ts. A Map keeps new
+  // editable copy from needing a schema change each time one is added.
+  copy: { type: Map, of: String, default: {} },
   reviews: [reviewSchema],
   gallery: [String],
   sponsors: [String],

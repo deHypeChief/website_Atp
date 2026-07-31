@@ -55,18 +55,22 @@ export const getNotify = async () => {
     const response = await api.get("/notifications");
     const notifications = response.data.notifications;
 
-    // Ensure notifications exist and are in an array format
+    // The API already returns these newest-first.
     if (Array.isArray(notifications)) {
-      return notifications.slice().reverse(); // Clone and reverse
+      return { notifications, unreadCount: response.data.unreadCount || 0 };
     } else {
       console.warn("No notifications found or data format incorrect.");
-      return [];
+      return { notifications: [], unreadCount: 0 };
     }
   } catch (error) {
     console.error("Error fetching notify:", error);
-    return [];
+    return { notifications: [], unreadCount: 0 };
   }
 };
+
+export const markNotifyRead = async (id) => (await api.post(`/notifications/${id}/read`)).data;
+
+export const markAllNotifyRead = async () => (await api.post("/notifications/read-all")).data;
 
 export const getTourPayLink = async (tornamentId) => {
   try {
@@ -321,7 +325,9 @@ export const getNewsArticle = async (slug) => {
 
 export const getSiteContent = async () => {
   const response = await api.get('/site-content');
-  return response.data.content;
+  // `copy` is the admin-editable website text, already resolved server-side. It rides along
+  // on the content object so existing consumers of `.pages`, `.reviews` etc. keep working.
+  return { ...response.data.content, copy: response.data.copy || {} };
 };
 
 export const deleteUserAccount = async () => {

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import { getCommunityTopics, getMatches, getPayMe, getTour, getUserMatchesC } from "../../libs/api/api.endpoints";
 import { useAuth } from "../../libs/hooks/use-auth";
-import communityImage from "../../assets/brand/club-community.png";
+import communityImage from "../../assets/brand/club-community.jpg";
 import StorePromo from "../../components/store-promo/store-promo";
 
 const tournamentId = (ticket) => String(ticket?.tournament?._id || ticket?.tournament || "");

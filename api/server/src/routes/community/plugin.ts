@@ -2,6 +2,7 @@ import Elysia from "elysia";
 import { isAdmin_Authenticated } from "../../middleware/isAdminAuth";
 import { isUser_Authenticated } from "../../middleware/isUserAuth";
 import { CommunityComment, CommunityTopic } from "./model";
+import { sendNotifications } from "../notifications/service";
 
 const publicCommunity = new Elysia()
   .get("/topics", async ({ query }) => {
@@ -75,6 +76,25 @@ const memberCommunity = new Elysia()
     const comment = await CommunityComment.create({ topic: id, author: user._id, parent: parent?._id || null, body: text });
     topic.replyCount += 1; topic.lastActivityAt = new Date(); await topic.save();
     await comment.populate("author", "fullName username picture");
+
+    // Tell the people whose content was engaged with. The commenter never gets notified
+    // about their own comment, and replying on your own post sends one notification, not two.
+    const actor = user.fullName || user.username || "An ATP member";
+    const link = `/u/community?topic=${id}`;
+    const notified = new Set([user._id.toString()]);
+    const notifications = [];
+    const parentAuthorId = parent?.author?.toString();
+    if (parentAuthorId && !notified.has(parentAuthorId)) {
+      notified.add(parentAuthorId);
+      notifications.push({ userID: parentAuthorId, title: "New reply to your comment", message: `${actor} replied to your comment on "${topic.title}".`, category: "community" as const, link });
+    }
+    // Admin-created topics have no author, so there is nobody to notify.
+    const topicAuthorId = topic.author?.toString();
+    if (topicAuthorId && !notified.has(topicAuthorId)) {
+      notifications.push({ userID: topicAuthorId, title: "New comment on your post", message: `${actor} commented on "${topic.title}".`, category: "community" as const, link });
+    }
+    await sendNotifications(notifications);
+
     set.status = 201; return { message: "Response posted.", comment };
   });
 
