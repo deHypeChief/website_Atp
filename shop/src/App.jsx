@@ -5,11 +5,12 @@ import Cart from './pages/Cart'
 import Catalog from './pages/Catalog'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
+import Orders from './pages/Orders'
 import PaymentCallback from './pages/PaymentCallback'
 import ProductDetail from './pages/ProductDetail'
 import { StoreDataProvider } from './store/data'
 import './App.css'
 
 export default function App() {
-  return <BrowserRouter><StoreDataProvider><Routes><Route element={<StoreLayout />}><Route index element={<Home />} /><Route path="catalog" element={<Catalog />} /><Route path="product/:slug" element={<ProductDetail />} /><Route path="cart" element={<Cart />} /><Route path="payment/callback" element={<PaymentCallback />} /><Route path="auth/callback" element={<AuthCallback />} /><Route path="*" element={<NotFound />} /></Route></Routes></StoreDataProvider></BrowserRouter>
+  return <BrowserRouter><StoreDataProvider><Routes><Route element={<StoreLayout />}><Route index element={<Home />} /><Route path="catalog" element={<Catalog />} /><Route path="product/:slug" element={<ProductDetail />} /><Route path="cart" element={<Cart />} /><Route path="orders" element={<Orders />} /><Route path="payment/callback" element={<PaymentCallback />} /><Route path="auth/callback" element={<AuthCallback />} /><Route path="*" element={<NotFound />} /></Route></Routes></StoreDataProvider></BrowserRouter>
 }

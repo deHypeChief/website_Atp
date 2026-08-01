@@ -1,0 +1,90 @@
+.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.ledBoard{--led-card:#fff;--led-border:#d7e0e5;--led-gold:#d4a017;--led-silver:#8fa3ad;--led-bronze:#b06a33;display:grid;gap:20px}
+
+/* Podium — a navy results board, not a card deck: sharp edges, medal rules, and the
+   points set in the display face the rest of the site uses for scores. */
+.ledPodium{background:var(--atp-navy);color:#fff}
+.ledPodium>header{padding:15px 20px;display:flex;align-items:baseline;justify-content:space-between;gap:14px;border-bottom:1px solid rgba(255,255,255,.16)}
+.ledPodium>header span{color:var(--atp-lime);font-size:.6rem;font-weight:900;letter-spacing:.19em;text-transform:uppercase}
+.ledPodium>header small{color:#8ba4b4;font-size:.56rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.ledPodium ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr}
+.ledPodium ol[data-count="2"]{grid-template-columns:1.2fr 1fr}
+.ledPodium ol[data-count="3"]{grid-template-columns:1.3fr 1fr 1fr}
+.ledPodium li{position:relative;padding:26px 20px 24px;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:15px;row-gap:16px;align-items:center;border-left:1px solid rgba(255,255,255,.14)}
+.ledPodium li:first-child{border-left:0}
+/* Medal colour reads as a rule across the top of the cell rather than a floating badge. */
+.ledPodium li::before{content:"";position:absolute;top:0;right:0;left:0;height:4px;background:var(--led-silver)}
+.ledPodium li.gold::before{background:var(--led-gold);height:6px}
+.ledPodium li.bronze::before{background:var(--led-bronze)}
+.ledPodiumRank{font:900 1.5rem/1 var(--atp-display);color:rgba(255,255,255,.32);font-variant-numeric:tabular-nums}
+.ledPodium li.gold .ledPodiumRank{color:var(--led-gold);font-size:2rem}
+.ledPodiumFace{grid-row:1;width:60px;height:60px;display:grid;place-items:center;overflow:hidden;background:#0d3b5c;color:#fff;font-size:.85rem;font-weight:900}
+.ledPodium li.gold .ledPodiumFace{width:78px;height:78px}
+.ledPodiumFace img{width:100%;height:100%;object-fit:cover}
+.ledPodiumWho{display:flex;flex-direction:column;min-width:0}
+.ledPodiumWho em{color:var(--atp-lime);font-size:.54rem;font-style:normal;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+.ledPodiumWho strong{margin-top:5px;font:900 1.15rem/1 var(--atp-display);letter-spacing:.01em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis}
+.ledPodium li.gold .ledPodiumWho strong{font-size:1.6rem}
+.ledPodiumWho small{margin-top:6px;color:#8ba4b4;font-size:.57rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.ledPodiumPts{grid-column:1/-1;padding-top:14px;display:flex;align-items:baseline;gap:9px;border-top:1px solid rgba(255,255,255,.14)}
+.ledPodiumPts b{font:900 2.3rem/1 var(--atp-display);font-variant-numeric:tabular-nums}
+.ledPodium li.gold .ledPodiumPts b{font-size:3.1rem;color:var(--atp-lime)}
+.ledPodiumPts i{color:#8ba4b4;font-size:.56rem;font-style:normal;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+
+/* Standings table. Scrolls inside its own box so a narrow screen never scrolls the page. */
+.ledTableWrap{overflow-x:auto;background:var(--led-card);border:1px solid var(--led-border)}
+.ledTable{width:100%;min-width:620px;border-collapse:collapse;text-align:left}
+.ledTable thead th{padding:13px 14px;background:var(--atp-navy);color:#fff;font-size:.55rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}
+.ledTable tbody tr{border-top:1px solid var(--led-border)}
+.ledTable tbody tr:first-child{border-top:0}
+.ledTable td,.ledTable tbody th{padding:12px 14px;font-size:.76rem;font-weight:500;vertical-align:middle}
+.ledNum{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ledPoints{font-weight:900;color:var(--atp-navy)}
+.ledPosition{display:inline-flex;align-items:center;gap:7px;font-weight:900;color:var(--atp-muted);font-variant-numeric:tabular-nums}
+.ledRowMedal{font-size:1.1rem}
+.ledRank.gold .ledRowMedal{color:var(--led-gold)}
+.ledRank.silver .ledRowMedal{color:var(--led-silver)}
+.ledRank.bronze .ledRowMedal{color:var(--led-bronze)}
+.ledRank.gold{background:rgba(212,160,23,.09)}
+.ledRank.silver{background:rgba(143,163,173,.11)}
+.ledRank.bronze{background:rgba(176,106,51,.09)}
+.ledRank .ledPosition{color:var(--atp-navy)}
+.ledPlayer{display:flex;align-items:center;gap:11px}
+.ledAvatar{flex:0 0 auto;width:38px;height:38px;display:grid;place-items:center;overflow:hidden;background:var(--atp-blue);color:#fff;font-size:.6rem;font-weight:900}
+.ledAvatar img{width:100%;height:100%;object-fit:cover}
+.ledPlayerText{display:flex;flex-direction:column;min-width:0}
+.ledPlayerText strong{display:flex;align-items:center;gap:7px;font-size:.78rem}
+.ledPlayerText em{padding:2px 6px;border-radius:999px;background:var(--atp-lime);color:var(--atp-navy);font-size:.5rem;font-style:normal;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.ledPlayerText small{margin-top:2px;color:var(--atp-muted);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase}
+.ledTable tbody tr.isYou{background:rgba(155,226,41,.13)}
+.ledTable tbody tr.isDetached{border-top:2px dashed var(--led-border)}
+
+.ledLoading{display:grid;gap:9px}
+.ledLoading i{height:64px;background:linear-gradient(90deg,#e8eef1,#f7f9fa,#e8eef1);background-size:200%;animation:ledLoad 1.3s infinite}
+@keyframes ledLoad{to{background-position:-200%}}
+.ledEmpty{padding:55px 25px;text-align:center;border:1px dashed #b8c7cf;background:#fff}
+.ledEmpty>svg{font-size:2rem;color:var(--atp-blue)}
+.ledEmpty h2{margin:10px 0 5px;font:900 1.5rem var(--atp-display);text-transform:uppercase}
+.ledEmpty p{max-width:420px;margin:0 auto;color:var(--atp-muted);font-size:.7rem;line-height:1.6}
+
+@media(max-width:900px){
+  .ledPodium ol,.ledPodium ol[data-count="2"],.ledPodium ol[data-count="3"]{grid-template-columns:1fr}
+  /* One row per medallist on narrow screens: rank, photo, name, points. */
+  .ledPodium li{border-left:0;border-top:1px solid rgba(255,255,255,.14);padding:18px 20px 18px 26px;grid-template-columns:auto auto minmax(0,1fr) auto;row-gap:0}
+  .ledPodium li:first-child{border-top:0}
+  .ledPodium li::before{right:auto;bottom:0;width:5px;height:auto}
+  .ledPodium li.gold::before{width:6px;height:auto}
+  .ledPodium li.gold .ledPodiumFace{width:60px;height:60px}
+  .ledPodium li.gold .ledPodiumRank{font-size:1.5rem}
+  .ledPodium li.gold .ledPodiumWho strong{font-size:1.15rem}
+  .ledPodiumPts{grid-column:auto;padding-top:0;border-top:0;flex-direction:column;align-items:flex-end;gap:2px}
+  .ledPodium li.gold .ledPodiumPts b,.ledPodiumPts b{font-size:1.7rem}
+}
+@media(prefers-reduced-motion:reduce){.ledLoading i{animation:none}}
+
+/* Public page wrapper. Only the vertical rhythm is set here — the horizontal gutter comes
+   from .atpShell, and a full `padding` shorthand would wipe it out. */
+.ledSection{padding-block:clamp(45px,6vw,80px) clamp(60px,8vw,110px);display:grid;gap:22px}
+.ledFootnote{max-width:760px;color:var(--atp-muted);font-size:.68rem;line-height:1.65}
+.ledBoard.dashboard{margin-top:8px}

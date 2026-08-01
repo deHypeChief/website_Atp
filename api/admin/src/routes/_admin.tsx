@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import "../assets/style/routes/adminLayout.css"
 import { Header4 } from '@/components/typography'
-import { BadgeInfo, BrainCircuit, MessagesSquare, Newspaper, PanelsTopLeft, ShoppingBag } from 'lucide-react'
+import { BadgeInfo, BrainCircuit, Images, MessagesSquare, Newspaper, PanelsTopLeft, ShoppingBag } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useAuth } from '@/hooks/use-auth'
 import { useState } from 'react'
@@ -39,6 +39,11 @@ function AdminLayout() {
             name: "Site Content",
             link: "/content",
             icon: <PanelsTopLeft size={20} />
+        },
+        {
+            name: "Gallery",
+            link: "/gallery",
+            icon: <Images size={20} />
         },
         {
             name: "News",

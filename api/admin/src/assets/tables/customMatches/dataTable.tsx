@@ -33,7 +33,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import api from "@/lib/axios"
-import { getUsers } from "@/apis/endpoints"
+import { getUsers, updateMatchCustom } from "@/apis/endpoints"
 import { useQuery } from "@tanstack/react-query"
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -79,12 +79,19 @@ export function CustomMatchesTab<TData, TValue>({
 
     const [open, setOpen] = useState(false);
     const [matchType, setMatchType] = useState<"1v1" | "2v2">("1v1");
-    const [status, setStatus] = useState("completed");
+    // A friendly is normally arranged before it is played, so "active" is the default.
+    // Winners and scores are only required once it is moved to "completed".
+    const [status, setStatus] = useState("active");
     const [participants, setParticipants] = useState([
         { userId: "", winner: false, score: undefined as number | undefined }
     ]);
     const [selectedMatch, setSelectedMatch] = useState<TData | null>(null)
     const [viewOpen, setViewOpen] = useState(false)
+    // Result editor for a fixture that has been played.
+    const [scoreOpen, setScoreOpen] = useState(false)
+    const [scoreDraft, setScoreDraft] = useState<Array<{ userId: string; username: string; winner: boolean; score: number | undefined }>>([])
+    const [scoreStatus, setScoreStatus] = useState("completed")
+    const [saving, setSaving] = useState(false)
 
 
 
@@ -127,8 +134,43 @@ export function CustomMatchesTab<TData, TValue>({
             toast({
                 variant: "destructive",
                 title: "Error Creating Custom Match",
-                description: err.response.data.error ? err.response.data.error : err.message,
+                description: err.response?.data?.error ? err.response.data.error : err.message,
             });
+        }
+    };
+
+    // Opens the result editor pre-filled with whatever is already on the fixture.
+    const openScoreEditor = (match: any) => {
+        setScoreDraft(match.participants.map((participant: any) => ({
+            userId: participant.userId,
+            username: participant.username,
+            winner: Boolean(participant.winner),
+            score: participant.score ?? undefined,
+        })))
+        setScoreStatus(match.status === "draft" ? "active" : match.status)
+        setScoreOpen(true)
+    }
+
+    const handleScoreSave = async () => {
+        if (!selectedMatch) return
+        setSaving(true)
+        try {
+            await updateMatchCustom((selectedMatch as any).matchId, {
+                status: scoreStatus,
+                participants: scoreDraft.map(({ userId, winner, score }) => ({ userId, winner, score })),
+            })
+            queryClient.invalidateQueries({ queryKey: ['customMatches'] })
+            setScoreOpen(false)
+            setViewOpen(false)
+            toast({ variant: "default", title: scoreStatus === "completed" ? "Result recorded" : "Match updated" })
+        } catch (err: any) {
+            toast({
+                variant: "destructive",
+                title: "Error Saving Match",
+                description: err.response?.data?.error ? err.response.data.error : err.message,
+            })
+        } finally {
+            setSaving(false)
         }
     };
 
@@ -185,7 +227,21 @@ export function CustomMatchesTab<TData, TValue>({
                                 </SelectContent>
                             </Select>
 
+                            {/* Arrange the fixture first, then record the result once it has
+                                been played — winners are only required when completing. */}
+                            <Select value={status} onValueChange={setStatus}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Scheduled — players are notified</SelectItem>
+                                    <SelectItem value="draft">Draft — hidden from players</SelectItem>
+                                    <SelectItem value="completed">Completed — record the result now</SelectItem>
+                                </SelectContent>
+                            </Select>
+
                             <p className="mt-2 mb-2 font-semibold">Participants</p>
+                            {status !== "completed" && <p className="-mt-1 mb-2 text-xs text-muted-foreground">Scores and winners can be left empty until the match has been played.</p>}
 
                             {/* Participants */}
                             <div className="space-y-3">
@@ -368,8 +424,67 @@ export function CustomMatchesTab<TData, TValue>({
                                     ))}
                                 </ul>
                             </div>
+
+                            <Button className="w-full" onClick={() => openScoreEditor(selectedMatch)}>
+                                {(selectedMatch as any).status === "completed" ? "Edit result" : "Record result"}
+                            </Button>
                         </div>
                     )}
+                </DialogContent>
+            </Dialog>
+
+            {/* Result editor. Players are notified the first time a fixture is completed. */}
+            <Dialog open={scoreOpen} onOpenChange={setScoreOpen}>
+                <DialogContent className="max-w-md p-8">
+                    <DialogHeader>
+                        <DialogTitle>Record result</DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-4">
+                        <Select value={scoreStatus} onValueChange={setScoreStatus}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="active">Scheduled — not played yet</SelectItem>
+                                <SelectItem value="completed">Completed — result below is final</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <div className="space-y-3">
+                            {scoreDraft.map((participant, index) => (
+                                <div key={participant.userId} className="flex items-center justify-between gap-3">
+                                    <span className="min-w-0 flex-1 truncate text-sm font-medium">{participant.username}</span>
+                                    <Input
+                                        placeholder="Score"
+                                        type="number"
+                                        value={participant.score ?? ""}
+                                        onChange={event => setScoreDraft(current => current.map((item, i) =>
+                                            i === index ? { ...item, score: event.target.value === "" ? undefined : Number(event.target.value) } : item))}
+                                        className="w-20"
+                                    />
+                                    <div className="flex items-center gap-1">
+                                        <label className="text-sm">Won</label>
+                                        <Switch
+                                            checked={participant.winner}
+                                            onCheckedChange={value => setScoreDraft(current => current.map((item, i) =>
+                                                i === index ? { ...item, winner: value } : item))}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {scoreStatus === "completed" && (
+                            <p className="text-xs text-muted-foreground">
+                                Mark {(selectedMatch as any)?.matchType === "2v2" ? "two winners" : "one winner"} before saving.
+                            </p>
+                        )}
+
+                        <Button className="w-full" onClick={handleScoreSave} disabled={saving}>
+                            {saving ? "Saving…" : "Save result"}
+                        </Button>
+                    </div>
                 </DialogContent>
             </Dialog>
 

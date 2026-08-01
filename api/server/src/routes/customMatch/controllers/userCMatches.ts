@@ -1,6 +1,8 @@
 import Elysia from "elysia";
+import mongoose from "mongoose";
 import { isUser_Authenticated } from "../../../middleware/isUserAuth";
 import { CustomMatch } from "../model";
+import User from "../../user/model";
 
 const userCMatches = new Elysia()
     .use(isUser_Authenticated)
@@ -8,11 +10,16 @@ const userCMatches = new Elysia()
         try {
             const userId = user._id.toString(); // Ensure string comparison
 
-            // Only consider completed matches
-            const matches = await CustomMatch.find({
-                status: "completed",
-                "participants.userId": userId
-            }).lean();
+            // Everything the player has been put in, so the dashboard can show upcoming
+            // fixtures alongside results. The headline stats below still count completed
+            // matches only, which is what a win rate means.
+            const fixtures = await CustomMatch.find({ "participants.userId": userId })
+                .sort({ updatedAt: -1 })
+                .lean();
+
+            // Draft matches are not assignments yet; the player should not see them.
+            const visible = fixtures.filter(fixture => fixture.status !== "draft");
+            const matches = visible.filter(fixture => fixture.status === "completed");
 
             const totalMatches = matches.length;
             const totalWins = matches.filter(m =>
@@ -51,6 +58,42 @@ const userCMatches = new Elysia()
                         ? `+${improvementValue}% better than average`
                         : `${Math.abs(improvementValue)}% worse than average`;
 
+            // Names for everyone on court, so the player page can read as a fixture list
+            // rather than a list of ids.
+            const participantIds = [...new Set(visible.flatMap(fixture => fixture.participants.map(p => p.userId)))];
+            const players = await User.find({ _id: { $in: participantIds.filter(id => mongoose.isValidObjectId(id)) } })
+                .select("fullName username picture")
+                .lean();
+            const playerById = new Map(players.map(player => [player._id.toString(), player]));
+
+            const assignments = visible.map(fixture => {
+                const participants = fixture.participants.map(participant => {
+                    const player = playerById.get(String(participant.userId));
+                    return {
+                        userId: participant.userId,
+                        score: participant.score ?? null,
+                        winner: Boolean(participant.winner),
+                        isYou: String(participant.userId) === userId,
+                        name: player?.fullName || player?.username || "ATP player",
+                        picture: player?.picture || "",
+                    };
+                });
+                const you = participants.find(participant => participant.isYou);
+                return {
+                    matchId: fixture._id.toString(),
+                    status: fixture.status,
+                    matchType: fixture.matchType,
+                    createdAt: fixture.createdAt,
+                    updatedAt: fixture.updatedAt,
+                    participants,
+                    opponents: participants.filter(participant => !participant.isYou),
+                    yourScore: you?.score ?? null,
+                    youWon: Boolean(you?.winner),
+                    // "Scheduled" reads better than "active" for a fixture that has not been played.
+                    result: fixture.status === "completed" ? (you?.winner ? "Won" : "Lost") : "Scheduled",
+                };
+            });
+
             set.status = 200;
             return {
                 user: userId,
@@ -64,6 +107,8 @@ const userCMatches = new Elysia()
                     winRate: `${recentWinRate.toFixed(1)}%`,
                     wins: recentWins
                 },
+                upcoming: assignments.filter(assignment => assignment.status !== "completed").length,
+                assignments,
                 matches
             };
         } catch (error) {

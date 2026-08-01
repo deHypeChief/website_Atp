@@ -2,6 +2,7 @@ import Elysia from "elysia";
 import mongoose from "mongoose";
 import { CustomMatch } from "../model";
 import User from "../../user/model";
+import { isAdmin_Authenticated } from "../../../middleware/isAdminAuth";
 import { sendNotifications } from "../../notifications/service";
 
 // Tells each player who else is on the court, so the notification is useful on its own.
@@ -11,81 +12,141 @@ const opponentLine = (names: string[]) => {
     return ` You are up against ${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}.`;
 };
 
+const notifyParticipants = async (
+    participantIds: string[],
+    { title, message }: { title: string; message: (opponents: string) => string },
+) => {
+    // The match is already saved by the time this runs, so notifying must never fail the
+    // request: a malformed participant id would otherwise report a 500 for a match that
+    // was created successfully.
+    try {
+        const players = await User.find({ _id: { $in: participantIds.filter(id => mongoose.isValidObjectId(id)) } })
+            .select("fullName username")
+            .lean();
+        const nameById = new Map(players.map(player => [
+            player._id.toString(),
+            player.fullName || player.username || "an ATP player",
+        ]));
+
+        await sendNotifications(participantIds.map(userId => ({
+            userID: userId,
+            title,
+            message: message(opponentLine(
+                participantIds.filter(id => id !== userId).map(id => nameById.get(id) || "an ATP player"),
+            )),
+            type: "success" as const,
+            category: "match" as const,
+            link: "/u/matches",
+        })));
+    } catch (notifyError) {
+        console.error("Failed to notify match participants", notifyError);
+    }
+};
+
+/**
+ * Friendly matches: fixtures an admin arranges outside the tournament calendar.
+ *
+ * A match is created as `active` once the players are paired, then moved to `completed`
+ * with the final scores. Winners are only required at that last step, because a fixture
+ * that has not been played yet has none.
+ */
+const validateMatch = (
+    status: string,
+    matchType: string,
+    participants: Array<{ userId?: string; winner?: boolean; score?: number }>,
+) => {
+    if (!status || !matchType || !Array.isArray(participants)) return "Invalid match data";
+    if (!["draft", "active", "completed"].includes(status)) return "Status must be draft, active or completed";
+    if (!["1v1", "2v2"].includes(matchType)) return "Match type must be 1v1 or 2v2";
+
+    const expectedCount = matchType === "1v1" ? 2 : 4;
+    if (participants.length !== expectedCount) return `Match type '${matchType}' requires exactly ${expectedCount} participants`;
+    if (participants.some(participant => !participant.userId)) return "Choose a player for every slot";
+    if (new Set(participants.map(participant => participant.userId)).size !== participants.length) return "A player cannot appear twice in the same match";
+
+    // Only a played match has a result to record.
+    if (status !== "completed") return null;
+    const winnerCount = participants.filter(participant => participant.winner === true).length;
+    const requiredWinners = matchType === "1v1" ? 1 : 2;
+    if (winnerCount !== requiredWinners) return `Match type '${matchType}' requires exactly ${requiredWinners} winner(s)`;
+    return null;
+};
+
 const adminMatchCreate = new Elysia()
+    .use(isAdmin_Authenticated)
     .post("/matchCustom/create", async ({ set, body }) => {
         try {
-            const { status, matchType, participants } = body;
+            const { status, matchType, participants } = body as {
+                status: string; matchType: string; participants: Array<{ userId: string; winner?: boolean; score?: number }>;
+            };
 
-            // Basic validation
-            if (!status || !matchType || !participants || !Array.isArray(participants)) {
+            const invalid = validateMatch(status, matchType, participants || []);
+            if (invalid) {
                 set.status = 400;
-                return { error: "Invalid match data" };
+                return { error: invalid };
             }
 
-            // Validate expected number of participants
-            const expectedCount = matchType === "1v1" ? 2 : 4;
-            if (participants.length !== expectedCount) {
-                set.status = 400;
-                return {
-                    error: `Match type '${matchType}' requires exactly ${expectedCount} participants`
-                };
-            }
-
-            // ✅ Validate winner count
-            const winnerCount = participants.filter(p => p.winner === true).length;
-            const requiredWinners = matchType === "1v1" ? 1 : 2;
-
-            if (winnerCount !== requiredWinners) {
-                set.status = 400;
-                return {
-                    error: `Match type '${matchType}' requires exactly ${requiredWinners} winner(s)`
-                };
-            }
-
-            // Create and save the match
-            const match = new CustomMatch({
-                status,
-                matchType,
-                participants
-            });
-
+            const match = new CustomMatch({ status, matchType, participants });
             await match.save();
 
             // Draft matches are not assignments yet — only tell players once the match is live.
-            // The match is already saved at this point, so notifying must never fail the request:
-            // a malformed participant id would otherwise make User.find throw and report a 500
-            // for a match that was created successfully.
             if (status !== "draft") {
-                try {
-                    const participantIds = participants.map(p => p.userId);
-                    const players = await User.find({ _id: { $in: participantIds.filter(id => mongoose.isValidObjectId(id)) } })
-                        .select("fullName username")
-                        .lean();
-                    const nameById = new Map(players.map(player => [
-                        player._id.toString(),
-                        player.fullName || player.username || "an ATP player",
-                    ]));
-
-                    await sendNotifications(participantIds.map(userId => ({
-                        userID: userId,
-                        title: "You have a new match",
-                        message: `You have been assigned to a ${matchType} match.${opponentLine(
-                            participantIds.filter(id => id !== userId).map(id => nameById.get(id) || "an ATP player"),
-                        )}`,
-                        type: "success" as const,
-                        category: "match" as const,
-                        link: "/u/matches",
-                    })));
-                } catch (notifyError) {
-                    console.error("Failed to notify match participants", notifyError);
-                }
+                await notifyParticipants(participants.map(participant => participant.userId), {
+                    title: status === "completed" ? "Your friendly match result is in" : "You have a new friendly match",
+                    message: opponents => status === "completed"
+                        ? `Your ${matchType} friendly match has been scored.${opponents}`
+                        : `You have been matched for a ${matchType} friendly.${opponents}`,
+                });
             }
 
             set.status = 201;
             return { message: "Custom match created", match };
         } catch (error) {
+            console.error("Error while saving custom match:", error);
             set.status = 500;
             return { error: "Error while saving custom match" };
+        }
+    })
+    // Used to record the result after a friendly has been played, or to correct a fixture.
+    .put("/matchCustom/:id", async ({ set, params: { id }, body }) => {
+        try {
+            const existing = await CustomMatch.findById(id);
+            if (!existing) {
+                set.status = 404;
+                return { error: "Custom match not found" };
+            }
+
+            const payload = body as {
+                status?: string; matchType?: string; participants?: Array<{ userId: string; winner?: boolean; score?: number }>;
+            };
+            const status = payload.status ?? existing.status;
+            const matchType = payload.matchType ?? existing.matchType;
+            const participants = payload.participants ?? existing.participants.map(participant => ({
+                userId: participant.userId, winner: participant.winner, score: participant.score,
+            }));
+
+            const invalid = validateMatch(status, matchType, participants);
+            if (invalid) {
+                set.status = 400;
+                return { error: invalid };
+            }
+
+            const becameFinal = existing.status !== "completed" && status === "completed";
+            existing.set({ status, matchType, participants });
+            await existing.save();
+
+            if (becameFinal) {
+                await notifyParticipants(participants.map(participant => participant.userId), {
+                    title: "Your friendly match result is in",
+                    message: opponents => `Your ${matchType} friendly match has been scored.${opponents}`,
+                });
+            }
+
+            return { message: "Custom match updated", match: existing };
+        } catch (error) {
+            console.error("Error while updating custom match:", error);
+            set.status = 500;
+            return { error: "Error while updating custom match" };
         }
     })
     .get("/matchCustom/all", async ({ set }) => {
@@ -101,7 +162,7 @@ const adminMatchCreate = new Elysia()
             ];
 
             // Step 2: Fetch user documents and build map: { userId: username }
-            const usersMap = await User.find({ _id: { $in: allParticipantIds } })
+            const usersMap = await User.find({ _id: { $in: allParticipantIds.filter(id => mongoose.isValidObjectId(id)) } })
                 .lean()
                 .then(users =>
                     users.reduce((acc, user) => {

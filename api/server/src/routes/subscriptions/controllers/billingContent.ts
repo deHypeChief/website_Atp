@@ -41,7 +41,7 @@ const BillingConfig = {
         standard: {
             name: "Standard Package",
             discount: 7,
-            info: `This is a plan for clients who intend to have some privacy during their training at Rockview Hotels Royale, Wuse II and Abuja Country Club, Life Camp.`,
+            info: `This is a plan for clients who intend to have some privacy during their training at Rockview Hotels Royal, Wuse II and Abuja Country Club, Life Camp.`,
             priceInfo: `Price: N240,000 for one (1) month; N720,000 for three (3) months. Registered clients in this plan will get a free tennis ball and a limited-edition ATP cap.`,
             plans: [
                 {

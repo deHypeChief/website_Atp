@@ -355,5 +355,6 @@ export const getCommunityTopic = async (id, viewerId) => (await api.get(`/commun
 export const likeCommunityTopic = async ({topicId, participantId}) => (await api.post(`/community/topics/${topicId}/like`, {participantId})).data;
 export const postCommunityComment = async ({topicId, body, parentId}) => (await api.post(`/community/topics/${topicId}/comments`, {body, parentId})).data;
 export const getLiveDraws = async () => (await api.get('/match-centre/live')).data.draws || [];
+export const getRankings = async () => (await api.get('/leader/rankings')).data.rankings || [];
 
 

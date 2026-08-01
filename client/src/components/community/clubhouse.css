@@ -16,3 +16,23 @@
 @media(max-width:600px){.clubhouseCard>footer>button{min-height:40px;padding-block:10px}}
 @media(max-width:600px){.clubhouseRail{display:contents}.clubhouseProfile{grid-row:1}.clubhouseMain{grid-row:2}.clubhousePulse{grid-row:3}.clubhouseCode{grid-row:4}}
 @media(prefers-reduced-motion:reduce){.clubhouseLoading i{animation:none}}
+
+/* Public website shell: the dashboard supplies its own padding and top offset, the
+   marketing site does not, so the public route adds the fixed-navbar clearance itself. */
+.clubhousePublicShell{padding:calc(76px + clamp(20px,4vw,44px)) var(--atp-gutter) clamp(50px,7vw,90px);background:#f4f7f8}
+.clubhousePublic .clubhouseRail{top:110px}
+
+/* Guest gate: replaces the composer and the reply box for visitors who are not signed in. */
+.clubhouseGuestGate{padding:20px;display:flex;align-items:center;gap:15px;flex-wrap:wrap;background:var(--club-card,#fff);border:1px solid var(--club-border,#d7e0e5);border-radius:12px;border-top:4px solid var(--atp-lime)}
+.clubhouseGuestGate>svg{flex:0 0 auto;color:var(--atp-blue);font-size:1.7rem}
+.clubhouseGuestGate>div:first-of-type{flex:1 1 260px;min-width:0}
+.clubhouseGuestGate strong{font-size:.78rem}
+.clubhouseGuestGate p{margin-top:5px;color:var(--atp-muted);font-size:.68rem;line-height:1.55}
+.clubhouseGuestActions{display:flex;gap:8px}
+.clubhouseGuestActions a{min-height:40px;padding:0 16px;display:inline-flex;align-items:center;border-radius:8px;font-size:.62rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.clubhouseGuestActions a:first-child{background:var(--atp-navy);color:#fff}
+.clubhouseGuestActions a:last-child{border:1px solid var(--club-border,#d7e0e5);color:var(--atp-navy)}
+.clubhouseGuestHint{margin-top:12px;padding-top:12px;display:flex;align-items:center;gap:7px;border-top:1px solid var(--club-border,#d7e0e5);color:var(--atp-muted);font-size:.65rem}
+.clubhouseGuestHint svg{color:var(--atp-blue);font-size:.95rem}
+.clubhouseGuestHint a{color:var(--atp-blue);font-weight:900;text-decoration:underline}
+@media(max-width:600px){.clubhousePublicShell{padding-inline:20px}.clubhouseGuestActions{width:100%}.clubhouseGuestActions a{flex:1;justify-content:center}}

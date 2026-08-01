@@ -19,14 +19,14 @@ import { useEffect, useState } from 'react'
 export const Route = createFileRoute('/_admin/store')({ component: StoreManager })
 
 const emptyProduct = {
-  name: '', category: 'Apparel', collection: 'ATP Royal', description: '', price: '', compareAtPrice: '',
+  name: '', category: 'Apparel', collection: 'ATP ROYALE', description: '', price: '', compareAtPrice: '',
   stock: '', images: [] as string[], sizes: '', colors: '', badge: '', featured: false, active: true,
 }
 
 const defaultSettings = {
-  name: 'ATP Royal',
+  name: 'ATP ROYALE',
   announcement: 'Complimentary Abuja delivery on orders over ₦75,000',
-  heroEyebrow: 'ATP Royal / Collection 01',
+  heroEyebrow: 'ATP ROYALE / Collection 01',
   heroTitle: 'Dress for the next point.',
   heroSubtitle: 'Court-built essentials and club pieces for the way you play, train and move.',
   heroImage: '',
@@ -82,7 +82,7 @@ function StoreManager() {
   const lowStock = data.products.filter((product:any) => product.active && product.stock <= 5).length
 
   return <div className="p-6 md:p-10 max-w-7xl mx-auto">
-    <Header title="ATP Royal" subText="Manage the storefront campaign, products, stock, payments and fulfilment">
+    <Header title="ATP ROYALE" subText="Manage the storefront campaign, products, stock, payments and fulfilment">
       <Button onClick={() => { setEditing({ new: true }); setForm(emptyProduct); setTab('products') }}><PackagePlus className="h-4 w-4 mr-2" />Add product</Button>
     </Header>
 
@@ -104,7 +104,7 @@ function StoreManager() {
       <Field label="Compare-at price (₦)"><Input min="0" type="number" value={form.compareAtPrice} onChange={event => setForm({ ...form, compareAtPrice: event.target.value })} /></Field>
       <Field label="Stock count"><Input required min="0" type="number" value={form.stock} onChange={event => setForm({ ...form, stock: event.target.value })} /></Field>
       <Field label="Sizes (comma separated)"><Input placeholder="XS, S, M, L, XL" value={form.sizes} onChange={event => setForm({ ...form, sizes: event.target.value })} /></Field>
-      <Field label="Colours (comma separated)"><Input placeholder="Royal blue, White" value={form.colors} onChange={event => setForm({ ...form, colors: event.target.value })} /></Field>
+      <Field label="Colours (comma separated)"><Input placeholder="Royale blue, White" value={form.colors} onChange={event => setForm({ ...form, colors: event.target.value })} /></Field>
       <label className="grid gap-2 text-sm md:col-span-2">Description<Textarea required value={form.description} onChange={event => setForm({ ...form, description: event.target.value })} /></label>
       <div className="md:col-span-2"><p className="text-sm mb-2">Product images</p><div className="flex gap-3 flex-wrap">{form.images.map((image:string, index:number) => <div className="relative" key={`${image}-${index}`}><img src={image} className="h-24 w-24 object-cover rounded border" /><button type="button" aria-label="Remove image" className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6" onClick={() => setForm({ ...form, images: form.images.filter((_:string, imageIndex:number) => imageIndex !== index) })}>×</button></div>)}<label className="h-24 w-24 border border-dashed rounded grid place-items-center cursor-pointer"><ImagePlus /><input className="hidden" type="file" accept="image/*" disabled={uploading} onChange={event => upload(event.target.files?.[0] || null)} /></label></div></div>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.featured} onChange={event => setForm({ ...form, featured: event.target.checked })} />Featured on landing page</label>
@@ -113,7 +113,7 @@ function StoreManager() {
     </form>}
 
     {tab === 'settings' && <form className="mt-6 border rounded-xl p-6 bg-card grid md:grid-cols-2 gap-4" onSubmit={event => { event.preventDefault(); saveSettings.mutate(settings) }}>
-      <div className="md:col-span-2"><h2 className="text-xl font-semibold">Storefront campaign</h2><p className="text-sm text-muted-foreground mt-1">These fields control the ATP Royal landing page and service messages.</p></div>
+      <div className="md:col-span-2"><h2 className="text-xl font-semibold">Storefront campaign</h2><p className="text-sm text-muted-foreground mt-1">These fields control the ATP ROYALE landing page and service messages.</p></div>
       <Field label="Store name"><Input value={settings.name} onChange={event => setSettings({ ...settings, name: event.target.value })} /></Field>
       <Field label="Announcement bar"><Input value={settings.announcement} onChange={event => setSettings({ ...settings, announcement: event.target.value })} /></Field>
       <Field label="Hero eyebrow"><Input value={settings.heroEyebrow} onChange={event => setSettings({ ...settings, heroEyebrow: event.target.value })} /></Field>

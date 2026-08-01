@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { getCommunityTopics, getMatches, getPayMe, getTour, getUserMatchesC } from "../../libs/api/api.endpoints";
 import { useAuth } from "../../libs/hooks/use-auth";
 import communityImage from "../../assets/brand/club-community.jpg";
+import { shopLinkProps } from "../../libs/shop";
 import StorePromo from "../../components/store-promo/store-promo";
 
 const tournamentId = (ticket) => String(ticket?.tournament?._id || ticket?.tournament || "");
@@ -67,13 +68,15 @@ export default function Dashboard() {
       </div>
       <section className="playerActions">
         <h2>Keep moving</h2>
-        <div><Action icon="solar:user-heart-rounded-linear" title="Coach" text="Sessions and feedback" to="/u/coach" /><Action icon="solar:ticket-linear" title="Tickets" text="Your event access" to="/u/tickets" /><Action icon="solar:bag-3-linear" title="Orders" text="Track ATP purchases" to="/u/orders" /><Action icon="solar:card-2-linear" title="Billing" text="Plans and history" to="/u/billings" /></div>
+        <div><Action icon="solar:user-heart-rounded-linear" title="Coach" text="Sessions and feedback" to="/u/coach" /><Action icon="solar:ticket-linear" title="Tickets" text="Your event access" to="/u/tickets" /><Action icon="solar:bag-3-linear" title="Orders" text="Track ATP purchases" shop="/orders" /><Action icon="solar:card-2-linear" title="Billing" text="Plans and history" to="/u/billings" /></div>
       </section>
     </main>
   );
 }
 
 function Stat({ icon, label, value }) { return <article><Icon icon={icon} /><div><small>{label}</small><strong>{value}</strong></div></article>; }
-function Action({ icon, title, text, to }) { return <Link to={to}><Icon icon={icon} /><div><strong>{title}</strong><small>{text}</small></div><Icon icon="solar:arrow-right-up-linear" /></Link>; }
+// `shop` covers links that leave the dashboard for the ATP ROYALE storefront, carrying the
+// player's session across so they are not asked to sign in again.
+function Action({ icon, title, text, to, shop }) { const body = <><Icon icon={icon} /><div><strong>{title}</strong><small>{text}</small></div><Icon icon="solar:arrow-right-up-linear" /></>; return shop ? <a {...shopLinkProps(shop)}>{body}</a> : <Link to={to}>{body}</Link>; }
 function Skeleton() { return <div className="dashSkeleton"><i /><i /><i /></div>; }
 function Empty({ icon, title, text, to }) { return <div className="dashEmpty"><Icon icon={icon} /><h3>{title}</h3><p>{text}</p><Link to={to}>Explore events</Link></div>; }

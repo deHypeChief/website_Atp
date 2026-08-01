@@ -12,7 +12,7 @@ async function request(path, options = {}) {
   })
   const data = await response.json().catch(() => ({}))
   if (!response.ok) {
-    const error = new Error(data.message || 'The ATP Royal service is unavailable.')
+    const error = new Error(data.message || 'The ATP ROYALE service is unavailable.')
     error.status = response.status
     throw error
   }
@@ -24,5 +24,6 @@ export const getProduct = async slug => (await request(`/store/products/${encode
 export const getSettings = async () => ({ ...DEFAULT_SETTINGS, ...((await request('/store/settings')).settings || {}) })
 export const createCheckout = payload => request('/store/checkout', { method: 'POST', body: JSON.stringify(payload) })
 export const verifyOrder = (id, reference) => request(`/store/orders/${encodeURIComponent(id)}/verify?reference=${encodeURIComponent(reference)}`)
+export const getMyOrders = async () => (await request('/store/orders/me')).orders || []
 export const getSession = session
 export const getUser = () => session()?.user || null

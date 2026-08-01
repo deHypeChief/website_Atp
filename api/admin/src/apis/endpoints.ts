@@ -170,6 +170,12 @@ export async function getMatchCustom() {
 	}
 }
 
+/** Records the result of a friendly match, or corrects a fixture that has not been played. */
+export async function updateMatchCustom(id: string, payload: object) {
+	const response = await api.put(`/matchCustom/${id}`, payload);
+	return response.data;
+}
+
 export async function createMatchCustom(payload) {
 	console.log(payload)
 	try {

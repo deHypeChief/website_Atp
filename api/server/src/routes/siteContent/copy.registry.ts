@@ -94,7 +94,9 @@ export const COPY_GROUPS: CopyGroup[] = [
             { key: "home.youth.eyebrow", label: "Junior band eyebrow", type: "heading", default: "Junior tennis" },
             { key: "home.youth.title", label: "Junior band title", type: "heading", default: "Confidence starts here." },
             { key: "home.youth.text", label: "Junior band text", type: "text", default: "Our junior pathway gives young players the coaching, movement skills and encouragement to enjoy the game for life." },
-            { key: "home.youth.cta", label: "Junior band button", type: "heading", default: "Junior programs" },
+            // This button opens the ATP photo gallery, so the shipped label describes that.
+            { key: "home.youth.cta", label: "Junior band button (links to gallery)", type: "heading", default: "See the gallery" },
+            { key: "home.community.previewTag", label: "Community preview badge", type: "heading", default: "Live in the clubhouse" },
             { key: "home.youth.badgeValue", label: "Junior badge value", type: "heading", default: "8–17" },
             { key: "home.youth.badgeLabel", label: "Junior badge label", type: "heading", default: "Age-aware development" },
 
@@ -239,6 +241,26 @@ export const COPY_GROUPS: CopyGroup[] = [
             { key: "videos.note.eyebrow", label: "Closing eyebrow", type: "heading", default: "MORE LESSONS ARE COMING" },
             { key: "videos.note.title", label: "Closing title", type: "heading", default: "A library that grows with your game." },
             { key: "videos.note.cta", label: "Closing button", type: "heading", default: "Request a topic" },
+        ],
+    },
+    {
+        id: "leaderboard",
+        label: "Leaderboard",
+        fields: [
+            { key: "leaderboard.hero.eyebrow", label: "Hero eyebrow", type: "heading", default: "ATP standings" },
+            { key: "leaderboard.hero.title", label: "Hero title", type: "heading", default: "The leaderboard." },
+            { key: "leaderboard.hero.text", label: "Hero text", type: "text", default: "Every ATP player ranked on the points they have won. Medals go to the top three." },
+            { key: "leaderboard.note", label: "Ranking note", type: "text", default: "Players are ranked on total points. Wins, losses, games played and average points break a tie, in that order — and if players are still level, whoever reached the total first stays ahead." },
+        ],
+    },
+    {
+        id: "gallery",
+        label: "Gallery",
+        fields: [
+            { key: "gallery.hero.eyebrow", label: "Hero eyebrow", type: "heading", default: "ATP gallery" },
+            { key: "gallery.hero.title", label: "Hero title", type: "heading", default: "Life on our courts." },
+            { key: "gallery.hero.text", label: "Hero text", type: "text", default: "Match days, training mornings and club moments from across the ATP International season." },
+            { key: "gallery.empty", label: "Empty state text", type: "text", default: "Photographs from the current season are being prepared. Check back shortly." },
         ],
     },
 ];

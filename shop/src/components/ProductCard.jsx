@@ -16,16 +16,16 @@ export default function ProductCard({ product, index = 0 }) {
     if (quantity === 1) cart.remove(key)
     else cart.update(key, quantity - 1)
   }
-  return <article className="royalProductCard" style={{ '--card-delay': `${Math.min(index, 5) * 55}ms` }}>
-    <Link className="royalProductVisual" to={`/product/${product.slug}`} aria-label={`View ${product.name}`}>
+  return <article className="RoyaleProductCard" style={{ '--card-delay': `${Math.min(index, 5) * 55}ms` }}>
+    <Link className="RoyaleProductVisual" to={`/product/${product.slug}`} aria-label={`View ${product.name}`}>
       <img src={productImage(product.images?.[0], product.category)} onError={event => recoverProductImage(event, product.category)} alt={product.name} loading="lazy" />
-      <span className="royalProductBadge">{product.badge || (product.stock ? 'Club issue' : 'Sold out')}</span>
-      <span className="royalProductView">View piece <Icon icon="solar:arrow-right-up-linear" /></span>
+      <span className="RoyaleProductBadge">{product.badge || (product.stock ? 'Club issue' : 'Sold out')}</span>
+      <span className="RoyaleProductView">View piece <Icon icon="solar:arrow-right-up-linear" /></span>
     </Link>
-    <div className="royalProductMeta">
-      <div><small>{product.category || 'ATP Royal'}</small><h3><Link to={`/product/${product.slug}`}>{product.name}</Link></h3></div>
-      <div className="royalProductPrice"><strong>{money(product.price)}</strong>{product.compareAtPrice > product.price && <del>{money(product.compareAtPrice)}</del>}</div>
-      {hasOptions ? <Link className="royalQuickAction" to={`/product/${product.slug}`}>Choose options <Icon icon="solar:arrow-right-linear" /></Link> : <div className="royalCardStepper" aria-label={`${product.name} quantity in bag`}><button type="button" aria-label={`Decrease ${product.name} quantity`} disabled={!quantity} onClick={decrease}>−</button><span><small>{product.stock ? 'In bag' : 'Sold out'}</small><b>{quantity}</b></span><button type="button" aria-label={`Increase ${product.name} quantity`} disabled={!product.stock || quantity >= product.stock} onClick={increase}>+</button></div>}
+    <div className="RoyaleProductMeta">
+      <div><small>{product.category || 'ATP ROYALE'}</small><h3><Link to={`/product/${product.slug}`}>{product.name}</Link></h3></div>
+      <div className="RoyaleProductPrice"><strong>{money(product.price)}</strong>{product.compareAtPrice > product.price && <del>{money(product.compareAtPrice)}</del>}</div>
+      {hasOptions ? <Link className="RoyaleQuickAction" to={`/product/${product.slug}`}>Choose options <Icon icon="solar:arrow-right-linear" /></Link> : <div className="RoyaleCardStepper" aria-label={`${product.name} quantity in bag`}><button type="button" aria-label={`Decrease ${product.name} quantity`} disabled={!quantity} onClick={decrease}>−</button><span><small>{product.stock ? 'In bag' : 'Sold out'}</small><b>{quantity}</b></span><button type="button" aria-label={`Increase ${product.name} quantity`} disabled={!product.stock || quantity >= product.stock} onClick={increase}>+</button></div>}
     </div>
   </article>
 }

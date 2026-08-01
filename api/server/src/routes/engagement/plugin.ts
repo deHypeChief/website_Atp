@@ -17,7 +17,12 @@ const publicEngagement = new Elysia()
         hasResponded: Boolean(participantId && participants.includes(participantId)),
       })),
     };
-  })
+  });
+
+const memberEngagement = new Elysia()
+  .use(isUser_Authenticated)
+  // Voting is a member action. Guests still read every question and its running tally on
+  // the public clubhouse, but casting an answer needs a player account.
   .post("/:id/respond", async ({ params: { id }, body, set }) => {
     const { optionId, participantId } = body as { optionId?: string; participantId?: string };
     if (!optionId || !participantId) { set.status = 400; return { message: "Choose an answer before continuing." }; }
@@ -35,10 +40,7 @@ const publicEngagement = new Elysia()
       message: item.kind === "quiz" ? (option.isCorrect ? "Correct answer." : "Answer recorded.") : "Vote recorded.",
       result: { selectedOptionId: optionId, correctOptionId: item.kind === "quiz" ? item.options.find(entry => entry.isCorrect)?._id : undefined, explanation: item.explanation, options: item.options.map(entry => ({ _id: entry._id, label: entry.label, votes: entry.votes })) },
     };
-  });
-
-const memberEngagement = new Elysia()
-  .use(isUser_Authenticated)
+  })
   .post("/", async ({ body, user, set }) => {
     const payload = body as { question?: string; options?: Array<{ label?: string }> };
     const question = payload.question?.trim();

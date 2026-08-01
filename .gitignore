@@ -193,3 +193,6 @@ client/public/*.HEIC
 client/public/*.MOV
 client/public/*.mp4
 client/public/Slide images/
+
+# Claude Code local machine settings (permission grants are per-machine)
+.claude/settings.local.json

@@ -18,5 +18,5 @@ export default function AuthCallback() {
     } else Promise.resolve().then(() => setFailed(true))
   }, [navigate, returnTo])
 
-  return <div className="royalPageState"><Icon icon={failed ? 'solar:danger-circle-linear' : 'solar:refresh-circle-linear'} />{failed ? <><h1>Sign-in handoff expired.</h1><p>Return to ATP and sign in again to continue.</p><a href={clientAuthUrl('login', returnTo)}>Sign in with ATP</a><Link to="/">Return to ATP Royal</Link></> : <><h1>Opening your club account.</h1><p>You’ll return to your ATP Royal order in a moment.</p></>}</div>
+  return <div className="RoyalePageState"><Icon icon={failed ? 'solar:danger-circle-linear' : 'solar:refresh-circle-linear'} />{failed ? <><h1>Sign-in handoff expired.</h1><p>Return to ATP and sign in again to continue.</p><a href={clientAuthUrl('login', returnTo)}>Sign in with ATP</a><Link to="/">Return to ATP ROYALE</Link></> : <><h1>Opening your club account.</h1><p>You’ll return to your ATP ROYALE order in a moment.</p></>}</div>
 }

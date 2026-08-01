@@ -39,7 +39,13 @@ const publicCommunity = new Elysia()
     if (!topic) { set.status = 404; return { message: "Discussion not found." }; }
     const comments = await CommunityComment.find({ topic: id }).populate("author", "fullName username picture").sort({ createdAt: 1 });
     return { topic, comments: comments.map(comment => { const value = comment.toObject(); return value.status === "removed" ? { ...value, body: "" } : value; }) };
-  })
+  });
+
+const memberCommunity = new Elysia()
+  .use(isUser_Authenticated)
+  // Reacting is a member action: the public website shows every like but only signed-in
+  // players can add one. The stored identity stays the participant id so likes recorded
+  // before this route required authentication are still counted.
   .post("/topics/:id/like", async ({ params: { id }, body, set }) => {
     const participantId = ((body as { participantId?: string }).participantId || "").trim().slice(0, 128);
     if (!participantId) { set.status = 400; return { message: "Your like could not be recorded." }; }
@@ -51,10 +57,7 @@ const publicCommunity = new Elysia()
     topic.likeCount = topic.likedBy.length;
     await topic.save();
     return { liked: !liked, likeCount: topic.likeCount };
-  });
-
-const memberCommunity = new Elysia()
-  .use(isUser_Authenticated)
+  })
   .post("/topics", async ({ body, user, set }) => {
     const payload = body as { title?: string; prompt?: string; tag?: string };
     const title = payload.title?.trim();

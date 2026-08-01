@@ -23,19 +23,23 @@ import { Billings } from "./user/billingPage";
 import YourCoach from "./user/coachPage";
 import Tickets from "./user/ticketPage";
 import { BillingHistory } from "./user/billingHistory";
-import MatchesPage from "./user/matchesPage";
 import ForgotPassword from "./forgotPassword";
 import ResetPassword from "./resetPassword";
 import NewsArticle from "./newsArticle";
-import OrdersPage from "./user/ordersPage";
 import Community from "./community";
 import PlayerCommunity from "./user/community";
+import LeaderboardPage from "./leaderboard";
+import PlayerLeaderboard from "./user/leaderboardPage";
+import GalleryPage from "./gallery";
+import FriendlyMatches from "./user/matchesPage";
 import LiveScoreTicker from "../components/system/live-score-ticker";
 import "../libs/styles/routes-v2.css";
 import "../libs/styles/pages-v3.css";
-import { shopHref } from "../libs/shop";
+import { openShopWithSession, shopHref } from "../libs/shop";
 
-function ShopRedirect({ path = "/catalog" }) { useEffect(() => { window.location.replace(shopHref(path)); }, [path]); return null; }
+// Hands the signed-in session to the shop when there is one, so a redirected player
+// is not asked to sign in again on the storefront.
+function ShopRedirect({ path = "/catalog" }) { useEffect(() => { if (!openShopWithSession(path)) window.location.replace(shopHref(path)); }, [path]); return null; }
 function ProductRedirect() { const { slug } = useParams(); return <ShopRedirect path={`/product/${slug}`} />; }
 
 export default function App() {
@@ -56,6 +60,8 @@ export default function App() {
                     <Route path="/shop" element={<ShopRedirect />} />
                     <Route path="/shop/:slug" element={<ProductRedirect />} />
                     <Route path="/community" element={<Community />} />
+                    <Route path="/leaderboard" element={<LeaderboardPage />} />
+                    <Route path="/gallery" element={<GalleryPage />} />
                     <Route path="/cart" element={<ShopRedirect path="/cart" />} />
                     <Route path="/store/payment/callback" element={<ShopRedirect path={`/payment/callback${window.location.search}`} />} />
                     <Route path="/membership/">
@@ -76,9 +82,11 @@ export default function App() {
                         <Route path="/u/billings" element={<Billings />} />
                         <Route path="/u/coach" element={<YourCoach />} />
                         <Route path="/u/tickets" element={<Tickets />} />
-                        <Route path="/u/matches" element={<MatchesPage />} />
-                        <Route path="/u/orders" element={<OrdersPage />} />
+                        <Route path="/u/matches" element={<FriendlyMatches />} />
+                        {/* Order history now lives on the ATP ROYALE storefront. */}
+                        <Route path="/u/orders" element={<ShopRedirect path="/orders" />} />
                         <Route path="/u/community" element={<PlayerCommunity />} />
+                        <Route path="/u/leaderboard" element={<PlayerLeaderboard />} />
                         <Route path="/u/billings/history" element={<BillingHistory />} />
                         <Route path="/u/ticket/:tournamentID" element={<YourTicket />} />
                         <Route path="/u/bills/:type/:subType/:duration/:autoRenew" element={<Billing />} />

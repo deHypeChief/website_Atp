@@ -3,9 +3,9 @@ export const CLIENT_URL = (import.meta.env.VITE_CLIENT_URL || 'http://localhost:
 export const SHOP_URL = (import.meta.env.VITE_SHOP_URL || window.location.origin).replace(/\/$/, '')
 
 export const DEFAULT_SETTINGS = {
-  name: 'ATP Royal',
+  name: 'ATP ROYALE',
   announcement: 'Complimentary Abuja delivery on orders over ₦75,000',
-  heroEyebrow: 'ATP Royal / Collection 01',
+  heroEyebrow: 'ATP ROYALE / Collection 01',
   heroTitle: 'Dress for the next point.',
   heroSubtitle: 'Court-built essentials and club pieces for the way you play, train and move.',
   heroImage: '',

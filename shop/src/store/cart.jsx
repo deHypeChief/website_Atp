@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-const KEY = 'atp-royal-cart'
+const KEY = 'atp-Royale-cart'
 const CartContext = createContext(null)
 const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] } }
 const variantKey = item => `${item._id}:${item.size || ''}:${item.color || ''}`

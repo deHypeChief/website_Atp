@@ -19,6 +19,7 @@ import { Route as AdminContentRouteImport } from './routes/_admin/content'
 import { Route as AdminCustomMatchesRouteImport } from './routes/_admin/customMatches'
 import { Route as AdminDashboardRouteImport } from './routes/_admin/dashboard'
 import { Route as AdminEngagementRouteImport } from './routes/_admin/engagement'
+import { Route as AdminGalleryRouteImport } from './routes/_admin/gallery'
 import { Route as AdminLeaderboardRouteImport } from './routes/_admin/leaderboard'
 import { Route as AdminLinkedPlayersRouteImport } from './routes/_admin/linkedPlayers'
 import { Route as AdminMatchesRouteImport } from './routes/_admin/matches'
@@ -79,6 +80,11 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
 const AdminEngagementRoute = AdminEngagementRouteImport.update({
   id: '/engagement',
   path: '/engagement',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminGalleryRoute = AdminGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminLeaderboardRoute = AdminLeaderboardRouteImport.update({
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/customMatches': typeof AdminCustomMatchesRoute
   '/dashboard': typeof AdminDashboardRoute
   '/engagement': typeof AdminEngagementRoute
+  '/gallery': typeof AdminGalleryRoute
   '/leaderboard': typeof AdminLeaderboardRoute
   '/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/matches': typeof AdminMatchesRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/customMatches': typeof AdminCustomMatchesRoute
   '/dashboard': typeof AdminDashboardRoute
   '/engagement': typeof AdminEngagementRoute
+  '/gallery': typeof AdminGalleryRoute
   '/leaderboard': typeof AdminLeaderboardRoute
   '/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/matches': typeof AdminMatchesRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/_admin/customMatches': typeof AdminCustomMatchesRoute
   '/_admin/dashboard': typeof AdminDashboardRoute
   '/_admin/engagement': typeof AdminEngagementRoute
+  '/_admin/gallery': typeof AdminGalleryRoute
   '/_admin/leaderboard': typeof AdminLeaderboardRoute
   '/_admin/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/_admin/matches': typeof AdminMatchesRoute
@@ -225,6 +234,7 @@ export interface FileRouteTypes {
     | '/customMatches'
     | '/dashboard'
     | '/engagement'
+    | '/gallery'
     | '/leaderboard'
     | '/linkedPlayers'
     | '/matches'
@@ -248,6 +258,7 @@ export interface FileRouteTypes {
     | '/customMatches'
     | '/dashboard'
     | '/engagement'
+    | '/gallery'
     | '/leaderboard'
     | '/linkedPlayers'
     | '/matches'
@@ -272,6 +283,7 @@ export interface FileRouteTypes {
     | '/_admin/customMatches'
     | '/_admin/dashboard'
     | '/_admin/engagement'
+    | '/_admin/gallery'
     | '/_admin/leaderboard'
     | '/_admin/linkedPlayers'
     | '/_admin/matches'
@@ -363,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/engagement'
       fullPath: '/engagement'
       preLoaderRoute: typeof AdminEngagementRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/gallery': {
+      id: '/_admin/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof AdminGalleryRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/leaderboard': {
@@ -461,6 +480,7 @@ interface AdminRouteChildren {
   AdminCustomMatchesRoute: typeof AdminCustomMatchesRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminEngagementRoute: typeof AdminEngagementRoute
+  AdminGalleryRoute: typeof AdminGalleryRoute
   AdminLeaderboardRoute: typeof AdminLeaderboardRoute
   AdminLinkedPlayersRoute: typeof AdminLinkedPlayersRoute
   AdminMatchesRoute: typeof AdminMatchesRoute
@@ -482,6 +502,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCustomMatchesRoute: AdminCustomMatchesRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminEngagementRoute: AdminEngagementRoute,
+  AdminGalleryRoute: AdminGalleryRoute,
   AdminLeaderboardRoute: AdminLeaderboardRoute,
   AdminLinkedPlayersRoute: AdminLinkedPlayersRoute,
   AdminMatchesRoute: AdminMatchesRoute,

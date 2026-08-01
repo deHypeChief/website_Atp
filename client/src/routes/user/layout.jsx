@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import logo from "../../libs/images/logo.svg";
 import { getBillingPage, getNotify } from "../../libs/api/api.endpoints";
 import { useAuth } from "../../libs/hooks/use-auth";
+import { shopLinkProps } from "../../libs/shop";
 import LiveScoreTicker from "../../components/system/live-score-ticker";
 import "../../libs/styles/dashboard-v2.css";
 import "../../libs/styles/dashboard-hero-image.css";
@@ -15,10 +16,14 @@ const nav = [
   { label: "Community", to: "/u/community", icon: "solar:chat-round-dots-linear" },
   { label: "My coach", to: "/u/coach", icon: "solar:user-heart-rounded-linear" },
   { label: "Tournaments", to: "/u/tournaments", icon: "solar:cup-star-linear" },
+  { label: "Friendly matches", to: "/u/matches", icon: "solar:tennis-2-linear" },
   { label: "Tickets", to: "/u/tickets", icon: "solar:ticket-linear" },
-  { label: "Orders", to: "/u/orders", icon: "solar:bag-3-linear" },
+  // Order history lives on the ATP ROYALE storefront, so this leaves the dashboard.
+  { label: "Orders", shop: "/orders", icon: "solar:bag-3-linear", external: true },
   { label: "Notifications", to: "/u/notifications", icon: "solar:bell-linear" },
   { label: "Billing", to: "/u/billings", icon: "solar:card-2-linear" },
+  // Requested as the final item in the player menu.
+  { label: "Leaderboard", to: "/u/leaderboard", icon: "solar:ranking-linear" },
 ];
 
 export default function DashboardLayout() {
@@ -67,13 +72,19 @@ export default function DashboardLayout() {
         </Link>
 
         <nav>
-          {nav.map((item) => (
+          {nav.map((item) => (item.external ? (
+            <a key={item.shop} {...shopLinkProps(item.shop)}>
+              <Icon icon={item.icon} />
+              <span>{item.label}</span>
+              <Icon className="dashNavExternal" icon="solar:arrow-right-up-linear" />
+            </a>
+          ) : (
             <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setOpen(false)}>
               <Icon icon={item.icon} />
               <span>{item.label}</span>
               {item.to === "/u/notifications" && unreadCount > 0 && <i className="dashBadge">{unreadLabel}</i>}
             </NavLink>
-          ))}
+          )))}
         </nav>
 
         <div className="dashAsideBottom">

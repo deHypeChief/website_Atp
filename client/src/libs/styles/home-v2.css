@@ -255,13 +255,15 @@
 .homeCommunity {
   position: relative;
   min-height: 720px;
-  padding: 100px var(--atp-gutter);
-  display: flex;
-  align-items: end;
+  padding: clamp(70px, 8vw, 110px) var(--atp-gutter);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(30px, 5vw, 70px);
   color: #fff;
   overflow: hidden;
 }
-.homeCommunity > img,
+.communityBackdrop,
 .communityShade {
   position: absolute;
   inset: 0;
@@ -269,9 +271,11 @@
   height: 100%;
   object-fit: cover;
 }
+/* Weighted to the left so the copy stays legible while the product preview sits on the
+   lighter half of the photograph. */
 .communityShade {
   background:
-    linear-gradient(90deg, rgba(3, 16, 31, 0.92), rgba(3, 16, 31, 0.18)),
+    linear-gradient(90deg, rgba(3, 16, 31, 0.95), rgba(3, 16, 31, 0.72) 52%, rgba(3, 16, 31, 0.55)),
     linear-gradient(0deg, rgba(3, 16, 31, 0.7), transparent);
 }
 .homeCommunity > .atpReveal {
@@ -284,17 +288,82 @@
   letter-spacing: 0.18em;
 }
 .homeCommunity h2 {
-  font: 900 clamp(4rem, 9vw, 9rem)/0.78 var(--atp-display);
+  font: 900 clamp(3.2rem, 6.4vw, 6.4rem)/0.8 var(--atp-display);
   letter-spacing: -0.05em;
   text-transform: uppercase;
   margin: 20px 0;
 }
-.homeCommunity .atpReveal > span {
+.homeCommunity .communityCopy > span {
   display: block;
-  max-width: 500px;
+  max-width: 460px;
   line-height: 1.6;
   color: #d4dfe7;
   margin-bottom: 28px;
+}
+
+/* Product preview: the clubhouse itself, framed like an application window. */
+.communityPreview {
+  position: relative;
+  justify-self: end;
+  width: 100%;
+}
+.communityPreview figure {
+  margin: 0;
+  overflow: hidden;
+  background: #0b2033;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 34px 80px rgba(2, 10, 20, 0.55);
+}
+.communityPreviewBar {
+  min-height: 34px;
+  padding: 0 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #061a2c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+.communityPreviewBar i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+}
+.communityPreviewBar i:first-child { background: var(--atp-lime); }
+.communityPreviewBar small {
+  margin-left: 10px;
+  color: #7f98a9;
+  font-size: 0.54rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.communityPreview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.communityPreviewTag {
+  position: absolute;
+  left: -14px;
+  bottom: -16px;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--atp-lime);
+  color: var(--atp-navy);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.communityPreviewTag::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b5322f;
 }
 .homeStories > div:last-child {
   display: grid;
@@ -419,6 +488,22 @@
   color: var(--atp-lime);
   font-size: 0.8rem;
 }
+@media (max-width: 1024px) {
+  .homeCommunity {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 44px;
+  }
+  .communityPreview {
+    justify-self: stretch;
+    max-width: 720px;
+  }
+  .communityShade {
+    background:
+      linear-gradient(90deg, rgba(3, 16, 31, 0.94), rgba(3, 16, 31, 0.8)),
+      linear-gradient(0deg, rgba(3, 16, 31, 0.72), transparent);
+  }
+}
 @media (max-width: 850px) {
   .homeV2 > .atpPageHero .atpPageHeroCopy h1 {
     max-width: 100%;
@@ -456,6 +541,11 @@
   }
 }
 @media (max-width: 520px) {
+  .communityPreviewTag {
+    left: 0;
+    bottom: -14px;
+    font-size: 0.52rem;
+  }
   .atpShell {
     padding: 80px 20px;
   }
@@ -485,7 +575,7 @@
     font-size: 3.8rem;
   }
   .homeCommunity {
-    min-height: 620px;
+    min-height: 0;
     padding: 80px 20px;
   }
   .homeNewsletter {

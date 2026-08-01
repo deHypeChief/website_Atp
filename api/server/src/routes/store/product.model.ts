@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema({
   slug: { type:String, required:true, unique:true, lowercase:true, trim:true },
   description: { type:String, required:true, trim:true },
   category: { type:String, default:"Gear", trim:true },
-  collection: { type:String, default:"ATP Royal", trim:true },
+  collection: { type:String, default:"ATP ROYALE", trim:true },
   price: { type:Number, required:true, min:0 },
   compareAtPrice: { type:Number, min:0 },
   stock: { type:Number, required:true, min:0, default:0 },

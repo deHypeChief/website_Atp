@@ -1,0 +1,38 @@
+/* Vertical rhythm only: the horizontal gutter comes from .atpShell. */
+.galleryShell{padding-block:clamp(45px,6vw,80px) clamp(60px,8vw,110px)}
+.galleryCount{margin-bottom:18px;color:var(--atp-muted);font-size:.6rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+.galleryGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.galleryTile{position:relative;aspect-ratio:4/3;padding:0;overflow:hidden;border:0;border-radius:12px;background:#dbe3e7;cursor:pointer}
+.galleryTile img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.galleryTile:hover img,.galleryTile:focus-visible img{transform:scale(1.05)}
+.galleryTile>span{position:absolute;right:10px;bottom:10px;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgba(6,24,46,.82);color:#fff;font-size:1.1rem;opacity:0;transition:opacity .25s ease}
+.galleryTile:hover>span,.galleryTile:focus-visible>span{opacity:1}
+.galleryTile:focus-visible{outline:3px solid var(--atp-lime);outline-offset:3px}
+.gallerySkeleton{aspect-ratio:4/3;border-radius:12px;background:linear-gradient(90deg,#e4eaec 25%,#f4f7f6 50%,#e4eaec 75%);background-size:200% 100%;animation:galleryShimmer 1.5s infinite}
+@keyframes galleryShimmer{to{background-position:-200% 0}}
+
+.galleryEmpty{padding:70px 25px;text-align:center;border:1px dashed #b8c7cf;border-radius:14px;background:#fff}
+.galleryEmpty>svg{font-size:2.2rem;color:var(--atp-blue)}
+.galleryEmpty h2{margin:12px 0 6px;font:900 1.7rem var(--atp-display);text-transform:uppercase}
+.galleryEmpty p{max-width:420px;margin:0 auto;color:var(--atp-muted);font-size:.72rem;line-height:1.6}
+
+.galleryLightbox{position:fixed;inset:0;z-index:1200;padding:clamp(16px,4vw,48px);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;background:rgba(3,12,22,.93);backdrop-filter:blur(6px)}
+.galleryLightbox figure{grid-column:2;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
+.galleryLightbox img{max-width:100%;max-height:78vh;object-fit:contain;border-radius:8px}
+.galleryLightbox figcaption{color:#c8d7e0;font-size:.62rem;font-weight:800;letter-spacing:.14em}
+.galleryClose{position:absolute;top:clamp(12px,3vw,28px);right:clamp(12px,3vw,28px);width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:1.6rem;cursor:pointer}
+.galleryStep{width:46px;height:46px;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:1.5rem;cursor:pointer}
+.galleryStep.prev{grid-column:1}
+.galleryStep.next{grid-column:3}
+.galleryClose:hover,.galleryStep:hover{background:rgba(255,255,255,.24)}
+
+@media(max-width:600px){
+  .galleryGrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .galleryLightbox{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .galleryLightbox figure{grid-column:1}
+  .galleryStep{width:42px;height:42px}
+  .galleryStep.prev,.galleryStep.next{grid-column:1;grid-row:2}
+  .galleryStep.prev{justify-self:start}
+  .galleryStep.next{justify-self:end}
+}
+@media(prefers-reduced-motion:reduce){.gallerySkeleton{animation:none}.galleryTile img{transition:none}}
