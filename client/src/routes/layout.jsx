@@ -33,6 +33,7 @@ import PlayerLeaderboard from "./user/leaderboardPage";
 import GalleryPage from "./gallery";
 import FriendlyMatches from "./user/matchesPage";
 import LiveScoreTicker from "../components/system/live-score-ticker";
+import { ScrollToTop } from "../libs/hooks/use-scrollTop";
 import "../libs/styles/routes-v2.css";
 import "../libs/styles/pages-v3.css";
 import { openShopWithSession, shopHref } from "../libs/shop";
@@ -46,6 +47,7 @@ export default function App() {
     return (
         <>
             <BrowserRouter>
+                <ScrollToTop />
                 <Navbar />
                 <LiveScoreTicker mode="public" />
                 <Routes>
