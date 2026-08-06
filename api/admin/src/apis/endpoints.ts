@@ -262,3 +262,9 @@ export const moderateCommunityComment = async ({id,status}:{id:string,status:str
 export const getMatchCentreAdmin = async () => (await api.get('/match-centre/admin/')).data;
 export const saveMatchCentre = async ({tournamentId,payload}:{tournamentId:string,payload:any}) =>
 	(await api.put(`/match-centre/admin/${tournamentId}`, payload)).data;
+
+/** Training packages sold on the player billing page. Managed at /trainingPackages. */
+export const getTrainingPackages = async () => (await api.get('/billing/packages/admin')).data.packages;
+export const createTrainingPackage = async (payload:any) => (await api.post('/billing/packages/admin', payload)).data;
+export const updateTrainingPackage = async ({id,payload}:{id:string,payload:any}) => (await api.put(`/billing/packages/admin/${id}`, payload)).data;
+export const deleteTrainingPackage = async (id:string) => (await api.delete(`/billing/packages/admin/${id}`)).data;

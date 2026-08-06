@@ -22,36 +22,43 @@ function AdminLayout() {
     const links = [
         {
             name: "Community",
+            group: "Engagement",
             link: "/community",
             icon: <MessagesSquare size={20} />
         },
         {
             name: "Quiz & Polls",
+            group: "Engagement",
             link: "/engagement",
             icon: <BrainCircuit size={20} />
         },
         {
             name: "E-commerce",
+            group: "Commerce",
             link: "/store",
             icon: <ShoppingBag size={20} />
         },
         {
             name: "Site Content",
+            group: "Content",
             link: "/content",
             icon: <PanelsTopLeft size={20} />
         },
         {
             name: "Gallery",
+            group: "Content",
             link: "/gallery",
             icon: <Images size={20} />
         },
         {
             name: "News",
+            group: "Content",
             link: "/cms",
             icon: <Newspaper size={20} />
         },
         {
             name: "Users",
+            group: "People",
             link: "/users",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
@@ -64,6 +71,7 @@ function AdminLayout() {
         },
         {
             name: "Match Centre",
+            group: "Competition",
             link: "/matches",
             icon: (<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
                 <g fill="none" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
@@ -75,6 +83,7 @@ function AdminLayout() {
         },
         {
             name: "Custom Matches",
+            group: "Competition",
             link: "/customMatches",
             icon: (<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M20.688 16.508a9 9 0 0 1-.437-.262a14 14 0 0 1-1.464-1.082c-1.176-.987-2.67-2.535-3.971-4.787c-1.3-2.253-1.893-4.32-2.16-5.833a14 14 0 0 1-.205-1.81a9 9 0 0 1-.009-.508c.001-.06.008-.182.009-.215A9.95 9.95 0 0 0 7 3.34a9.95 9.95 0 0 0-3.875 4.051l.189.103q.16.089.437.262c.367.234.876.588 1.464 1.082c1.176.988 2.67 2.535 3.97 4.788c1.301 2.252 1.894 4.32 2.162 5.832c.133.757.185 1.375.204 1.81c.01.217.01.389.009.509v.215a9.95 9.95 0 0 0 5.44-1.33a9.95 9.95 0 0 0 3.874-4.046z"></path>
@@ -83,6 +92,7 @@ function AdminLayout() {
         },
         {
             name: "Tournaments",
+            group: "Competition",
             link: "/tournaments",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
@@ -98,6 +108,7 @@ function AdminLayout() {
         },
         {
             name: "Coaches",
+            group: "People",
             link: "/coaches",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
@@ -110,6 +121,7 @@ function AdminLayout() {
         },
         {
             name: "Leaderboard",
+            group: "Competition",
             link: "/leaderboard",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
@@ -118,7 +130,21 @@ function AdminLayout() {
             )
         },
         {
+            name: "Training Packages",
+            group: "Commerce",
+            link: "/trainingPackages",
+            icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24">
+                    <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7}>
+                        <path d="m12 2l9 4.5v11L12 22l-9-4.5v-11z"></path>
+                        <path d="m3 6.5l9 4.5l9-4.5M12 11v11"></path>
+                    </g>
+                </svg>
+            )
+        },
+        {
             name: "Subscriptions",
+            group: "Commerce",
             link: "/subscriptions",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24">
@@ -128,6 +154,7 @@ function AdminLayout() {
         },
         {
             name: "Linked Players",
+            group: "People",
             link: "/linkedPlayers",
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24">
@@ -139,6 +166,12 @@ function AdminLayout() {
             )
         }
     ]
+
+    const groupOrder = ["Engagement", "Competition", "Content", "People", "Commerce"]
+    const navGroups = groupOrder
+        .map(label => ({ label, items: links.filter(link => link.group === label) }))
+        .filter(group => group.items.length > 0)
+
     const [open, setOpen] = useState(false)
 
     function handleHam() {
@@ -166,7 +199,7 @@ function AdminLayout() {
             <div className={`layoutLeft ${open ? "mobile-Open" : "null"}`}>
                 <div className="listWrap">
 
-                    <div className="listMain">
+                    <div className="listMain listMainNav">
                         <div className="logoInfo">
                             <div className="logo">
                                 <BadgeInfo size={28} />
@@ -175,13 +208,20 @@ function AdminLayout() {
                                 <Header4>ATP Admin.</Header4>
                             </div>
                         </div>
-                        <div className="list">
+                        <div className="list listNav">
                             {
-                                links.map(link =>
-                                    <Link key={link.name} onClick={handleHam} to={link.link} className={(({ isActive }) => isActive && "active").toString()}>
-                                        {link.icon}
-                                        <p>{link.name}</p>
-                                    </Link>
+                                navGroups.map(group =>
+                                    <div className="listGroup" key={group.label}>
+                                        <p className="listGroupLabel">{group.label}</p>
+                                        {
+                                            group.items.map(link =>
+                                                <Link key={link.name} onClick={handleHam} to={link.link} className={(({ isActive }) => isActive && "active").toString()}>
+                                                    {link.icon}
+                                                    <p>{link.name}</p>
+                                                </Link>
+                                            )
+                                        }
+                                    </div>
                                 )
                             }
                         </div>

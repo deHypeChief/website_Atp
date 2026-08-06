@@ -45,10 +45,14 @@
   position: relative;
   overflow: hidden;
 }
-.featureImage > img {
+.featureImage > img,
+.featureImage > video {
+  width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
+
 .featureBall {
   position: absolute;
   width: 64px;

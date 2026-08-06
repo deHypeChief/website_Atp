@@ -3,6 +3,7 @@ import { paystack } from "../../../middleware/paystack";
 import { sendMail } from "../../../middleware/sendMail";
 import { isUser_Authenticated } from "../../../middleware/isUserAuth";
 import BillingConfig from "./billingContent";
+import { billingConfig, findPackage } from "./packageStore";
 import { Subscription } from "../model";
 import Notify from "../../notifications/model";
 
@@ -50,7 +51,7 @@ const subscriptions = new Elysia()
                     picture: user.picture,
                 },
                 billing: { message: "Billing retrieved successfully", data: billing },
-                config: BillingConfig,
+                config: await billingConfig(),
             };
         } catch (err) {
             console.error(err);
@@ -63,7 +64,7 @@ const subscriptions = new Elysia()
             set.status = 200;
             return {
                 message: 'Payment info retrieved successfully',
-                data: BillingConfig,
+                data: await billingConfig(),
             };
         } catch (err) {
             console.error(err);
@@ -156,30 +157,25 @@ const subscriptions = new Elysia()
                 };
             }
 
-            // Validate training package type
-            const trainingPackages = ['regular', 'standard', 'premium', 'family', 'couples'];
-            if (!trainingPackages.includes(type)) {
+            // Packages are admin managed, so the package itself is the source of truth.
+            const trainingConfig = await findPackage(type);
+            if (!trainingConfig) {
                 set.status = 400;
                 return {
                     message: 'Invalid training package type',
                 };
             }
 
-            const trainingConfig = BillingConfig.packages[type as 'regular' | 'standard' | 'premium' | 'family' | 'couples'];
+            // Durations look like "1month" or "3months" and must name a tier this package sells.
+            const wantedMonths = Number(String(duration).match(/^(\d+)months?$/)?.[1] ?? 0);
+            const selectedPlan = trainingConfig.plans.find(plan => plan.months === wantedMonths);
 
-            // Validate duration
-            const validDurations = ['1month', '3months'];
-            if (!validDurations.includes(duration)) {
+            if (!selectedPlan) {
                 set.status = 400;
                 return {
-                    message: 'Invalid plan duration',
+                    message: 'This package does not offer that duration',
                 };
             }
-
-            // Select the correct plan based on duration
-            const selectedPlan = duration === '1month'
-                ? trainingConfig.plans[0]
-                : trainingConfig.plans[1];
 
             // Calculate price with member discount if applicable
             const basePrice = selectedPlan.price;

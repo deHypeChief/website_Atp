@@ -11,7 +11,8 @@ interface ISubscription {
     }
     training: {
         status: "Not Paid" | "Paid" | "Expired";
-        plan: "regular" | "standard" | "premium" | "family" | "couples" | "none";
+        // Slug of an admin managed training package, or "none" while nothing is active.
+        plan: string;
         endDate: Date;
         gracePeriod: Date; // Added grace period for membership
     };
@@ -36,7 +37,8 @@ const SubscriptionSchema = new mongoose.Schema<ISubscription>({
     },
     training: {
         status: { type: String, default: "Not Paid" },
-        plan: { type: String, enum: ["regular", "standard", "premium", "family", "couples", "none"] },
+        // No enum: packages are created in the admin, so the set of valid slugs is not fixed.
+        plan: { type: String, default: "none" },
         endDate: { type: Date },
         gracePeriod: { type: Date } // Added grace period for training
     },

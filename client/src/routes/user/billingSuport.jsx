@@ -223,9 +223,48 @@ export function BillingContent({ setAction }) {
     )
 }
 
+/** Fallback artwork for a package an admin has not given an image yet. */
+const PACKAGE_FALLBACK_IMAGE = "https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg"
+
+const PACKAGE_SECTIONS = [
+    { key: "normal", title: "" },
+    { key: "special", title: "Special Training Plans" },
+]
+
+function PackageCard({ item, isOnPlan, onPay }) {
+    const basePrice = item.plans?.[0]?.price || 0
+    const price = isOnPlan ? basePrice * (1 - (item.discount || 0) / 100) : basePrice
+    const months = item.plans?.[0]?.months || 1
+
+    return (
+        <div className="planBox">
+            <div className="pBoxContent">
+                <div className="planImage" style={{
+                    background: `url(${item.image || PACKAGE_FALLBACK_IMAGE})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    width: "100%"
+                }}>
+                </div>
+                <h2>{item.name || "--"}</h2>
+                <p><b>Price: </b> NGN {price.toLocaleString()}</p>
+                <p><b>Duration: </b>{months} Month{months > 1 ? "s" : ""}</p>
+                <p className="plText">{item.info || "--"}</p>
+            </div>
+            <p className="fni" style={{ margin: "20px 0", fontSize: ".8rem" }}>
+                *All on a membership plan would recive a discount during checkout*
+            </p>
+            <Button full onClick={() => onPay(item.slug)}>Make Payment</Button>
+        </div>
+    )
+}
+
 export function BillingContent2({ data, setAction, userSubData }) {
     const [opens, setOpens] = useState(false)
 
+    // Packages are managed in the admin, so the list and its order come straight from the API.
+    const packages = data?.packageList || []
+    const isOnPlan = userSubData?.data?.membership?.plan !== "none"
 
     async function handlePayment(planKey) {
         const selectedPlan = data.packages?.[planKey];
@@ -238,7 +277,6 @@ export function BillingContent2({ data, setAction, userSubData }) {
             message: selectedPlan?.info,
         };
 
-        console.log({ data, planKey, selectedPlan, payload });
         setAction(payload);
     }
 
@@ -263,205 +301,35 @@ export function BillingContent2({ data, setAction, userSubData }) {
 
                 {
                     opens && (
-                        <>
-                            <div className="plansWrap">
-                                <div className="planList">
-                                    <div className="planBox">
-                                        <div className="pBoxContent">
-                                            <div className="planImage" style={{
-                                                background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
-                                                backgroundSize: "cover",
-                                                backgroundPosition: "center",
-                                                width: "100%"
-                                            }}>
+                        !packages.length
+                            ? <p className="billingChoiceHint">No training packages are on sale right now. Please check back shortly.</p>
+                            : PACKAGE_SECTIONS.map(section => {
+                                const items = packages.filter(item => (item.category || "normal") === section.key)
+                                if (!items.length) return null
 
-                                            </div>
-                                            <h2>{data.packages?.regular?.name || "--"}</h2>
-                                            <p>
-                                                <b>Price: </b> NGN{" "}
-                                                {(() => {
-                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
-                                                    const basePrice = data?.packages?.regular?.plans?.[0]?.price || 0;
-                                                    const discount = data?.packages?.regular?.discount || 0;
-
-                                                    return isOnPlan
-                                                        ? (basePrice * (1 - discount / 100)).toLocaleString()
-                                                        : basePrice.toLocaleString();
-                                                })()}
-                                            </p>
-                                            <p><b>Duration: </b>1 Month</p>
-                                            {/* <p><b>Duratioppp: </b>{data?.packages?.regular?.plans?.[0]?.price}</p> */}
-                                            <p className="plText">{data.packages?.regular.info || "--"}</p>
+                                return (
+                                    <div className="plansWrap" key={section.key}>
+                                        {section.title && <h2>{section.title}</h2>}
+                                        <div className="planList">
+                                            {items.map(item => (
+                                                <PackageCard
+                                                    key={item.slug}
+                                                    item={item}
+                                                    isOnPlan={isOnPlan}
+                                                    onPay={handlePayment}
+                                                />
+                                            ))}
                                         </div>
-                                        <p className="fni" style={{
-                                            margin: "20px 0",
-                                            fontSize: ".8rem"
-                                        }}>
-                                            *All on a membership plan would recive a discount during checkout*
-                                        </p>
-                                        <Button full onClick={() => { handlePayment("regular") }}>Make Payment</Button>
-
                                     </div>
-                                    <div className="planBox">
-                                        <div className="pBoxContent">
-                                            <div className="planImage" style={{
-                                                background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
-                                                backgroundSize: "cover",
-                                                backgroundPosition: "center",
-                                                width: "100%"
-                                            }}>
-
-                                            </div>
-                                            <h2>{data.packages?.standard.name}</h2>
-                                            <p>
-                                                <b>Price: </b> NGN{" "}
-                                                {(() => {
-                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
-                                                    const basePrice = data?.packages?.standard?.plans?.[0]?.price || 0;
-                                                    const discount = data?.packages?.standard?.discount || 0;
-
-                                                    return isOnPlan
-                                                        ? (basePrice * (1 - discount / 100)).toLocaleString()
-                                                        : basePrice.toLocaleString();
-                                                })()}
-                                            </p>
-
-                                            <p><b>Duration: </b>1 Month</p>
-                                            <p className="plText">{data.packages?.standard.info}</p>
-                                        </div>
-                                        <p className="fni" style={{
-                                            margin: "20px 0",
-                                            fontSize: ".8rem"
-                                        }}>
-                                            *All on a membership plan would recive a discount during checkout*
-                                        </p>
-                                        <Button full onClick={() => { handlePayment("standard") }}>Make Payment</Button>
-                                    </div>
-                                    <div className="planBox">
-                                        <div className="pBoxContent">
-                                            <div className="planImage" style={{
-                                                background: `url(https://i.pinimg.com/736x/bf/35/8b/bf358bc32786ac95d8783c8f3c07bbc5.jpg)`,
-                                                backgroundSize: "cover",
-                                                backgroundPosition: "center",
-                                                width: "100%"
-                                            }}>
-
-                                            </div>
-                                            <h2>{data.packages?.premium.name}</h2>
-
-                                            <p>
-                                                <b>Price: </b> NGN{" "}
-                                                {(() => {
-                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
-                                                    const basePrice = data?.packages?.premium?.plans?.[0]?.price || 0;
-                                                    const discount = data?.packages?.premium?.discount || 0;
-
-                                                    return isOnPlan
-                                                        ? (basePrice * (1 - discount / 100)).toLocaleString()
-                                                        : basePrice.toLocaleString();
-                                                })()}
-                                            </p>
-
-                                            <p><b>Duration: </b>1 Month</p>
-                                            <p className="plText">{data.packages?.premium.info}</p>
-                                        </div>
-                                        <p className="fni" style={{
-                                            margin: "20px 0",
-                                            fontSize: ".8rem"
-                                        }}>
-                                            *All on a membership plan would recive a discount during checkout*
-                                        </p>
-                                        <Button full onClick={() => { handlePayment("premium") }}>Make Payment</Button>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="plansWrap">
-                                <h2>Special Training Plans</h2>
-                                <div className="planList">
-                                    <div className="planBox">
-                                        <div className="pBoxContent">
-                                            <div className="planImage" style={{
-                                                background: `url(https://i.pinimg.com/736x/fd/c3/eb/fdc3eb1f8fa99c664e32e0bf27238816.jpg)`,
-                                                backgroundSize: "cover",
-                                                backgroundPosition: "center",
-                                                width: "100%"
-                                            }}>
-
-                                            </div>
-                                            <h2>{data.packages?.family.name}</h2>
-                                            <p>
-                                                <b>Price: </b> NGN{" "}
-                                                {(() => {
-                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
-                                                    const basePrice = data?.packages?.family?.plans?.[0]?.price || 0;
-                                                    const discount = data?.packages?.family?.discount || 0;
-
-                                                    return isOnPlan
-                                                        ? (basePrice * (1 - discount / 100)).toLocaleString()
-                                                        : basePrice.toLocaleString();
-                                                })()}
-                                            </p>
-                                            <p><b>Duration: </b>1 Month</p>
-                                            <p className="plText">{data.packages?.family.info}</p>
-                                        </div>
-                                        <p className="fni" style={{
-                                            margin: "20px 0",
-                                            fontSize: ".8rem"
-                                        }}>
-                                            *All on a membership plan would recive a discount during checkout*
-                                        </p>
-                                        <Button full onClick={() => {
-                                            handlePayment("family")
-                                        }}>Make Payment</Button>
-
-                                    </div>
-                                    <div className="planBox">
-                                        <div className="pBoxContent">
-                                            <div className="planImage" style={{
-                                                background: `url(https://i.pinimg.com/736x/4c/f8/1d/4cf81db6a2def537f469df3ec69350e4.jpg)`,
-                                                backgroundSize: "cover",
-                                                backgroundPosition: "center",
-                                                width: "100%"
-                                            }}>
-
-                                            </div>
-                                            <h2>{data.packages?.couples.name}</h2>
-                                            <p>
-                                                <b>Price: </b> NGN{" "}
-                                                {(() => {
-                                                    const isOnPlan = userSubData.data?.membership?.plan !== "none";
-                                                    const basePrice = data?.packages?.couples?.plans?.[0]?.price || 0;
-                                                    const discount = data?.packages?.couples?.discount || 0;
-
-                                                    return isOnPlan
-                                                        ? (basePrice * (1 - discount / 100)).toLocaleString()
-                                                        : basePrice.toLocaleString();
-                                                })()}
-                                            </p>
-                                            <p><b>Duration: </b>1 Month</p>
-                                            <p className="plText">{data.packages?.couples.info}</p>
-                                        </div>
-
-                                        <p className="fni" style={{
-                                            margin: "20px 0",
-                                            fontSize: ".8rem"
-                                        }}>
-                                            *All on a membership plan would recive a discount during checkout*
-                                        </p>
-                                        <Button full onClick={() => {
-                                            handlePayment("couples")
-                                        }}>Make Payment</Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </>
+                                )
+                            })
                     )
                 }
             </div>
         </div>
     )
 }
+
 
 export function BillingSummary({ action, dataFn, payDataRec, subData }) {
     const [status, setStatus] = useState(false)
@@ -533,13 +401,9 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
         }
 
         if (payData.type === "Training Package") {
-            const planType = parseInt(payData.planType); // ensure number
-
-            if (planType === 0) {
-                today.setMonth(today.getMonth() + 1);
-            } else if (planType === 1) {
-                today.setMonth(today.getMonth() + 3);
-            }
+            // The tier carries its own length, so any duration an admin configures reads correctly.
+            const months = dataFn.price?.[parseInt(payData.planType)]?.months || 0;
+            today.setMonth(today.getMonth() + months);
 
             const formatted = today.toLocaleDateString("en-US", {
                 year: "numeric",
@@ -562,10 +426,11 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
             }
 
             if (payData.type === "Training Package") {
-                const payLink = await payTraining(
-                    payData.key,
-                    Number(payData.planType) === 0 ? "1month" : "3months"
-                );
+                const months = dataFn.price?.[Number(payData.planType)]?.months;
+                if (!months) {
+                    throw new Error("Choose a duration for this training package.");
+                }
+                const payLink = await payTraining(payData.key, `${months}months`);
                 authorizationUrl = payLink?.paystackResponse?.data?.authorization_url;
             }
 
@@ -697,8 +562,12 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
                                                 value={payData.planType}
                                                 onChange={handleChange}
                                             >
-                                                <option value={0}>1 Month</option>
-                                                <option value={1}>3 Months</option>
+                                                {/* Durations come from the package, so an admin can sell any set of tiers. */}
+                                                {(dataFn.price || []).map((tier, index) => (
+                                                    <option key={tier.months} value={index}>
+                                                        {tier.months} Month{tier.months > 1 ? "s" : ""}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </>
                                     )}

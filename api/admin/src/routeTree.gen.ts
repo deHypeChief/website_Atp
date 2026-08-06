@@ -28,6 +28,7 @@ import { Route as AdminSettingsRouteImport } from './routes/_admin/settings'
 import { Route as AdminStoreRouteImport } from './routes/_admin/store'
 import { Route as AdminSubscriptionsRouteImport } from './routes/_admin/subscriptions'
 import { Route as AdminTournamentsRouteImport } from './routes/_admin/tournaments'
+import { Route as AdminTrainingPackagesRouteImport } from './routes/_admin/trainingPackages'
 import { Route as AdminUsersRouteImport } from './routes/_admin/users'
 import { Route as AuthCreateAdminRouteImport } from './routes/_auth/createAdmin'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgotPassword'
@@ -127,6 +128,11 @@ const AdminTournamentsRoute = AdminTournamentsRouteImport.update({
   path: '/tournaments',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTrainingPackagesRoute = AdminTrainingPackagesRouteImport.update({
+  id: '/trainingPackages',
+  path: '/trainingPackages',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/store': typeof AdminStoreRoute
   '/subscriptions': typeof AdminSubscriptionsRoute
   '/tournaments': typeof AdminTournamentsRoute
+  '/trainingPackages': typeof AdminTrainingPackagesRoute
   '/users': typeof AdminUsersRoute
   '/createAdmin': typeof AuthCreateAdminRoute
   '/forgotPassword': typeof AuthForgotPasswordRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/store': typeof AdminStoreRoute
   '/subscriptions': typeof AdminSubscriptionsRoute
   '/tournaments': typeof AdminTournamentsRoute
+  '/trainingPackages': typeof AdminTrainingPackagesRoute
   '/users': typeof AdminUsersRoute
   '/createAdmin': typeof AuthCreateAdminRoute
   '/forgotPassword': typeof AuthForgotPasswordRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/_admin/store': typeof AdminStoreRoute
   '/_admin/subscriptions': typeof AdminSubscriptionsRoute
   '/_admin/tournaments': typeof AdminTournamentsRoute
+  '/_admin/trainingPackages': typeof AdminTrainingPackagesRoute
   '/_admin/users': typeof AdminUsersRoute
   '/_auth/createAdmin': typeof AuthCreateAdminRoute
   '/_auth/forgotPassword': typeof AuthForgotPasswordRoute
@@ -243,6 +252,7 @@ export interface FileRouteTypes {
     | '/store'
     | '/subscriptions'
     | '/tournaments'
+    | '/trainingPackages'
     | '/users'
     | '/createAdmin'
     | '/forgotPassword'
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/store'
     | '/subscriptions'
     | '/tournaments'
+    | '/trainingPackages'
     | '/users'
     | '/createAdmin'
     | '/forgotPassword'
@@ -292,6 +303,7 @@ export interface FileRouteTypes {
     | '/_admin/store'
     | '/_admin/subscriptions'
     | '/_admin/tournaments'
+    | '/_admin/trainingPackages'
     | '/_admin/users'
     | '/_auth/createAdmin'
     | '/_auth/forgotPassword'
@@ -440,6 +452,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTournamentsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/trainingPackages': {
+      id: '/_admin/trainingPackages'
+      path: '/trainingPackages'
+      fullPath: '/trainingPackages'
+      preLoaderRoute: typeof AdminTrainingPackagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_admin/users': {
       id: '/_admin/users'
       path: '/users'
@@ -489,6 +508,7 @@ interface AdminRouteChildren {
   AdminStoreRoute: typeof AdminStoreRoute
   AdminSubscriptionsRoute: typeof AdminSubscriptionsRoute
   AdminTournamentsRoute: typeof AdminTournamentsRoute
+  AdminTrainingPackagesRoute: typeof AdminTrainingPackagesRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminCmsNewRoute: typeof AdminCmsNewRoute
 }
@@ -511,6 +531,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminStoreRoute: AdminStoreRoute,
   AdminSubscriptionsRoute: AdminSubscriptionsRoute,
   AdminTournamentsRoute: AdminTournamentsRoute,
+  AdminTrainingPackagesRoute: AdminTrainingPackagesRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminCmsNewRoute: AdminCmsNewRoute,
 }

@@ -6,6 +6,7 @@ import { sendMail } from "../middleware/sendMail";
 import { Subscription } from "./subscriptions/model";
 import CoachAssignment from "./coachAssigments/model";
 import Transaction from "./transactions/model";
+import TrainingPackage from "./subscriptions/trainingPackage.model";
 
 const verifySignature = (signature: string, payload: any, secretKey: string): boolean => {
     const hash = crypto.createHmac('sha512', secretKey)
@@ -221,17 +222,20 @@ async function handleChargeSuccess(data: any, mailConfig: any, generateAtpEmail:
 
             case 'training': {
                 billing.training.status = 'Paid';
-                const allowedTrainingPlans = ["none", "regular", "standard", "premium", "family", "couples"] as const;
-                billing.training.plan = allowedTrainingPlans.includes(normalizedPlanType as any)
-                    ? normalizedPlanType as typeof allowedTrainingPlans[number]
-                    : "none";
+
+                // Packages are admin managed, so the slug from the reference is checked
+                // against the collection rather than a fixed list. A package deleted after
+                // checkout still resolves here, since only the name lookup needs it.
+                const paidPackage = await TrainingPackage.findOne({ slug: normalizedPlanType }).lean();
+                billing.training.plan = paidPackage ? paidPackage.slug : normalizedPlanType || "none";
 
                 const trainingRenewalDate = new Date();
                 trainingRenewalDate.setMonth(trainingRenewalDate.getMonth() + duration);
                 billing.training.endDate = trainingRenewalDate;
                 billing.training.gracePeriod = addGracePeriod(trainingRenewalDate);
 
-                const label = billing.training.plan === "none" ? "Basic" : capitalize(billing.training.plan);
+                const label = paidPackage?.name
+                    ?? (billing.training.plan === "none" ? "Basic" : capitalize(billing.training.plan));
                 billName = `${label} Training (${duration} month${duration > 1 ? 's' : ''})`;
 
                 pType = "training";

@@ -22,6 +22,38 @@ import "../libs/styles/home-v2.css";
 
 const youthSlides=[kit1,kit2,kit3,kit4,kit5,kit6];
 
+/**
+ * The looping clip behind the coaching feature.
+ *
+ * It is decoration, so it stays muted and carries the still as its poster: the file is large
+ * and the poster is what fills the panel until enough of it has arrived. Readers who asked
+ * their system for reduced motion keep that still instead of the loop.
+ */
+function FeatureVideo(){
+  const [motionOk,setMotionOk]=useState(true);
+
+  useEffect(()=>{
+    const query=window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync=()=>setMotionOk(!query.matches);
+    sync();
+    query.addEventListener("change",sync);
+    return()=>query.removeEventListener("change",sync);
+  },[]);
+
+  if(!motionOk)return <img src={serveImage} alt="Professional player serving on a blue tennis court"/>;
+
+  return <video
+    src="/vid/coaching-feature.mp4"
+    poster={serveImage}
+    autoPlay
+    muted
+    loop
+    playsInline
+    preload="metadata"
+    aria-label="Coaching session on an ATP court"
+  />;
+}
+
 // Copy for these cards is admin-editable, so they are built per render from the copy store.
 const buildPrograms=copy=>[
   {image:serveImage,eyebrow:copy("home.programs.performance.eyebrow","Performance track"),title:copy("home.programs.performance.title","Train with intent"),text:copy("home.programs.performance.text","Structured sessions for players ready to build technique, movement and match confidence."),to:"/coaching"},
@@ -67,7 +99,7 @@ export default function Home(){
 
   <section className="homeIntro atpShell"><Reveal><SectionHeading eyebrow={copy("home.intro.eyebrow","Built around the player")} title={copy("home.intro.title","More than a place to hit balls.")} text={copy("home.intro.text","ATP combines structured training, real competition and a welcoming club culture so every player has a clear next step.")} action={<AtpButton to="/about" variant="navy">{copy("home.intro.cta","Meet ATP")}</AtpButton>}/></Reveal><div className="programGrid">{programs.map((program,index)=><Reveal key={program.title} delay={index*90}><SportCard {...program}/></Reveal>)}</div></section>
 
-  <section className="homeFeature"><div className="featureImage"><img src={serveImage} alt="Professional player serving on a blue tennis court"/><span className="featureBall"/></div><Reveal className="featureCopy"><p>{copy("home.feature.eyebrow","PLAY WITH A PLAN")}</p><h2>{copy("home.feature.title","A better game starts with better feedback.")}</h2><span>{copy("home.feature.text","Work with coaches who meet you at your level, then build every session around where you want to go.")}</span><AtpButton to="/coaching">{copy("home.feature.cta","Explore coaching")}</AtpButton><div className="featureMetrics"><div><strong>{copy("home.feature.metricOneValue","1:1")}</strong><small>{copy("home.feature.metricOneLabel","Personal coaching")}</small></div><div><strong>{copy("home.feature.metricTwoValue","All")}</strong><small>{copy("home.feature.metricTwoLabel","Skill levels")}</small></div></div></Reveal></section>
+  <section className="homeFeature"><div className="featureImage"><FeatureVideo/><span className="featureBall"/></div><Reveal className="featureCopy"><p>{copy("home.feature.eyebrow","PLAY WITH A PLAN")}</p><h2>{copy("home.feature.title","A better game starts with better feedback.")}</h2><span>{copy("home.feature.text","Work with coaches who meet you at your level, then build every session around where you want to go.")}</span><AtpButton to="/coaching">{copy("home.feature.cta","Explore coaching")}</AtpButton><div className="featureMetrics"><div><strong>{copy("home.feature.metricOneValue","1:1")}</strong><small>{copy("home.feature.metricOneLabel","Personal coaching")}</small></div><div><strong>{copy("home.feature.metricTwoValue","All")}</strong><small>{copy("home.feature.metricTwoLabel","Skill levels")}</small></div></div></Reveal></section>
 
   <section className="homeTournaments atpShell"><SectionHeading eyebrow={copy("home.tournaments.eyebrow","Competition calendar")} title={copy("home.tournaments.title","Put your game in play.")} text={copy("home.tournaments.text","Club tournaments turn training into match experience—competitive, organised and open to ATP players.")} action={<AtpButton to="/tournaments" variant="ghost">{copy("home.tournaments.cta","All tournaments")}</AtpButton>}/><div className="tournamentRows">{tournaments.slice(0,3).map((item,index)=><Reveal key={item._id||index} className="tournamentRow"><span>{String(index+1).padStart(2,"0")}</span><div><small>{item.tournamentType||"ATP Tournament"}</small><h3>{item.tournamentName||item.name}</h3></div><time>{item.startDate?new Date(item.startDate).toLocaleDateString(undefined,{month:"short",day:"numeric"}):"Coming soon"}</time><Icon icon="solar:arrow-right-up-linear"/></Reveal>)}{!tournaments.length&&<div className="atpEmpty">{copy("home.tournaments.empty","The next tournament draw is being prepared.")}</div>}</div></section>
 

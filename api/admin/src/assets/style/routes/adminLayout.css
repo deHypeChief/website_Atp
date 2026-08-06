@@ -13,8 +13,11 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 30px 10px 20px 20px;
+            overflow: hidden;
 
             .listMain {
+                flex-shrink: 0;
+
                 .logoInfo {
                     display: flex;
                     align-items: center;
@@ -88,6 +91,47 @@
                         }
                     }
                 }
+            }
+
+            /* scrollable nav column */
+            .listMainNav {
+                display: flex;
+                flex-direction: column;
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+
+            .listNav {
+                flex: 1 1 auto;
+                min-height: 0;
+                overflow-y: auto;
+                overscroll-behavior: contain;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .listNav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .listGroup {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .listGroup+.listGroup {
+                margin-top: 16px;
+            }
+
+            .listGroupLabel {
+                font-size: .65rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1.2px;
+                opacity: .4;
+                padding: 0 15px;
+                margin-bottom: 2px;
             }
         }
     }
