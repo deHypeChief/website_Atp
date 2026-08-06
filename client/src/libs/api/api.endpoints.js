@@ -358,3 +358,4 @@ export const getLiveDraws = async () => (await api.get('/match-centre/live')).da
 export const getRankings = async () => (await api.get('/leader/rankings')).data.rankings || [];
 
 
+export const getFriendlyFixtures = async () => (await api.get('/matchCustom/fixtures')).data.fixtures || [];

@@ -268,3 +268,5 @@ export const getTrainingPackages = async () => (await api.get('/billing/packages
 export const createTrainingPackage = async (payload:any) => (await api.post('/billing/packages/admin', payload)).data;
 export const updateTrainingPackage = async ({id,payload}:{id:string,payload:any}) => (await api.put(`/billing/packages/admin/${id}`, payload)).data;
 export const deleteTrainingPackage = async (id:string) => (await api.delete(`/billing/packages/admin/${id}`)).data;
+/** Removes the product outright. Past orders keep their own copy of it and are unaffected. */
+export const deleteStoreProduct = async (id:string) => (await api.delete(`/store/admin/products/${id}/permanent`)).data;

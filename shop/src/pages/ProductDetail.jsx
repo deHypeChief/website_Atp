@@ -39,10 +39,17 @@ export default function ProductDetail() {
   const selectedKey = cart.keyFor({ _id: product._id, size, color })
   const selectedLine = cart.items.find(item => cart.keyFor(item) === selectedKey)
   const quantity = selectedLine?.quantity || 0
+  // A colourway sells out on its own, so once one is chosen it — not the product total —
+  // is what limits the bag.
+  const colors = product.colors || []
+  const chosenColor = colors.find(option => option.name === color)
+  const available = chosenColor ? chosenColor.stock : product.stock
+  const allSoldOut = colors.length > 0 && colors.every(option => !option.stock)
   const add = () => {
     if (product.sizes?.length && !size) { setMessage('Choose your size before adding this piece.'); return }
-    if (product.colors?.length && !color) { setMessage('Choose your colour before adding this piece.'); return }
-    if (quantity >= product.stock) { setMessage(`All ${product.stock} available pieces are already in your bag.`); return }
+    if (colors.length && !color) { setMessage('Choose your colour before adding this piece.'); return }
+    if (!available) { setMessage(chosenColor ? `${color} is sold out.` : 'This piece is sold out.'); return }
+    if (quantity >= available) { setMessage(`All ${available} available pieces are already in your bag.`); return }
     cart.add(product, { size, color }); setMessage('Added to your ATP ROYALE bag.')
   }
   const decrease = () => {
@@ -62,15 +69,15 @@ export default function ProductDetail() {
         <p>{product.category} / {product.collection || 'ATP ROYALE'}</p>
         <h1>{product.name}</h1>
         <div className="RoyaleDetailPrice"><strong>{money(product.price)}</strong>{product.compareAtPrice > product.price && <del>{money(product.compareAtPrice)}</del>}</div>
-        <span className="RoyaleStock"><i className={product.stock ? '' : 'sold'} />{product.stock ? `${product.stock} ready to dispatch` : 'Currently sold out'}</span>
+        <span className="RoyaleStock"><i className={available && !allSoldOut ? '' : 'sold'} />{allSoldOut ? 'Currently sold out' : available ? `${available} ready to dispatch${chosenColor ? ` in ${chosenColor.name}` : ''}` : chosenColor ? `${chosenColor.name} is sold out` : 'Currently sold out'}</span>
         <p className="RoyaleDescription">{product.description}</p>
-        {product.colors?.length > 0 && <fieldset className="RoyaleOptions"><legend>Colour <span>{color || 'Select one'}</span></legend><div>{product.colors.map(value => <button type="button" className={color === value ? 'active' : ''} key={value} onClick={() => { setColor(value); setMessage('') }}>{value}</button>)}</div></fieldset>}
+        {colors.length > 0 && <fieldset className="RoyaleOptions"><legend>Colour <span>{color || 'Select one'}</span></legend><div>{colors.map(option => <button type="button" className={`${color === option.name ? 'active' : ''} ${option.stock ? '' : 'soldOut'}`} key={option.name} disabled={!option.stock} title={option.stock ? `${option.stock} available` : 'Sold out'} onClick={() => { setColor(option.name); setMessage('') }}>{option.name}{!option.stock && <em>Sold out</em>}</button>)}</div></fieldset>}
         {product.sizes?.length > 0 && <fieldset className="RoyaleOptions RoyaleSizes"><legend>Size <span>{size || 'Select one'}</span></legend><div>{product.sizes.map(value => <button type="button" className={size === value ? 'active' : ''} key={value} onClick={() => { setSize(value); setMessage('') }}>{value}</button>)}</div></fieldset>}
         {message && <p className="RoyaleAddMessage" aria-live="polite">{message}</p>}
         <div className="RoyaleQuantityControl" aria-label={`${product.name} quantity in bag`}>
           <button type="button" aria-label={`Decrease ${product.name} quantity`} disabled={!quantity} onClick={decrease}>−</button>
-          <span><small>{product.stock ? 'Quantity in bag' : 'Sold out'}</small><strong>{String(quantity).padStart(2, '0')}</strong></span>
-          <button type="button" aria-label={`Increase ${product.name} quantity`} disabled={!product.stock || quantity >= product.stock} onClick={add}>+</button>
+          <span><small>{available ? 'Quantity in bag' : 'Sold out'}</small><strong>{String(quantity).padStart(2, '0')}</strong></span>
+          <button type="button" aria-label={`Increase ${product.name} quantity`} disabled={!available || quantity >= available} onClick={add}>+</button>
         </div>
         <div className="RoyaleProductService"><div><Icon icon="solar:delivery-linear" /><span><strong>Nationwide delivery</strong>Tracked from ATP to your door.</span></div><div><Icon icon="solar:shield-check-linear" /><span><strong>Secure payment</strong>Protected checkout with Paystack.</span></div><div><Icon icon="solar:user-check-rounded-linear" /><span><strong>Player account</strong>Order updates live in your ATP dashboard.</span></div></div>
       </div>

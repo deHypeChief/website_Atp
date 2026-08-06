@@ -9,9 +9,13 @@ interface IParticipant {
 
 // Custom match structure
 interface ICustomMatch {
-    status: 'active' | 'completed';
+    status: 'draft' | 'active' | 'completed';
     matchType: '1v1' | '2v2';
     participants: IParticipant[];
+    // When and where the fixture is played. Both drive the player notification and the
+    // public fixtures ticker, so a fixture without them still saves but reads as "TBC".
+    scheduledAt?: Date;
+    venue?: string;
 }
 
 // Extending with Mongoose timestamps
@@ -43,6 +47,8 @@ const CustomMatchSchema = new Schema<ICustomMatchDocument>(
             enum: ['1v1', '2v2'],
             required: true
         },
+        scheduledAt: { type: Date },
+        venue: { type: String, trim: true, default: '' },
         participants: {
             type: [ParticipantSchema],
             validate: [

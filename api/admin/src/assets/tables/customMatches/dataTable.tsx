@@ -82,6 +82,9 @@ export function CustomMatchesTab<TData, TValue>({
     // A friendly is normally arranged before it is played, so "active" is the default.
     // Winners and scores are only required once it is moved to "completed".
     const [status, setStatus] = useState("active");
+    // Both go out in the notification, so players know when and where to turn up.
+    const [scheduledAt, setScheduledAt] = useState("");
+    const [venue, setVenue] = useState("");
     const [participants, setParticipants] = useState([
         { userId: "", winner: false, score: undefined as number | undefined }
     ]);
@@ -114,8 +117,7 @@ export function CustomMatchesTab<TData, TValue>({
     const queryClient = useQueryClient();
     const handleSubmit = async () => {
         try {
-            const res = await api.post("/matchCustom/create", { status, matchType, participants })
-            console.log(res.data)
+            await api.post("/matchCustom/create", { status, matchType, participants, scheduledAt, venue })
 
             setOpen(false);
             setParticipants([{
@@ -123,7 +125,8 @@ export function CustomMatchesTab<TData, TValue>({
                 winner: false,
                 score: 0
             }]);
-            console.log({ status, matchType, participants })
+            setScheduledAt("");
+            setVenue("");
             queryClient.invalidateQueries({ queryKey: ['customMatches'] });
             toast({
                 variant: "default",
@@ -239,6 +242,20 @@ export function CustomMatchesTab<TData, TValue>({
                                     <SelectItem value="completed">Completed — record the result now</SelectItem>
                                 </SelectContent>
                             </Select>
+
+                            <div className="grid gap-3">
+                                <label className="grid gap-1.5 text-sm">
+                                    Date and time
+                                    <Input type="datetime-local" value={scheduledAt} onChange={(event) => setScheduledAt(event.target.value)} />
+                                </label>
+                                <label className="grid gap-1.5 text-sm">
+                                    Venue
+                                    <Input placeholder="Abuja Court 1" value={venue} onChange={(event) => setVenue(event.target.value)} />
+                                </label>
+                                <p className="-mt-1 text-xs text-muted-foreground">
+                                    Both appear in the players&apos; notification and on the public fixtures ticker. Leave blank for &ldquo;to be confirmed&rdquo;.
+                                </p>
+                            </div>
 
                             <p className="mt-2 mb-2 font-semibold">Participants</p>
                             {status !== "completed" && <p className="-mt-1 mb-2 text-xs text-muted-foreground">Scores and winners can be left empty until the match has been played.</p>}
@@ -395,6 +412,18 @@ export function CustomMatchesTab<TData, TValue>({
                                 <div>
                                     <span className="text-muted-foreground">Participants</span>
                                     <p className="font-medium">{(selectedMatch as any).totalParticipants}</p>
+                                </div>
+                                <div>
+                                    <span className="text-muted-foreground">Scheduled For</span>
+                                    <p className="font-medium">
+                                        {(selectedMatch as any).scheduledAt
+                                            ? new Date((selectedMatch as any).scheduledAt).toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true })
+                                            : "To be confirmed"}
+                                    </p>
+                                </div>
+                                <div>
+                                    <span className="text-muted-foreground">Venue</span>
+                                    <p className="font-medium">{(selectedMatch as any).venue || "To be confirmed"}</p>
                                 </div>
                                 <div>
                                     <span className="text-muted-foreground">Created At</span>

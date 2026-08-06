@@ -33,7 +33,7 @@
 .RoyaleHeroWash { position: absolute; z-index: 1; inset: 0; background: linear-gradient(90deg, rgba(2,8,14,.9) 0%, rgba(2,8,14,.52) 46%, rgba(2,8,14,.08) 72%), linear-gradient(0deg, rgba(2,8,14,.66), transparent 44%); }
 .RoyaleHeroCopy { position: absolute; z-index: 2; left: var(--Royale-gutter); top: 50%; max-width: 700px; transform: translateY(-51%); animation: RoyaleRise .8s cubic-bezier(.2,.7,.2,1) both; }
 .RoyaleHeroCopy > p, .RoyaleSectionHeader p, .RoyaleManifestoCopy > p, .RoyaleMailing > div > p, .RoyaleCatalogHead > p, .RoyaleCartHead > div > p, .RoyalePageState > p, .RoyalePaymentState > div > p { font-size: .68rem; font-weight: 850; letter-spacing: .17em; text-transform: uppercase; color: var(--Royale-lime); }
-.RoyaleHeroCopy h1 { max-width: 680px; margin: 18px 0 22px; font: 900 clamp(4.3rem, 9vw, 9rem)/.78 var(--Royale-display); letter-spacing: -.035em; text-transform: uppercase; }
+.RoyaleHeroCopy h1 { max-width: 680px; margin: 18px 0 22px; font: 900 clamp(3rem, 6.2vw, 6rem)/.82 var(--Royale-display); letter-spacing: -.035em; text-transform: uppercase; }
 .RoyaleHeroCopy > span { display: block; max-width: 520px; color: #d5e0e6; font-size: clamp(.95rem, 1.4vw, 1.15rem); line-height: 1.65; }
 .RoyaleHeroCopy > div { margin-top: 34px; display: flex; align-items: center; gap: 28px; }
 .RoyaleButton { min-height: 50px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; background: var(--Royale-lime); color: var(--Royale-navy); border: 0; font-size: .72rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; transition: transform .2s ease, background .2s ease; }
@@ -169,7 +169,7 @@
 .RoyaleProductDetail { padding: 0 var(--Royale-gutter) 105px; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(380px, .72fr); gap: clamp(45px, 7vw, 110px); }
 .RoyaleGallery { min-width: 0; }
 .RoyaleMainImage { position: relative; min-height: 760px; height: calc(100vh - 170px); max-height: 980px; display: grid; place-items: center; overflow: hidden; background: var(--Royale-mist); color: #fff; font: 900 6rem/.8 var(--Royale-display); text-align: center; }
-.RoyaleMainImage img { width: 100%; height: 100%; object-fit: cover; }
+.RoyaleMainImage img { width: 100%; height: 100%; padding: clamp(24px, 4vw, 64px); object-fit: contain; object-position: center; }
 .RoyaleMainImage small { position: absolute; top: 20px; left: 20px; padding: 9px 11px; background: #fff; color: var(--Royale-navy); font: 800 .56rem var(--Royale-body); letter-spacing: .08em; text-transform: uppercase; }
 .RoyaleThumbs { padding-top: 10px; display: grid; grid-template-columns: repeat(5, 100px); gap: 9px; }
 .RoyaleThumbs button { aspect-ratio: .8; border: 2px solid transparent; background: transparent; cursor: pointer; }
@@ -177,7 +177,7 @@
 .RoyaleThumbs img { width: 100%; height: 100%; object-fit: cover; }
 .RoyaleProductCopy { padding-top: clamp(60px, 8vw, 120px); }
 .RoyaleProductCopy > p:first-child { color: var(--Royale-blue); font-size: .62rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
-.RoyaleProductCopy h1 { margin: 15px 0 19px; font: 900 clamp(3.1rem, 5.5vw, 6rem)/.84 var(--Royale-display); text-transform: uppercase; letter-spacing: -.035em; }
+.RoyaleProductCopy h1 { margin: 15px 0 19px; font: 900 clamp(2.1rem, 3.6vw, 3.6rem)/.9 var(--Royale-display); text-transform: uppercase; letter-spacing: -.035em; }
 .RoyaleDetailPrice { display: flex; gap: 15px; align-items: baseline; }
 .RoyaleDetailPrice strong { font-size: 1.35rem; }
 .RoyaleDetailPrice del { color: #82939d; }
@@ -320,7 +320,7 @@
   .RoyaleHero { height: 83svh; min-height: 600px; }
   .RoyaleHeroWash { background: linear-gradient(90deg, rgba(2,8,14,.9), rgba(2,8,14,.34)), linear-gradient(0deg, rgba(2,8,14,.68), transparent 48%); }
   .RoyaleHeroCopy { max-width: 76%; }
-  .RoyaleHeroCopy h1 { font-size: clamp(4.2rem, 15vw, 7rem); }
+  .RoyaleHeroCopy h1 { font-size: clamp(2.5rem, 10.5vw, 4.4rem); }
   .RoyaleDropBoard { top: auto; right: 0; bottom: 0; width: 190px; padding: 14px 16px; }
   .RoyaleDropBoard span, .RoyaleScrollCue { display: none; }
   .RoyaleTicker { justify-content: flex-start; overflow-x: auto; }
@@ -395,7 +395,7 @@
   .RoyaleProductDetail { padding-right: 0; padding-left: 0; gap: 35px; }
   .RoyaleMainImage { min-height: 470px; height: 70svh; }
   .RoyaleThumbs, .RoyaleProductCopy { margin-right: var(--Royale-gutter); margin-left: var(--Royale-gutter); }
-  .RoyaleProductCopy h1 { font-size: 3.3rem; }
+  .RoyaleProductCopy h1 { font-size: 2.3rem; }
   .RoyaleCartHead { flex-direction: column; gap: 20px; }
   .RoyaleCartHead > div:last-child { margin-bottom: 22px; }
   .RoyaleCartItems article { grid-template-columns: 22px 94px 1fr; gap: 10px; }
@@ -475,3 +475,8 @@
   .RoyaleOrderTotal { text-align: left; }
 }
 @media (prefers-reduced-motion: reduce) { .RoyaleOrdersLoading i { animation: none; } }
+
+/* A colourway that has sold out stays visible but unpickable, so the shopper can see the
+   product comes in it and that it will be back. */
+.RoyaleOptions button.soldOut { position: relative; opacity: .45; cursor: not-allowed; }
+.RoyaleOptions button.soldOut em { margin-left: 7px; font-size: .58rem; font-style: normal; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }

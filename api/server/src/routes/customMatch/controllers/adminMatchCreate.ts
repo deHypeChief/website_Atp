@@ -12,6 +12,23 @@ const opponentLine = (names: string[]) => {
     return ` You are up against ${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}.`;
 };
 
+/** "Saturday 9 August, 4:00 pm" — the detail a player needs to turn up. */
+const whenLine = (scheduledAt?: Date | null) => {
+    if (!scheduledAt) return " The date is still to be confirmed.";
+    const when = new Date(scheduledAt);
+    if (Number.isNaN(when.getTime())) return " The date is still to be confirmed.";
+    return ` It is set for ${when.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} at ${when.toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })}.`;
+};
+
+const venueLine = (venue?: string) => (venue?.trim() ? ` Venue: ${venue.trim()}.` : "");
+
+/** Reads the admin's datetime-local value. Blank clears the schedule; nonsense is rejected. */
+const readSchedule = (value?: string): Date | undefined | "invalid" => {
+    if (!value?.trim()) return undefined;
+    const when = new Date(value);
+    return Number.isNaN(when.getTime()) ? "invalid" : when;
+};
+
 const notifyParticipants = async (
     participantIds: string[],
     { title, message }: { title: string; message: (opponents: string) => string },
@@ -76,8 +93,9 @@ const adminMatchCreate = new Elysia()
     .use(isAdmin_Authenticated)
     .post("/matchCustom/create", async ({ set, body }) => {
         try {
-            const { status, matchType, participants } = body as {
+            const { status, matchType, participants, scheduledAt, venue } = body as {
                 status: string; matchType: string; participants: Array<{ userId: string; winner?: boolean; score?: number }>;
+                scheduledAt?: string; venue?: string;
             };
 
             const invalid = validateMatch(status, matchType, participants || []);
@@ -86,7 +104,13 @@ const adminMatchCreate = new Elysia()
                 return { error: invalid };
             }
 
-            const match = new CustomMatch({ status, matchType, participants });
+            const when = readSchedule(scheduledAt);
+            if (when === "invalid") {
+                set.status = 400;
+                return { error: "That date and time could not be read" };
+            }
+
+            const match = new CustomMatch({ status, matchType, participants, scheduledAt: when, venue: venue?.trim() || "" });
             await match.save();
 
             // Draft matches are not assignments yet — only tell players once the match is live.
@@ -94,8 +118,8 @@ const adminMatchCreate = new Elysia()
                 await notifyParticipants(participants.map(participant => participant.userId), {
                     title: status === "completed" ? "Your friendly match result is in" : "You have a new friendly match",
                     message: opponents => status === "completed"
-                        ? `Your ${matchType} friendly match has been scored.${opponents}`
-                        : `You have been matched for a ${matchType} friendly.${opponents}`,
+                        ? `Your ${matchType} friendly match has been scored.${opponents}${venueLine(venue)}`
+                        : `You have been matched for a ${matchType} friendly.${opponents}${whenLine(when)}${venueLine(venue)}`,
                 });
             }
 
@@ -118,6 +142,7 @@ const adminMatchCreate = new Elysia()
 
             const payload = body as {
                 status?: string; matchType?: string; participants?: Array<{ userId: string; winner?: boolean; score?: number }>;
+                scheduledAt?: string; venue?: string;
             };
             const status = payload.status ?? existing.status;
             const matchType = payload.matchType ?? existing.matchType;
@@ -131,14 +156,32 @@ const adminMatchCreate = new Elysia()
                 return { error: invalid };
             }
 
+            const when = payload.scheduledAt === undefined ? existing.scheduledAt : readSchedule(payload.scheduledAt);
+            if (when === "invalid") {
+                set.status = 400;
+                return { error: "That date and time could not be read" };
+            }
+            const venue = payload.venue === undefined ? existing.venue : payload.venue.trim();
+
             const becameFinal = existing.status !== "completed" && status === "completed";
-            existing.set({ status, matchType, participants });
+            // A fixture that moves is worth telling the players about, otherwise they turn
+            // up at the old time or place.
+            const rescheduled = !becameFinal && status !== "draft" && (
+                String(existing.scheduledAt ?? "") !== String(when ?? "") || (existing.venue ?? "") !== (venue ?? "")
+            );
+
+            existing.set({ status, matchType, participants, scheduledAt: when, venue });
             await existing.save();
 
             if (becameFinal) {
                 await notifyParticipants(participants.map(participant => participant.userId), {
                     title: "Your friendly match result is in",
-                    message: opponents => `Your ${matchType} friendly match has been scored.${opponents}`,
+                    message: opponents => `Your ${matchType} friendly match has been scored.${opponents}${venueLine(venue)}`,
+                });
+            } else if (rescheduled) {
+                await notifyParticipants(participants.map(participant => participant.userId), {
+                    title: "Your friendly match has moved",
+                    message: opponents => `Your ${matchType} friendly has been rescheduled.${opponents}${whenLine(when)}${venueLine(venue)}`,
                 });
             }
 
@@ -188,6 +231,8 @@ const adminMatchCreate = new Elysia()
                     matchId: match._id.toString(),
                     status: match.status,
                     matchType: match.matchType,
+                    scheduledAt: match.scheduledAt ?? null,
+                    venue: match.venue || "",
                     createdAt: match.createdAt,
                     updatedAt: match.updatedAt,
                     totalParticipants: enrichedParticipants.length,

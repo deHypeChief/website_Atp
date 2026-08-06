@@ -70,7 +70,7 @@ function AdminLayout() {
             )
         },
         {
-            name: "Match Centre",
+            name: "Tournament Center",
             group: "Competition",
             link: "/matches",
             icon: (<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@ function AdminLayout() {
             </svg>)
         },
         {
-            name: "Custom Matches",
+            name: "Friendly fixtures",
             group: "Competition",
             link: "/customMatches",
             icon: (<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@ function AdminLayout() {
             </svg>)
         },
         {
-            name: "Tournaments",
+            name: "Create Tournament",
             group: "Competition",
             link: "/tournaments",
             icon: (
@@ -120,7 +120,7 @@ function AdminLayout() {
             )
         },
         {
-            name: "Leaderboard",
+            name: "Tournament Leaderboard",
             group: "Competition",
             link: "/leaderboard",
             icon: (

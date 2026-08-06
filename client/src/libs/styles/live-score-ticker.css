@@ -15,6 +15,13 @@
 .liveTickerMatch div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}
 .liveTickerMatch div span{overflow:hidden;font-size:.65rem;font-weight:700;text-overflow:ellipsis;white-space:nowrap}
 .liveTickerMatch strong{font-size:.67rem;letter-spacing:.11em;white-space:nowrap}
+/* Friendly fixtures share the rail with tournament scores. The day is the anchor, so it
+   is the one part of the meta line that keeps full contrast. */
+.liveTickerCell{display:flex}
+.liveTickerFriendly small b{color:#fff;font-weight:900}
+.liveTickerFriendly.scheduled small b{color:#9be229}
+.liveTickerFriendly div span{display:flex;align-items:center;gap:6px}
+.liveTickerWin{flex:none;color:#f5c542;font-size:.8rem}
 .liveTickerOpen{display:grid;place-items:center;background:#9be229;color:#061f37;font-size:1.15rem;transition:background .2s ease}
 .liveTickerOpen:hover{background:#b2f442}
 @keyframes liveTickerUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
