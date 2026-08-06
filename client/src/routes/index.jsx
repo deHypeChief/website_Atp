@@ -22,6 +22,10 @@ import "../libs/styles/home-v2.css";
 
 const youthSlides=[kit1,kit2,kit3,kit4,kit5,kit6];
 
+// Served from the Cloudflare R2 bucket rather than client/public, so it is not copied into
+// every build or held in git history. Spaces and brackets in the object key are encoded.
+const FEATURE_VIDEO = "https://pub-461b8fda01464aa68816f519aa0a1fbd.r2.dev/ATP%20outfits%20%281%29.mp4";
+
 /**
  * The looping clip behind the coaching feature.
  *
@@ -43,7 +47,7 @@ function FeatureVideo(){
   if(!motionOk)return <img src={serveImage} alt="Professional player serving on a blue tennis court"/>;
 
   return <video
-    src="/vid/coaching-feature.mp4"
+    src={FEATURE_VIDEO}
     poster={serveImage}
     autoPlay
     muted
