@@ -5,85 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import round from "/round.svg"
 import { checkMatch, getTourPayLink, payDues, payTraining, setAutoRenew } from "../../libs/api/api.endpoints";
 import Button from "../../components/button/button";
-
-const plans = [
-    {
-        title: "Free Plan",
-        priceNGN: 0,
-        priceUSD: 0,
-        duration: "",
-        extra: "",
-        content: [
-            "Access to Dashboard",
-            "Access to ATP Tournaments Page",
-            "Join Free WhatsApp Community",
-            "Join Premium WhatsApp Community",
-            "Access to Progress Tracker",
-            "Training / Coaching Discounts",
-            "1 Free Training / Quarter",
-            "Exclusive Social Events",
-            "Tournament Priority Access & 5% Discount",
-            "Premium Badge on Dashboard",
-        ],
-    },
-    {
-        title: "Premium Monthly",
-        extra: "",
-        priceNGN: 6000,
-        priceUSD: 5,
-        duration: "monthly",
-        content: [
-            "Access to Dashboard",
-            "Access to ATP Tournaments Page",
-            "Join Free WhatsApp Community",
-            "Join Premium WhatsApp Community",
-            "Access to Progress Tracker",
-            "Training / Coaching Discounts",
-            "No Free Training / Quarter",
-            "Exclusive Social Events",
-            "Tournament Priority Access & 5% Discount",
-            "Premium Badge on Dashboard",
-        ],
-    },
-    {
-        title: "Premium Quarterly",
-        extra: "Save 17% on this plan",
-        priceNGN: 15000,
-        priceUSD: 10,
-        duration: "quarterly",
-        content: [
-            "Access to Dashboard",
-            "Access to ATP Tournaments Page",
-            "Join Free WhatsApp Community",
-            "Join Premium WhatsApp Community",
-            "Access to Progress Tracker",
-            "Training / Coaching Discounts",
-            "1 Free Training / Quarter",
-            "Exclusive Social Events",
-            "Tournament Priority Access & 5% Discount",
-            "Premium Badge on Dashboard",
-        ],
-    },
-    {
-        title: "Premium Yearly",
-        extra: "Save 3% on this plan",
-        priceNGN: 70000,
-        priceUSD: 50,
-        duration: "yearly",
-        content: [
-            "Access to Dashboard",
-            "Access to ATP Tournaments Page",
-            "Join Free WhatsApp Community",
-            "Join Premium WhatsApp Community",
-            "Access to Progress Tracker",
-            "Training / Coaching Discounts",
-            "1 Free Training / Quarter",
-            "Exclusive Social Events",
-            "Tournament Priority Access & 5% Discount",
-            "Premium Badge on Dashboard",
-        ],
-    },
-]
+import { MEMBERSHIP_PLANS as plans, perkIncluded } from "../../libs/membership-plans";
 
 export function BillingContent({ setAction }) {
     const [opens, setOpens] = useState(false)
@@ -143,24 +65,24 @@ export function BillingContent({ setAction }) {
                                                     </div>
                                                     <div className="contentList">
                                                         {
-                                                            item.content.map((item, i) => {
+                                                            item.content.map((perk, i) => {
                                                                 return (
-                                                                    <div key={item} className="priceListBox">
+                                                                    <div key={perk} className="priceListBox">
                                                                         <div className="pDot">
                                                                             <img src={round} alt="" />
                                                                         </div>
 
                                                                         {
-                                                                            i > 2 ? (
+                                                                            !perkIncluded(item, i) ? (
                                                                                 <p className="pContent" style={{
-                                                                                    textDecoration: index === 0 ? "line-through" : "",
-                                                                                    opacity: index === 0 ? ".6" : "",
+                                                                                    textDecoration: "line-through",
+                                                                                    opacity: ".6",
                                                                                 }}>
-                                                                                    {item}
+                                                                                    {perk}
                                                                                 </p>
                                                                             ) : (
                                                                                 <p className="pContent">
-                                                                                    {item}
+                                                                                    {perk}
                                                                                 </p>
                                                                             )
                                                                         }
@@ -350,7 +272,8 @@ export function BillingSummary({ action, dataFn, payDataRec, subData }) {
         type: dataFn.type || "Membership Package",
         plan: dataFn.plan || "Free Plan",
         price: dataFn.price,
-        planType: 0,
+        // A plan chosen on the public membership page arrives with its duration already picked.
+        planType: dataFn.planType ?? 0,
         autoRenew: false,
     });
 

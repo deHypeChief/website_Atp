@@ -26,6 +26,9 @@ async function seedOnce() {
                     slug,
                     name: seed.name,
                     category: SEED_SPECIAL.has(slug) ? "special" : "normal",
+                    // Family and couples are the packages the combo membership page was built for.
+                    audience: SEED_SPECIAL.has(slug) ? "combo" : "adult",
+                    coachLevels: [],
                     discount: seed.discount,
                     info: seed.info,
                     priceInfo: seed.priceInfo,
@@ -51,6 +54,21 @@ async function seedOnce() {
 /** Tiers shortest-first, so `plans[0]` stays the monthly price every caller already assumes. */
 const orderTiers = (plans: ITrainingTier[] = []) => [...plans].sort((a, b) => a.months - b.months);
 
+/** The fields a package is allowed to show outside the admin, in one place. */
+const publicPackage = (item: any) => ({
+    slug: item.slug,
+    name: item.name,
+    category: item.category,
+    // Packages predating the audience field belong to the page their category implies.
+    audience: item.audience || (item.category === "special" ? "combo" : "adult"),
+    coachLevels: item.coachLevels || [],
+    discount: item.discount,
+    info: item.info,
+    priceInfo: item.priceInfo,
+    image: item.image,
+    plans: orderTiers(item.plans).map(({ months, price, dollarPrice }) => ({ months, price, dollarPrice })),
+});
+
 async function listPackages({ includeInactive = false } = {}) {
     await seedOnce();
     return TrainingPackage
@@ -75,16 +93,7 @@ async function findPackage(slug: string) {
 async function billingConfig() {
     const list = await listPackages();
 
-    const packageList = list.map(item => ({
-        slug: item.slug,
-        name: item.name,
-        category: item.category,
-        discount: item.discount,
-        info: item.info,
-        priceInfo: item.priceInfo,
-        image: item.image,
-        plans: orderTiers(item.plans).map(({ months, price, dollarPrice }) => ({ months, price, dollarPrice })),
-    }));
+    const packageList = list.map(publicPackage);
 
     return {
         ...BillingConfig,
@@ -93,4 +102,4 @@ async function billingConfig() {
     };
 }
 
-export { billingConfig, findPackage, listPackages, orderTiers, TIER_MONTHS };
+export { billingConfig, findPackage, listPackages, orderTiers, publicPackage, TIER_MONTHS };

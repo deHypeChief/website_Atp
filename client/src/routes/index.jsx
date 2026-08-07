@@ -12,6 +12,7 @@ import youthImage from "../assets/brand/youth-training.jpg";
 import communityImage from "../assets/brand/club-community.jpg";
 import clubhousePreview from "../assets/product/clubhouse-preview.jpg";
 import StorePromo from "../components/store-promo/store-promo";
+import { MEMBERSHIP_PLANS, DURATION_SUFFIX, billingCheckoutPath, isSignedIn, membershipPayload, perkIncluded } from "../libs/membership-plans";
 import kit1 from "../assets/slides/kit-1.jpg";
 import kit2 from "../assets/slides/kit-2.jpg";
 import kit3 from "../assets/slides/kit-3.jpg";
@@ -64,11 +65,19 @@ const buildPrograms=copy=>[
   {image:youthImage,eyebrow:copy("home.programs.junior.eyebrow","Junior pathway"),title:copy("home.programs.junior.title","Start them strong"),text:copy("home.programs.junior.text","Age-aware coaching that makes every lesson active, safe and genuinely fun."),to:"/membership/children"},
   {image:communityImage,eyebrow:copy("home.programs.clubhouse.eyebrow","The clubhouse"),title:copy("home.programs.clubhouse.title","Find your people"),text:copy("home.programs.clubhouse.text","Talk tennis, challenge your instincts and stay connected beyond the final point."),to:"/community"},
 ];
-const buildMemberships=copy=>[
-  {name:copy("home.membership.free.name","Open court"),price:copy("home.membership.free.price","Free"),text:copy("home.membership.free.text","A player account, tournaments and the public ATP community.")},
-  {name:copy("home.membership.club.name","Club player"),price:copy("home.membership.club.price","₦6K"),suffix:copy("home.membership.club.suffix","/ month"),text:copy("home.membership.club.text","Training benefits, member events and priority tournament access."),featured:true},
-  {name:copy("home.membership.season.name","Season player"),price:copy("home.membership.season.price","₦15K"),suffix:copy("home.membership.season.suffix","/ quarter"),text:copy("home.membership.season.text","The complete club experience with better long-term value.")},
-];
+const money=value=>`₦${Number(value||0).toLocaleString()}`;
+
+/**
+ * Where a membership card sends someone.
+ *
+ * A paid tier opens the billing page with its payment summary already up; the free tier
+ * has nothing to charge for, so it just opens an account.
+ */
+const membershipHref=plan=>{
+  if(!plan.duration)return isSignedIn()?"/u":"/signup";
+  return billingCheckoutPath(membershipPayload(plan));
+};
+
 
 // Slides are stacked and cross-faded rather than moved on a track, so the wrap from the
 // last image back to the first has no seam and the loop runs indefinitely.
@@ -94,7 +103,6 @@ export default function Home(){
  // useCopy runs the same "site-content" query, so the page copy arrives with one request.
  const copy=useCopy();
  const programs=buildPrograms(copy);
- const memberships=buildMemberships(copy);
  const subscribe=async e=>{e.preventDefault();try{const result=await subscribeNewsletter(e.currentTarget.email.value);setMessage(result.message)}catch(error){setMessage(error.message)}};
  return <main className="homeV2">
   <PageHero eyebrow={copy("home.hero.eyebrow","Amateur Tennis Pro · Abuja")} title={<Lines>{copy("home.hero.title","Own the court.\nBuild your game.")}</Lines>} text={copy("home.hero.text","Training, competition and a tennis community built for every level of ambition.")} image={heroImage} actions={<><AtpButton to="/signup">{copy("home.hero.primaryCta","Join the club")}</AtpButton><AtpButton to="/coaching" variant="ghost">{copy("home.hero.secondaryCta","Find training")}</AtpButton></>}/>
@@ -107,7 +115,7 @@ export default function Home(){
 
   <section className="homeTournaments atpShell"><SectionHeading eyebrow={copy("home.tournaments.eyebrow","Competition calendar")} title={copy("home.tournaments.title","Put your game in play.")} text={copy("home.tournaments.text","Club tournaments turn training into match experience—competitive, organised and open to ATP players.")} action={<AtpButton to="/tournaments" variant="ghost">{copy("home.tournaments.cta","All tournaments")}</AtpButton>}/><div className="tournamentRows">{tournaments.slice(0,3).map((item,index)=><Reveal key={item._id||index} className="tournamentRow"><span>{String(index+1).padStart(2,"0")}</span><div><small>{item.tournamentType||"ATP Tournament"}</small><h3>{item.tournamentName||item.name}</h3></div><time>{item.startDate?new Date(item.startDate).toLocaleDateString(undefined,{month:"short",day:"numeric"}):"Coming soon"}</time><Icon icon="solar:arrow-right-up-linear"/></Reveal>)}{!tournaments.length&&<div className="atpEmpty">{copy("home.tournaments.empty","The next tournament draw is being prepared.")}</div>}</div></section>
 
-  <section className="homeMembership"><div className="atpShell"><SectionHeading light eyebrow={copy("home.membership.eyebrow","Membership")} title={copy("home.membership.title","Choose how you play.")} text={copy("home.membership.text","Start free. Move up when you want more training, access and club benefits.")}/><div className="membershipGrid">{memberships.map(plan=><Reveal key={plan.name} className={`memberCard ${plan.featured?"featured":""}`}><small>{plan.featured?"Most popular":"Membership"}</small><h3>{plan.name}</h3><p>{plan.text}</p><div><strong>{plan.price}</strong><span>{plan.suffix}</span></div><AtpButton to="/membership/adult" variant={plan.featured?"lime":"ghost"}>See membership</AtpButton></Reveal>)}</div></div></section>
+  <section className="homeMembership"><div className="atpShell"><SectionHeading light eyebrow={copy("home.membership.eyebrow","Membership")} title={copy("home.membership.title","Choose how you play.")} text={copy("home.membership.text","Start free. Move up when you want more training, access and club benefits.")} action={<AtpButton to="/membership/adult" variant="lime">{copy("home.membership.cta","See membership plans")}</AtpButton>}/><div className="membershipGrid">{MEMBERSHIP_PLANS.map((plan,index)=><Reveal key={plan.title} delay={index*70} className={`memberCard ${plan.extra?"featured":""}`}><small>{plan.extra||(plan.duration?"Membership":"Start here")}</small><h3>{plan.title}</h3><div className="memberPrice"><strong>{plan.priceNGN?money(plan.priceNGN):"Free"}</strong>{plan.duration&&<span>{DURATION_SUFFIX[plan.duration]}</span>}</div><ul className="memberPerks">{plan.content.map((perk,perkIndex)=>{const has=perkIncluded(plan,perkIndex);return <li key={perk} className={has?"":"isOff"}><Icon icon={has?"solar:check-circle-bold":"solar:close-circle-linear"}/>{perk}</li>})}</ul><AtpButton to={membershipHref(plan)} variant={plan.extra?"lime":"ghost"}>{plan.duration?"Choose this plan":"Create free account"}</AtpButton></Reveal>)}</div></div></section>
 
   <section className="homeYouth atpShell"><div className="youthCopy"><SectionHeading eyebrow={copy("home.youth.eyebrow","Junior tennis")} title={copy("home.youth.title","Confidence starts here.")} text={copy("home.youth.text","Our junior pathway gives young players the coaching, movement skills and encouragement to enjoy the game for life.")}/><AtpButton to="/gallery" variant="navy">{copy("home.youth.cta","See the gallery")}</AtpButton></div><Reveal className="youthImage"><SlideShow images={youthSlides}/><div><strong>{copy("home.youth.badgeValue","8–17")}</strong><span>{copy("home.youth.badgeLabel","Age-aware development")}</span></div></Reveal></section>
 

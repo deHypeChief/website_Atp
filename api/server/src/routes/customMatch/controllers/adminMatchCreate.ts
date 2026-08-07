@@ -4,6 +4,7 @@ import { CustomMatch } from "../model";
 import User from "../../user/model";
 import { isAdmin_Authenticated } from "../../../middleware/isAdminAuth";
 import { sendNotifications } from "../../notifications/service";
+import { atpEmail, sendAtpMail } from "../../../middleware/sendMail";
 
 // Tells each player who else is on the court, so the notification is useful on its own.
 const opponentLine = (names: string[]) => {
@@ -38,23 +39,46 @@ const notifyParticipants = async (
     // was created successfully.
     try {
         const players = await User.find({ _id: { $in: participantIds.filter(id => mongoose.isValidObjectId(id)) } })
-            .select("fullName username")
+            .select("fullName username email")
             .lean();
         const nameById = new Map(players.map(player => [
             player._id.toString(),
             player.fullName || player.username || "an ATP player",
         ]));
+        const emailById = new Map(players.map(player => [player._id.toString(), player.email]));
 
-        await sendNotifications(participantIds.map(userId => ({
-            userID: userId,
-            title,
-            message: message(opponentLine(
+        // Each player is told who they are up against, so the line differs per recipient.
+        const notices = participantIds.map(userId => ({
+            userId,
+            body: message(opponentLine(
                 participantIds.filter(id => id !== userId).map(id => nameById.get(id) || "an ATP player"),
             )),
+        }));
+
+        await sendNotifications(notices.map(({ userId, body }) => ({
+            userID: userId,
+            title,
+            message: body,
             type: "success" as const,
             category: "match" as const,
             link: "/u/matches",
         })));
+
+        // The same notice by email, so a fixture still reaches a player who is not logged in.
+        // Not awaited: SMTP is slow and the admin's save should not wait on it.
+        Promise.all(notices.map(({ userId, body }) => sendAtpMail(
+            emailById.get(userId) || "",
+            `ATP · ${title}`,
+            atpEmail({
+                title,
+                content: `
+              <p>Hi ${nameById.get(userId)},</p>
+              <p>${body}</p>
+              <p>Your fixtures are on your ATP dashboard under <strong>Friendly matches</strong>.</p>
+              <p>The ATP Team</p>
+            `,
+            }),
+        ))).catch(error => console.error("Failed to email match participants", error));
     } catch (notifyError) {
         console.error("Failed to notify match participants", notifyError);
     }
@@ -164,9 +188,12 @@ const adminMatchCreate = new Elysia()
             const venue = payload.venue === undefined ? existing.venue : payload.venue.trim();
 
             const becameFinal = existing.status !== "completed" && status === "completed";
+            // A draft is not an assignment, so publishing one is the players' first word of
+            // it — the same notification they would have had if it were never a draft.
+            const becamePublic = !becameFinal && existing.status === "draft" && status !== "draft";
             // A fixture that moves is worth telling the players about, otherwise they turn
             // up at the old time or place.
-            const rescheduled = !becameFinal && status !== "draft" && (
+            const rescheduled = !becameFinal && !becamePublic && status !== "draft" && (
                 String(existing.scheduledAt ?? "") !== String(when ?? "") || (existing.venue ?? "") !== (venue ?? "")
             );
 
@@ -177,6 +204,11 @@ const adminMatchCreate = new Elysia()
                 await notifyParticipants(participants.map(participant => participant.userId), {
                     title: "Your friendly match result is in",
                     message: opponents => `Your ${matchType} friendly match has been scored.${opponents}${venueLine(venue)}`,
+                });
+            } else if (becamePublic) {
+                await notifyParticipants(participants.map(participant => participant.userId), {
+                    title: "You have a new friendly match",
+                    message: opponents => `You have been matched for a ${matchType} friendly.${opponents}${whenLine(when)}${venueLine(venue)}`,
                 });
             } else if (rescheduled) {
                 await notifyParticipants(participants.map(participant => participant.userId), {

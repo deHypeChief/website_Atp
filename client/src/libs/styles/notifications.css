@@ -81,3 +81,99 @@
 .notificationList small {
   text-transform: uppercase;
 }
+
+/* The fixture a player is greeted with on arrival.
+   It repeats a notification they already have, so it stays a short, dismissible notice
+   rather than anything that blocks the dashboard behind it. */
+.fixtureAlert {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(6, 24, 46, 0.72);
+  backdrop-filter: blur(3px);
+  animation: fixtureAlertIn 0.2s ease;
+}
+
+.fixtureAlert > section {
+  width: min(460px, 100%);
+  padding: 34px;
+  background: #fff;
+  border-top: 5px solid var(--atp-lime);
+  box-shadow: 0 30px 70px rgba(6, 24, 46, 0.35);
+}
+
+.fixtureAlertMark {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: var(--atp-lime);
+  color: var(--atp-navy);
+  font-size: 1.4rem;
+}
+
+.fixtureAlert small {
+  color: var(--atp-blue);
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.fixtureAlert h2 {
+  margin: 9px 0 12px;
+  font: 900 1.9rem/1 var(--atp-display);
+  text-transform: uppercase;
+  color: var(--atp-navy);
+}
+
+.fixtureAlert p {
+  color: var(--atp-muted);
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
+.fixtureAlert > section > div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.fixtureAlert > section > div a,
+.fixtureAlert > section > div button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--atp-lime);
+  color: var(--atp-navy);
+  font-size: 0.63rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.fixtureAlert .fixtureAlertGhost {
+  background: none;
+  color: var(--atp-muted);
+}
+
+@keyframes fixtureAlertIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fixtureAlert { animation: none; }
+}

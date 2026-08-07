@@ -23,7 +23,6 @@ import { Route as AdminGalleryRouteImport } from './routes/_admin/gallery'
 import { Route as AdminLeaderboardRouteImport } from './routes/_admin/leaderboard'
 import { Route as AdminLinkedPlayersRouteImport } from './routes/_admin/linkedPlayers'
 import { Route as AdminMatchesRouteImport } from './routes/_admin/matches'
-import { Route as AdminPlanRouteImport } from './routes/_admin/plan'
 import { Route as AdminSettingsRouteImport } from './routes/_admin/settings'
 import { Route as AdminStoreRouteImport } from './routes/_admin/store'
 import { Route as AdminSubscriptionsRouteImport } from './routes/_admin/subscriptions'
@@ -103,11 +102,6 @@ const AdminMatchesRoute = AdminMatchesRouteImport.update({
   path: '/matches',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminPlanRoute = AdminPlanRouteImport.update({
-  id: '/plan',
-  path: '/plan',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -168,7 +162,6 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof AdminLeaderboardRoute
   '/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/matches': typeof AdminMatchesRoute
-  '/plan': typeof AdminPlanRoute
   '/settings': typeof AdminSettingsRoute
   '/store': typeof AdminStoreRoute
   '/subscriptions': typeof AdminSubscriptionsRoute
@@ -193,7 +186,6 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof AdminLeaderboardRoute
   '/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/matches': typeof AdminMatchesRoute
-  '/plan': typeof AdminPlanRoute
   '/settings': typeof AdminSettingsRoute
   '/store': typeof AdminStoreRoute
   '/subscriptions': typeof AdminSubscriptionsRoute
@@ -220,7 +212,6 @@ export interface FileRoutesById {
   '/_admin/leaderboard': typeof AdminLeaderboardRoute
   '/_admin/linkedPlayers': typeof AdminLinkedPlayersRoute
   '/_admin/matches': typeof AdminMatchesRoute
-  '/_admin/plan': typeof AdminPlanRoute
   '/_admin/settings': typeof AdminSettingsRoute
   '/_admin/store': typeof AdminStoreRoute
   '/_admin/subscriptions': typeof AdminSubscriptionsRoute
@@ -247,7 +238,6 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/linkedPlayers'
     | '/matches'
-    | '/plan'
     | '/settings'
     | '/store'
     | '/subscriptions'
@@ -272,7 +262,6 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/linkedPlayers'
     | '/matches'
-    | '/plan'
     | '/settings'
     | '/store'
     | '/subscriptions'
@@ -298,7 +287,6 @@ export interface FileRouteTypes {
     | '/_admin/leaderboard'
     | '/_admin/linkedPlayers'
     | '/_admin/matches'
-    | '/_admin/plan'
     | '/_admin/settings'
     | '/_admin/store'
     | '/_admin/subscriptions'
@@ -417,13 +405,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMatchesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_admin/plan': {
-      id: '/_admin/plan'
-      path: '/plan'
-      fullPath: '/plan'
-      preLoaderRoute: typeof AdminPlanRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/_admin/settings': {
       id: '/_admin/settings'
       path: '/settings'
@@ -503,7 +484,6 @@ interface AdminRouteChildren {
   AdminLeaderboardRoute: typeof AdminLeaderboardRoute
   AdminLinkedPlayersRoute: typeof AdminLinkedPlayersRoute
   AdminMatchesRoute: typeof AdminMatchesRoute
-  AdminPlanRoute: typeof AdminPlanRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStoreRoute: typeof AdminStoreRoute
   AdminSubscriptionsRoute: typeof AdminSubscriptionsRoute
@@ -526,7 +506,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLeaderboardRoute: AdminLeaderboardRoute,
   AdminLinkedPlayersRoute: AdminLinkedPlayersRoute,
   AdminMatchesRoute: AdminMatchesRoute,
-  AdminPlanRoute: AdminPlanRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStoreRoute: AdminStoreRoute,
   AdminSubscriptionsRoute: AdminSubscriptionsRoute,

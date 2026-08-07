@@ -136,7 +136,7 @@ export function CustomMatchesTab<TData, TValue>({
             console.error("Error creating custom match:", err);
             toast({
                 variant: "destructive",
-                title: "Error Creating Custom Match",
+                title: "Error Creating Friendly Match",
                 description: err.response?.data?.error ? err.response.data.error : err.message,
             });
         }
@@ -179,7 +179,7 @@ export function CustomMatchesTab<TData, TValue>({
 
     //  toast({
     //             variant: "destructive",
-    //             title: "Error Creating Custom Match",
+    //             title: "Error Creating Friendly Match",
     //             description: err.response.data.message ? err.response.data.message : err.message,
     //         });
 
@@ -208,7 +208,7 @@ export function CustomMatchesTab<TData, TValue>({
 
                     <DialogContent className="max-w-md max-h-[90vh] p-8 overflow-hidden">
                         <DialogHeader>
-                            <DialogTitle>Create Custom Match</DialogTitle>
+                            <DialogTitle>Create Friendly Match</DialogTitle>
                         </DialogHeader>
 
                         {/* Scrollable Body */}

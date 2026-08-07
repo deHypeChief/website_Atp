@@ -62,18 +62,6 @@ export async function getCoaches() {
 }
 
 
-export async function getPlans() {
-	try {
-		const response = await api.get(`/plan/getPlans`);
-		//console.log(response.data.plans)
-		return response.data.plans;
-	} catch (error) {
-		//console.error("Error getting coach:", error);
-		throw error;
-	}
-}
-
-
 export async function getLeaders() {
 	try {
 		const response = await api.get(`/leader/getLeaders`);

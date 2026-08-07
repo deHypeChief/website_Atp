@@ -17,7 +17,7 @@ function CustomMatches() {
     })
     return (
         <div className="matches">
-            <Header title='Custom matches' subText='Manage your custom matches here'></Header>
+            <Header title='Friendly Matches' subText='Arrange friendly fixtures and record their results'></Header>
 
             <div className="userData">
                 <CustomMatchesTab data={data?.matches || []} columns={columns} />

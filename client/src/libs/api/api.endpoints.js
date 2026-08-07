@@ -94,14 +94,47 @@ export const validateMatch = async (id, matchQuery) => {
   }
 };
 
-export const getPlans = async (type) => {
+/**
+ * Every membership plan an admin manages under Training Packages.
+ *
+ * The whole list is returned: the membership page groups it by `audience` and keeps the
+ * special plans visible from every page, so filtering here would hide them. Each package
+ * becomes one plan card, with its durations as the billing options.
+ */
+export const getPlans = async () => {
   try {
-    const response = await api.get(`/plan/getPlans/${type}`);
-    console.log(response.data.plans);
-    return response.data.plans;
+    const response = await api.get("/billing/packages");
+    const packages = Array.isArray(response.data?.packages) ? response.data.packages : [];
+    return packages.map((item) => {
+      const tiers = Array.isArray(item.plans) ? item.plans : [];
+      const isSpecial = item.category === "special";
+      return {
+        _id: item.slug,
+        slug: item.slug,
+        audience: item.audience,
+        isSpecial,
+        planName: item.name,
+        planImage: item.image,
+        priceInfo: item.priceInfo,
+        // Short enough for the card's eyebrow; `priceInfo` is a paragraph, not a label.
+        planLabel: isSpecial ? "Special plan" : "Training plan",
+        description: item.info,
+        // Shortest duration is the headline price; longer ones are the commitment options.
+        planPrice: tiers[0]?.price || 0,
+        filterPrams: item.coachLevels || [],
+        billingPlans: tiers.map((tier) => ({
+          _id: `${item.slug}-${tier.months}`,
+          interval: tier.months,
+          // A package's discount is what a member saves by committing beyond one month.
+          discountPercentage: tier.months > 1 ? item.discount || 0 : 0,
+          billingPrice: tier.price,
+          dollarPrice: tier.dollarPrice,
+        })),
+      };
+    });
   } catch (error) {
     console.error("Error fetching plans", error);
-    throw new Error(error.response.data.message);
+    return [];
   }
 };
 

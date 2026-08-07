@@ -24,10 +24,26 @@ export const Route = createFileRoute('/_admin/trainingPackages')({ component: Tr
  */
 
 const emptyPackage = {
-  name: '', slug: '', category: 'normal', discount: '0', info: '', priceInfo: '', image: '',
+  name: '', slug: '', category: 'normal', audience: 'adult', coachLevels: [] as string[],
+  discount: '0', info: '', priceInfo: '', image: '',
   order: '0', active: true,
   plans: [{ months: '1', price: '', dollarPrice: '' }, { months: '3', price: '', dollarPrice: '' }],
 }
+
+/** Which public membership page a package is offered on. */
+const AUDIENCES = [
+  { value: 'adult', label: 'Adult membership', page: '/membership/adult' },
+  { value: 'children', label: 'Children membership', page: '/membership/children' },
+  { value: 'combo', label: 'Combo membership', page: '/membership/combo' },
+]
+
+/** The levels a coach can be given, which is what the membership builder filters on. */
+const COACH_LEVELS = [
+  { value: 'kids', label: 'Kids' },
+  { value: 'regular', label: 'Regular' },
+  { value: 'standard', label: 'Standard' },
+  { value: 'premium', label: 'Premium' },
+]
 
 const money = (value: number) => `₦${Number(value || 0).toLocaleString('en-NG')}`
 
@@ -72,6 +88,9 @@ function TrainingPackages() {
     setForm({
       ...emptyPackage,
       ...item,
+      // Packages created before these fields existed fall back to the form's defaults.
+      audience: item.audience || (item.category === 'special' ? 'combo' : 'adult'),
+      coachLevels: item.coachLevels || [],
       discount: String(item.discount ?? 0),
       order: String(item.order ?? 0),
       // The package's own tiers, so a custom duration survives a round trip through this form.
@@ -138,6 +157,8 @@ function TrainingPackages() {
       name: form.name,
       slug: slugify(form.slug || form.name),
       category: form.category,
+      audience: form.audience,
+      coachLevels: form.coachLevels,
       discount: Number(form.discount) || 0,
       info: form.info,
       priceInfo: form.priceInfo,
@@ -154,7 +175,7 @@ function TrainingPackages() {
   ]
 
   return <div className="p-6 md:p-10 max-w-7xl mx-auto">
-    <Header title="Training packages" subText="Create, price and publish the training plans players buy on their billing page">
+    <Header title="Training packages" subText="Create, price and publish the plans shown on the public membership pages and bought on a player's billing page">
       <Button onClick={add}><PackagePlus className="h-4 w-4 mr-2" />Add package</Button>
     </Header>
 
@@ -175,8 +196,37 @@ function TrainingPackages() {
         </select>
       </Field>
 
+      <Field label="Membership page">
+        <select className="border rounded-md px-3 py-2 bg-background text-sm h-10" value={form.audience} onChange={event => setForm({ ...form, audience: event.target.value })}>
+          {AUDIENCES.map(audience => <option key={audience.value} value={audience.value}>{audience.label}</option>)}
+        </select>
+        <span className="text-xs text-muted-foreground">
+          Where visitors pick this plan: {AUDIENCES.find(audience => audience.value === form.audience)?.page}
+        </span>
+      </Field>
+
       <Field label="Member discount (%)"><Input type="number" min="0" max="100" value={form.discount} onChange={event => setForm({ ...form, discount: event.target.value })} /></Field>
       <Field label="Display order"><Input type="number" min="0" value={form.order} onChange={event => setForm({ ...form, order: event.target.value })} /></Field>
+
+      <div className="md:col-span-2 grid gap-2 text-sm">
+        <p>Coach levels offered with this plan</p>
+        <div className="flex flex-wrap gap-4">
+          {COACH_LEVELS.map(level => <label className="flex items-center gap-2" key={level.value}>
+            <input
+              type="checkbox"
+              checked={form.coachLevels.includes(level.value)}
+              onChange={event => setForm({
+                ...form,
+                coachLevels: event.target.checked
+                  ? [...form.coachLevels, level.value]
+                  : form.coachLevels.filter((entry: string) => entry !== level.value),
+              })}
+            />
+            {level.label}
+          </label>)}
+        </div>
+        <span className="text-xs text-muted-foreground">Narrows the coaches shown at step 2 of the membership form. Tick none to offer every coach.</span>
+      </div>
 
       {editing.new
         ? <Field label="Payment reference (letters and numbers only)">
@@ -260,6 +310,9 @@ function TrainingPackages() {
                 <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="font-semibold">{item.name}</h3>
                   <span className="text-xs bg-muted px-2 py-1 rounded">{item.slug}</span>
+                  <span className="text-xs bg-muted px-2 py-1 rounded">
+                    {AUDIENCES.find(audience => audience.value === (item.audience || (item.category === 'special' ? 'combo' : 'adult')))?.label}
+                  </span>
                   {!item.active && <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">Hidden</span>}
                   {item.discount > 0 && <span className="text-xs bg-primary/10 px-2 py-1 rounded">{item.discount}% member discount</span>}
                 </div>

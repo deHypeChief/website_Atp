@@ -9,10 +9,18 @@ function readPackageBody(body: any) {
     const plans = Array.isArray(body?.plans) ? body.plans : [];
     // Checkout resolves a tier by its length, so a duration may only appear once.
     const seenMonths = new Set<number>();
+    const category = body?.category === "special" ? "special" : "normal";
 
     return {
         name: String(body?.name ?? "").trim(),
-        category: body?.category === "special" ? "special" : "normal",
+        category,
+        // Which public membership page offers this package; a special one defaults to combo.
+        audience: ["adult", "children", "combo"].includes(body?.audience)
+            ? body.audience
+            : category === "special" ? "combo" : "adult",
+        coachLevels: (Array.isArray(body?.coachLevels) ? body.coachLevels : [])
+            .map((level: any) => String(level ?? "").trim())
+            .filter(Boolean),
         discount: Math.min(100, Math.max(0, Number(body?.discount) || 0)),
         info: String(body?.info ?? "").trim(),
         priceInfo: String(body?.priceInfo ?? "").trim(),

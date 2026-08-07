@@ -10,6 +10,10 @@ interface ITrainingPackage {
     slug: string;
     name: string;
     category: "normal" | "special";
+    /** Which public membership page offers this package: /membership/adult, /children or /combo. */
+    audience: "adult" | "children" | "combo";
+    /** Coach levels the membership builder offers with this package. Empty means every coach. */
+    coachLevels: string[];
     discount: number;
     info: string;
     priceInfo: string;
@@ -39,6 +43,9 @@ const TrainingPackageSchema = new mongoose.Schema<ITrainingPackage>({
     name: { type: String, required: true, trim: true },
     // "special" packages render under their own heading on the billing page.
     category: { type: String, enum: ["normal", "special"], default: "normal" },
+    // Decides which of the three public membership pages shows this package.
+    audience: { type: String, enum: ["adult", "children", "combo"], default: "adult" },
+    coachLevels: { type: [String], default: [] },
     discount: { type: Number, default: 0, min: 0, max: 100 },
     info: { type: String, default: "", trim: true },
     priceInfo: { type: String, default: "", trim: true },
