@@ -6,13 +6,21 @@ import {
   updateTrainingPackage,
 } from '@/apis/endpoints'
 import Header from '@/components/blocks/header/header'
+import InfoCard from '@/components/blocks/infoCard/infoCard'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { useCloudinary } from '@/hooks/use-cloudinary'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { ArrowDown, ArrowUp, ImagePlus, PackagePlus, Pencil, Plus, Trash2, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, Eye, ImagePlus, Layers, PackagePlus, Pencil, Plus, Sparkles, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/_admin/trainingPackages')({ component: TrainingPackages })
@@ -183,180 +191,224 @@ function TrainingPackages() {
       <Button onClick={add}><PackagePlus className="h-4 w-4 mr-2" />Add package</Button>
     </Header>
 
-    {error && <p className="mt-6 rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-8">
+      <InfoCard title="Total packages" info={packages.length} extraInfo="Across every membership page">
+        <Layers className="h-4 w-4 text-muted-foreground" />
+      </InfoCard>
+      <InfoCard title="Visible" info={packages.filter((item: any) => item.active).length} extraInfo="Shown on the billing page">
+        <Eye className="h-4 w-4 text-muted-foreground" />
+      </InfoCard>
+      <InfoCard title="Standard" info={packages.filter((item: any) => item.category === 'normal').length} extraInfo="In the main training grid">
+        <PackagePlus className="h-4 w-4 text-muted-foreground" />
+      </InfoCard>
+      <InfoCard title="Special" info={packages.filter((item: any) => item.category === 'special').length} extraInfo="Family & couples style plans">
+        <Sparkles className="h-4 w-4 text-muted-foreground" />
+      </InfoCard>
+    </div>
 
-    {editing && <form onSubmit={submit} className="mt-6 border rounded-xl p-6 bg-card grid md:grid-cols-2 gap-4">
-      <div className="md:col-span-2 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">{editing.new ? 'Add training package' : `Edit ${editing.name}`}</h2>
-        <Button type="button" variant="ghost" size="icon" onClick={close}><X /></Button>
-      </div>
+    <Dialog open={Boolean(editing)} onOpenChange={isOpen => { if (!isOpen) close() }}>
+      <DialogContent className="max-w-2xl max-h-[88vh] p-0 gap-0 flex flex-col">
+        <DialogHeader className="px-6 pt-6 pb-4 pr-10 border-b shrink-0">
+          <DialogTitle>{editing?.new ? 'Add training package' : editing?.name}</DialogTitle>
+          <DialogDescription>{editing?.new ? 'Set up a new plan for the billing page.' : 'Update pricing, coaches and visibility for this plan.'}</DialogDescription>
+        </DialogHeader>
 
-      <Field label="Package name"><Input required value={form.name} onChange={event => setForm({ ...form, name: event.target.value })} placeholder="Regular Package" /></Field>
+        <form onSubmit={submit} className="flex flex-col flex-1 min-h-0">
+          <div className="flex-1 overflow-y-auto px-6 py-5 grid gap-6">
+            {error && <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
 
-      <Field label="Category">
-        <select className="border rounded-md px-3 py-2 bg-background text-sm h-10" value={form.category} onChange={event => setForm({ ...form, category: event.target.value })}>
-          <option value="normal">Standard package</option>
-          <option value="special">Special package</option>
-        </select>
-      </Field>
+            <FormSection title="Basics">
+              <Field label="Package name"><Input required value={form.name} onChange={event => setForm({ ...form, name: event.target.value })} placeholder="Regular Package" /></Field>
 
-      <Field label="Membership page">
-        <select className="border rounded-md px-3 py-2 bg-background text-sm h-10" value={form.audience} onChange={event => setForm({ ...form, audience: event.target.value })}>
-          {AUDIENCES.map(audience => <option key={audience.value} value={audience.value}>{audience.label}</option>)}
-        </select>
-        <span className="text-xs text-muted-foreground">
-          Where visitors pick this plan: {AUDIENCES.find(audience => audience.value === form.audience)?.page}
-        </span>
-      </Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Category">
+                  <Select value={form.category} onValueChange={value => setForm({ ...form, category: value })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="normal">Standard package</SelectItem>
+                      <SelectItem value="special">Special package</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+                <Field label="Membership page">
+                  <Select value={form.audience} onValueChange={value => setForm({ ...form, audience: value })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {AUDIENCES.map(audience => <SelectItem key={audience.value} value={audience.value}>{audience.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
+              <p className="text-xs text-muted-foreground -mt-3">
+                Shown to visitors on {AUDIENCES.find(audience => audience.value === form.audience)?.page}
+              </p>
 
-      <Field label="Member discount (%)"><Input type="number" min="0" max="100" value={form.discount} onChange={event => setForm({ ...form, discount: event.target.value })} /></Field>
-      <Field label="Display order"><Input type="number" min="0" value={form.order} onChange={event => setForm({ ...form, order: event.target.value })} /></Field>
+              {editing?.new
+                ? <Field label="Payment reference">
+                  <Input value={form.slug} onChange={event => setForm({ ...form, slug: slugify(event.target.value) })} placeholder={slugify(form.name) || 'regular'} />
+                  <p className="text-xs text-muted-foreground">Letters and numbers only. Leave blank to build it from the name — it cannot be changed later.</p>
+                </Field>
+                : <Field label="Payment reference">
+                  <Input value={form.slug} disabled />
+                  <p className="text-xs text-muted-foreground">Fixed, because past payments and current subscribers point at it.</p>
+                </Field>}
+            </FormSection>
 
-      <div className="md:col-span-2 grid gap-2 text-sm">
-        <p>Coach levels offered with this plan</p>
-        <div className="flex flex-wrap gap-4">
-          {COACH_LEVELS.map(level => <label className="flex items-center gap-2" key={level.value}>
-            <input
-              type="checkbox"
-              checked={form.coachLevels.includes(level.value)}
-              onChange={event => setForm({
-                ...form,
-                coachLevels: event.target.checked
-                  ? [...form.coachLevels, level.value]
-                  : form.coachLevels.filter((entry: string) => entry !== level.value),
-              })}
-            />
-            {level.label}
-          </label>)}
-        </div>
-        <span className="text-xs text-muted-foreground">
-          Narrows the coaches shown at step 2 of the membership form. Tick none to offer every coach.
-          {form.coachIds.length > 0 && ' Ignored while specific coaches are picked below.'}
-        </span>
-      </div>
+            <Separator />
 
-      <div className="md:col-span-2 grid gap-2 text-sm">
-        <p>Specific coaches offered with this plan</p>
-        {!coaches.length
-          ? <span className="text-xs text-muted-foreground">No coaches created yet. Add them under Coaches first.</span>
-          : <div className="flex flex-wrap gap-x-4 gap-y-2">
-            {coaches.map((coach: any) => <label className="flex items-center gap-2" key={coach._id}>
-              <input
-                type="checkbox"
-                checked={form.coachIds.includes(String(coach._id))}
-                onChange={event => setForm({
-                  ...form,
-                  coachIds: event.target.checked
-                    ? [...form.coachIds, String(coach._id)]
-                    : form.coachIds.filter((entry: string) => entry !== String(coach._id)),
-                })}
-              />
-              {coach.coachName}<span className="text-xs text-muted-foreground">({coach.level})</span>
-            </label>)}
-          </div>}
-        <span className="text-xs text-muted-foreground">
-          When one or more coaches are picked, the membership form shows only these — the level filter above is not used.
-        </span>
-      </div>
+            <FormSection title="Pricing">
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Member discount (%)"><Input type="number" min="0" max="100" value={form.discount} onChange={event => setForm({ ...form, discount: event.target.value })} /></Field>
+                <Field label="Display order"><Input type="number" min="0" value={form.order} onChange={event => setForm({ ...form, order: event.target.value })} /></Field>
+              </div>
 
-      {editing.new
-        ? <Field label="Payment reference (letters and numbers only)">
-          <Input value={form.slug} onChange={event => setForm({ ...form, slug: slugify(event.target.value) })} placeholder={slugify(form.name) || 'regular'} />
-          <span className="text-xs text-muted-foreground">Used on the payment record. Leave blank to build it from the name. It cannot be changed later.</span>
-        </Field>
-        : <Field label="Payment reference">
-          <Input value={form.slug} disabled />
-          <span className="text-xs text-muted-foreground">Fixed, because past payments and current subscribers point at it.</span>
-        </Field>}
+              <div className="grid gap-2">
+                <Label>Durations and prices</Label>
+                {/* Keyed by position, not by months — a months key would remount the input mid-edit. */}
+                {form.plans.map((plan: any, index: number) => <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-3 border rounded-lg bg-muted/30 p-3 items-end" key={index}>
+                  <Field label="Months"><Input type="number" min="1" value={plan.months} onChange={event => setPlan(index, 'months', event.target.value)} /></Field>
+                  <Field label="Price (₦)"><Input type="number" min="0" value={plan.price} onChange={event => setPlan(index, 'price', event.target.value)} placeholder="Blank to drop" /></Field>
+                  <Field label="Price ($)"><Input type="number" min="0" value={plan.dollarPrice} onChange={event => setPlan(index, 'dollarPrice', event.target.value)} /></Field>
+                  <Button type="button" variant="ghost" size="icon" aria-label="Remove duration" disabled={form.plans.length < 2} onClick={() => removePlan(index)}><Trash2 className="h-4 w-4" /></Button>
+                </div>)}
+                <div><Button type="button" variant="outline" size="sm" onClick={addPlan}><Plus className="h-4 w-4 mr-2" />Add duration</Button></div>
+                <p className="text-xs text-muted-foreground">Players pick from these durations at checkout. Leave a price blank to drop that duration.</p>
+              </div>
+            </FormSection>
 
-      <label className="flex items-end gap-2 text-sm pb-2">
-        <input type="checkbox" checked={form.active} onChange={event => setForm({ ...form, active: event.target.checked })} />
-        Visible on the billing page
-      </label>
+            <Separator />
 
-      <label className="grid gap-2 text-sm md:col-span-2">Description
-        <Textarea required value={form.info} onChange={event => setForm({ ...form, info: event.target.value })} placeholder="Who this plan is for and where the training happens." />
-      </label>
+            <FormSection title="Coaches">
+              <div className="grid gap-2">
+                <Label>Coach levels offered with this plan</Label>
+                <div className="flex flex-wrap gap-2">
+                  {COACH_LEVELS.map(level => {
+                    const active = form.coachLevels.includes(level.value)
+                    return <button type="button" key={level.value}
+                      className={`text-sm px-3 py-1.5 rounded-full border transition-colors ${active ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-muted-foreground hover:bg-muted'}`}
+                      onClick={() => setForm({
+                        ...form,
+                        coachLevels: active ? form.coachLevels.filter((entry: string) => entry !== level.value) : [...form.coachLevels, level.value],
+                      })}
+                    >{level.label}</button>
+                  })}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Narrows the coaches shown at step 2 of the membership form. Leave none selected to offer every coach.
+                  {form.coachIds.length > 0 && ' Ignored while specific coaches are picked below.'}
+                </p>
+              </div>
 
-      <label className="grid gap-2 text-sm md:col-span-2">Pricing note
-        <Textarea value={form.priceInfo} onChange={event => setForm({ ...form, priceInfo: event.target.value })} placeholder="Any extras included with the plan." />
-      </label>
+              <div className="grid gap-2">
+                <Label>Specific coaches offered with this plan</Label>
+                {!coaches.length
+                  ? <p className="text-xs text-muted-foreground">No coaches created yet. Add them under Coaches first.</p>
+                  : <div className="border rounded-lg divide-y max-h-44 overflow-y-auto">
+                    {coaches.map((coach: any) => {
+                      const checked = form.coachIds.includes(String(coach._id))
+                      return <label className="flex items-center gap-3 px-3 py-2 text-sm cursor-pointer hover:bg-muted/50" key={coach._id}>
+                        <Checkbox
+                          checked={checked}
+                          onCheckedChange={value => setForm({
+                            ...form,
+                            coachIds: value
+                              ? [...form.coachIds, String(coach._id)]
+                              : form.coachIds.filter((entry: string) => entry !== String(coach._id)),
+                          })}
+                        />
+                        <span className="flex-1">{coach.coachName}</span>
+                        <Badge variant="secondary" className="font-normal">{coach.level}</Badge>
+                      </label>
+                    })}
+                  </div>}
+                <p className="text-xs text-muted-foreground">When one or more coaches are picked, the membership form shows only these.</p>
+              </div>
+            </FormSection>
 
-      <div className="md:col-span-2 grid gap-3">
-        <p className="text-sm font-medium">Durations and prices</p>
-        {/* Keyed by position, not by months — a months key would remount the input mid-edit. */}
-        {form.plans.map((plan: any, index: number) => <div className="grid sm:grid-cols-[1fr_1fr_1fr_auto] gap-3 border rounded-lg p-4 items-end" key={index}>
-          <Field label="Duration (months)"><Input type="number" min="1" value={plan.months} onChange={event => setPlan(index, 'months', event.target.value)} /></Field>
-          <Field label="Price (₦)"><Input type="number" min="0" value={plan.price} onChange={event => setPlan(index, 'price', event.target.value)} placeholder="Leave blank to drop" /></Field>
-          <Field label="Price ($)"><Input type="number" min="0" value={plan.dollarPrice} onChange={event => setPlan(index, 'dollarPrice', event.target.value)} /></Field>
-          <Button type="button" variant="ghost" size="icon" aria-label="Remove duration" disabled={form.plans.length < 2} onClick={() => removePlan(index)}><Trash2 className="h-4 w-4" /></Button>
-        </div>)}
-        <div>
-          <Button type="button" variant="outline" size="sm" onClick={addPlan}><Plus className="h-4 w-4 mr-2" />Add duration</Button>
-        </div>
-        <p className="text-xs text-muted-foreground">Players pick from these durations at checkout. Leave a price blank to drop that duration.</p>
-      </div>
+            <Separator />
 
-      <div className="md:col-span-2">
-        <p className="text-sm mb-2">Package image</p>
-        <div className="flex items-center gap-4">
-          {form.image && <div className="relative">
-            <img src={form.image} className="h-28 w-44 object-cover rounded border" alt="" />
-            <button type="button" aria-label="Remove image" className="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6" onClick={() => setForm({ ...form, image: '' })}>×</button>
-          </div>}
-          <label className="h-28 w-44 border border-dashed rounded grid place-items-center cursor-pointer text-sm">
-            <span className="grid justify-items-center gap-2"><ImagePlus />{uploading ? 'Uploading…' : form.image ? 'Replace image' : 'Upload image'}</span>
-            <input className="hidden" type="file" accept="image/*" disabled={uploading} onChange={event => upload(event.target.files?.[0] || null)} />
-          </label>
-        </div>
-      </div>
+            <FormSection title="Description">
+              <Field label="Plan description">
+                <Textarea required value={form.info} onChange={event => setForm({ ...form, info: event.target.value })} placeholder="Who this plan is for and where the training happens." />
+              </Field>
+              <Field label="Pricing note">
+                <Textarea value={form.priceInfo} onChange={event => setForm({ ...form, priceInfo: event.target.value })} placeholder="Any extras included with the plan." />
+              </Field>
+            </FormSection>
 
-      <div className="md:col-span-2 flex justify-between">
-        {!editing.new
-          ? <Button type="button" variant="ghost" className="text-destructive" disabled={remove.isPending} onClick={() => confirm(`Delete “${editing.name}”? Players already on it keep their current plan.`) && remove.mutate(editing._id)}>
-            <Trash2 className="h-4 w-4 mr-2" />{remove.isPending ? 'Deleting…' : 'Delete package'}
-          </Button>
-          : <span />}
-        <Button disabled={save.isPending || uploading}>{save.isPending ? 'Saving…' : 'Save package'}</Button>
-      </div>
-    </form>}
+            <Separator />
 
-    {isLoading ? <p className="py-12">Loading training packages…</p> : <div className="mt-8 grid gap-10">
+            <FormSection title="Media & visibility">
+              <div className="flex items-center gap-4">
+                {form.image && <div className="relative shrink-0">
+                  <img src={form.image} className="h-24 w-36 object-cover rounded-lg border" alt="" />
+                  <button type="button" aria-label="Remove image" className="absolute -top-2 -right-2 bg-foreground text-background rounded-full w-6 h-6 grid place-items-center text-sm leading-none" onClick={() => setForm({ ...form, image: '' })}>×</button>
+                </div>}
+                <label className="h-24 w-36 shrink-0 border border-dashed rounded-lg grid place-items-center cursor-pointer text-xs text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors">
+                  <span className="grid justify-items-center gap-1.5"><ImagePlus className="h-4 w-4" />{uploading ? 'Uploading…' : form.image ? 'Replace image' : 'Upload image'}</span>
+                  <input className="hidden" type="file" accept="image/*" disabled={uploading} onChange={event => upload(event.target.files?.[0] || null)} />
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border p-3">
+                <div>
+                  <p className="text-sm font-medium">Visible on the billing page</p>
+                  <p className="text-xs text-muted-foreground">Hide it to pull the plan from sale without deleting it.</p>
+                </div>
+                <Switch checked={form.active} onCheckedChange={checked => setForm({ ...form, active: checked })} />
+              </div>
+            </FormSection>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 border-t px-6 py-4 shrink-0 bg-muted/20">
+            {!editing?.new
+              ? <Button type="button" variant="ghost" className="text-destructive hover:text-destructive" disabled={remove.isPending} onClick={() => confirm(`Delete “${editing?.name}”? Players already on it keep their current plan.`) && remove.mutate(editing._id)}>
+                <Trash2 className="h-4 w-4 mr-2" />{remove.isPending ? 'Deleting…' : 'Delete package'}
+              </Button>
+              : <span />}
+            <Button disabled={save.isPending || uploading}>{save.isPending ? 'Saving…' : 'Save package'}</Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+
+    {isLoading ? <p className="py-12 text-sm text-muted-foreground">Loading training packages…</p> : <div className="mt-8 grid gap-10">
       {sections.map(section => {
         const items = packages.filter((item: any) => item.category === section.key)
         return <section key={section.key}>
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold">{section.title}</h2>
-            <p className="text-sm text-muted-foreground">{section.note}</p>
+          <div className="mb-4 flex items-baseline justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-semibold">{section.title}</h2>
+              <p className="text-sm text-muted-foreground">{section.note}</p>
+            </div>
+            <span className="text-xs text-muted-foreground shrink-0">{items.length} package{items.length === 1 ? '' : 's'}</span>
           </div>
 
           {!items.length
             ? <div className="rounded-xl border border-dashed p-10 text-center text-sm text-muted-foreground">No {section.title.toLowerCase()} yet.</div>
-            : <div className="grid gap-3">{items.map((item: any, index: number) => <article className="border rounded-xl p-4 bg-card flex flex-wrap items-center gap-4" key={item._id}>
+            : <div className="grid gap-3">{items.map((item: any, index: number) => <article className="border rounded-xl p-4 bg-card shadow-sm flex flex-wrap items-center gap-4 transition-colors hover:border-primary/30" key={item._id}>
               {item.image
-                ? <img src={item.image} className="w-24 h-20 object-cover rounded" alt="" />
-                : <div className="w-24 h-20 bg-muted grid place-items-center font-bold rounded text-xs">NO IMAGE</div>}
+                ? <img src={item.image} className="w-24 h-20 object-cover rounded-lg border" alt="" />
+                : <div className="w-24 h-20 bg-muted grid place-items-center rounded-lg text-muted-foreground">
+                    <PackagePlus className="h-6 w-6" />
+                  </div>}
 
               <div className="flex-1 min-w-[240px]">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <span className="text-xs bg-muted px-2 py-1 rounded">{item.slug}</span>
-                  <span className="text-xs bg-muted px-2 py-1 rounded">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h3 className="font-semibold mr-1">{item.name}</h3>
+                  <Badge variant="outline" className="font-mono font-normal text-muted-foreground">{item.slug}</Badge>
+                  <Badge variant="secondary">
                     {AUDIENCES.find(audience => audience.value === (item.audience || (item.category === 'special' ? 'combo' : 'adult')))?.label}
-                  </span>
-                  {!item.active && <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">Hidden</span>}
-                  {item.discount > 0 && <span className="text-xs bg-primary/10 px-2 py-1 rounded">{item.discount}% member discount</span>}
+                  </Badge>
+                  {!item.active && <Badge variant="outline" className="border-amber-300 bg-amber-50 text-amber-800">Hidden</Badge>}
+                  {item.discount > 0 && <Badge variant="outline" className="border-primary/30 bg-primary/5 text-primary">{item.discount}% member discount</Badge>}
                   {(item.coachIds || []).length > 0
-                    ? <span className="text-xs bg-muted px-2 py-1 rounded">
-                        {item.coachIds.length} linked coach{item.coachIds.length > 1 ? 'es' : ''}
-                      </span>
-                    : (item.coachLevels || []).length > 0 && <span className="text-xs bg-muted px-2 py-1 rounded">
-                        {item.coachLevels.join(', ')} coaches
-                      </span>}
+                    ? <Badge variant="secondary">{item.coachIds.length} linked coach{item.coachIds.length > 1 ? 'es' : ''}</Badge>
+                    : (item.coachLevels || []).length > 0 && <Badge variant="secondary">{item.coachLevels.join(', ')} coaches</Badge>}
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground mt-1.5">
                   {(item.plans || []).length
-                    ? item.plans.map((plan: any) => `${plan.months} month${plan.months > 1 ? 's' : ''} · ${money(plan.price)}`).join('   |   ')
+                    ? item.plans.map((plan: any) => `${plan.months} month${plan.months > 1 ? 's' : ''} · ${money(plan.price)}`).join('   ·   ')
                     : 'No prices set'}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{item.info}</p>
@@ -375,5 +427,12 @@ function TrainingPackages() {
 }
 
 function Field({ label, children }: { label: string, children: React.ReactNode }) {
-  return <label className="grid gap-2 text-sm">{label}{children}</label>
+  return <label className="grid gap-1.5 text-sm"><span className="font-medium">{label}</span>{children}</label>
+}
+
+function FormSection({ title, children }: { title: string, children: React.ReactNode }) {
+  return <section className="grid gap-4">
+    <h3 className="text-sm font-semibold">{title}</h3>
+    {children}
+  </section>
 }

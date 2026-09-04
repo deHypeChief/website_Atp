@@ -1,10 +1,10 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect, useLocation } from '@tanstack/react-router'
 import "../assets/style/routes/adminLayout.css"
 import { Header4 } from '@/components/typography'
 import { BadgeInfo, BrainCircuit, Images, MessagesSquare, Newspaper, PanelsTopLeft, ShoppingBag } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useAuth } from '@/hooks/use-auth'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const Route = createFileRoute('/_admin')({
     beforeLoad: async ({ context }) => {
@@ -19,6 +19,12 @@ export const Route = createFileRoute('/_admin')({
 
 function AdminLayout() {
     const { admin } = useAuth()
+    const { pathname } = useLocation()
+    // `.layoutRight` is its own scroll container (see adminLayout.css), so the window never
+    // scrolls here — following a nav link would otherwise leave the new page mid-scroll.
+    const layoutRightRef = useRef<HTMLDivElement>(null)
+    useEffect(() => { layoutRightRef.current?.scrollTo({ top: 0, left: 0, behavior: 'instant' }) }, [pathname])
+
     const links = [
         {
             name: "Community",
@@ -253,7 +259,7 @@ function AdminLayout() {
                     </div>
                 </div>
             </div>
-            <div className="layoutRight">
+            <div className="layoutRight" ref={layoutRightRef}>
                 <Outlet />
             </div>
         </section >
