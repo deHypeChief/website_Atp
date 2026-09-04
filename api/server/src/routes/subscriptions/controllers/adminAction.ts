@@ -21,6 +21,11 @@ function readPackageBody(body: any) {
         coachLevels: (Array.isArray(body?.coachLevels) ? body.coachLevels : [])
             .map((level: any) => String(level ?? "").trim())
             .filter(Boolean),
+        // Specific coaches offered with this package. Kept as-is (24-hex ids); when present the
+        // membership builder shows only these and ignores coachLevels.
+        coachIds: [...new Set((Array.isArray(body?.coachIds) ? body.coachIds : [])
+            .map((coachId: any) => String(coachId ?? "").trim())
+            .filter((coachId: string) => /^[a-fA-F0-9]{24}$/.test(coachId)))],
         discount: Math.min(100, Math.max(0, Number(body?.discount) || 0)),
         info: String(body?.info ?? "").trim(),
         priceInfo: String(body?.priceInfo ?? "").trim(),

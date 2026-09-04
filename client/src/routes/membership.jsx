@@ -55,6 +55,9 @@ export function MembershipAction({planData=[],type="adult"}){
   const {main,extras}=useMemo(()=>planGroups(planData,type),[planData,type]);
   const filteredCoaches=useMemo(()=>{
     if(!plan)return[];
+    // A plan can pin an explicit set of coaches; when it does, that list wins outright.
+    const ids=Array.isArray(plan.coachIds)?plan.coachIds:[];
+    if(ids.length)return coaches.filter(item=>ids.includes(String(item._id)));
     const levels=Array.isArray(plan.filterPrams)?plan.filterPrams:[];
     return levels.length?coaches.filter(item=>levels.includes(item.level)):coaches;
   },[coaches,plan]);

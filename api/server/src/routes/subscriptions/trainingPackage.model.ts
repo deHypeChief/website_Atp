@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 interface ITrainingTier {
     months: number;
@@ -14,6 +14,11 @@ interface ITrainingPackage {
     audience: "adult" | "children" | "combo";
     /** Coach levels the membership builder offers with this package. Empty means every coach. */
     coachLevels: string[];
+    /**
+     * Specific coaches offered with this package. When set, the membership builder shows only
+     * these coaches and ignores `coachLevels`. Empty falls back to the level filter.
+     */
+    coachIds: mongoose.Types.ObjectId[];
     discount: number;
     info: string;
     priceInfo: string;
@@ -46,6 +51,7 @@ const TrainingPackageSchema = new mongoose.Schema<ITrainingPackage>({
     // Decides which of the three public membership pages shows this package.
     audience: { type: String, enum: ["adult", "children", "combo"], default: "adult" },
     coachLevels: { type: [String], default: [] },
+    coachIds: { type: [{ type: Schema.Types.ObjectId, ref: "Coach" }], default: [] },
     discount: { type: Number, default: 0, min: 0, max: 100 },
     info: { type: String, default: "", trim: true },
     priceInfo: { type: String, default: "", trim: true },

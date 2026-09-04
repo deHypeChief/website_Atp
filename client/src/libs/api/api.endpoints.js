@@ -122,6 +122,8 @@ export const getPlans = async () => {
         // Shortest duration is the headline price; longer ones are the commitment options.
         planPrice: tiers[0]?.price || 0,
         filterPrams: item.coachLevels || [],
+        // When set, the coach step shows only these coaches and ignores the level filter.
+        coachIds: (item.coachIds || []).map(String),
         billingPlans: tiers.map((tier) => ({
           _id: `${item.slug}-${tier.months}`,
           interval: tier.months,

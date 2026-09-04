@@ -1,6 +1,7 @@
 import {
   createTrainingPackage,
   deleteTrainingPackage,
+  getCoaches,
   getTrainingPackages,
   updateTrainingPackage,
 } from '@/apis/endpoints'
@@ -24,7 +25,7 @@ export const Route = createFileRoute('/_admin/trainingPackages')({ component: Tr
  */
 
 const emptyPackage = {
-  name: '', slug: '', category: 'normal', audience: 'adult', coachLevels: [] as string[],
+  name: '', slug: '', category: 'normal', audience: 'adult', coachLevels: [] as string[], coachIds: [] as string[],
   discount: '0', info: '', priceInfo: '', image: '',
   order: '0', active: true,
   plans: [{ months: '1', price: '', dollarPrice: '' }, { months: '3', price: '', dollarPrice: '' }],
@@ -61,6 +62,7 @@ function TrainingPackages() {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const { data: packages = [], isLoading } = useQuery({ queryKey: ['training-packages'], queryFn: getTrainingPackages })
+  const { data: coaches = [] } = useQuery({ queryKey: ['coaches'], queryFn: getCoaches })
 
   const close = () => { setEditing(null); setForm(emptyPackage); setError('') }
   const refresh = () => qc.invalidateQueries({ queryKey: ['training-packages'] })
@@ -91,6 +93,7 @@ function TrainingPackages() {
       // Packages created before these fields existed fall back to the form's defaults.
       audience: item.audience || (item.category === 'special' ? 'combo' : 'adult'),
       coachLevels: item.coachLevels || [],
+      coachIds: (item.coachIds || []).map(String),
       discount: String(item.discount ?? 0),
       order: String(item.order ?? 0),
       // The package's own tiers, so a custom duration survives a round trip through this form.
@@ -158,7 +161,8 @@ function TrainingPackages() {
       slug: slugify(form.slug || form.name),
       category: form.category,
       audience: form.audience,
-      coachLevels: form.coachLevels,
+      coachLevels: form.coachIds.length ? [] : form.coachLevels,
+      coachIds: form.coachIds,
       discount: Number(form.discount) || 0,
       info: form.info,
       priceInfo: form.priceInfo,
@@ -225,7 +229,34 @@ function TrainingPackages() {
             {level.label}
           </label>)}
         </div>
-        <span className="text-xs text-muted-foreground">Narrows the coaches shown at step 2 of the membership form. Tick none to offer every coach.</span>
+        <span className="text-xs text-muted-foreground">
+          Narrows the coaches shown at step 2 of the membership form. Tick none to offer every coach.
+          {form.coachIds.length > 0 && ' Ignored while specific coaches are picked below.'}
+        </span>
+      </div>
+
+      <div className="md:col-span-2 grid gap-2 text-sm">
+        <p>Specific coaches offered with this plan</p>
+        {!coaches.length
+          ? <span className="text-xs text-muted-foreground">No coaches created yet. Add them under Coaches first.</span>
+          : <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {coaches.map((coach: any) => <label className="flex items-center gap-2" key={coach._id}>
+              <input
+                type="checkbox"
+                checked={form.coachIds.includes(String(coach._id))}
+                onChange={event => setForm({
+                  ...form,
+                  coachIds: event.target.checked
+                    ? [...form.coachIds, String(coach._id)]
+                    : form.coachIds.filter((entry: string) => entry !== String(coach._id)),
+                })}
+              />
+              {coach.coachName}<span className="text-xs text-muted-foreground">({coach.level})</span>
+            </label>)}
+          </div>}
+        <span className="text-xs text-muted-foreground">
+          When one or more coaches are picked, the membership form shows only these — the level filter above is not used.
+        </span>
       </div>
 
       {editing.new
@@ -315,6 +346,13 @@ function TrainingPackages() {
                   </span>
                   {!item.active && <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">Hidden</span>}
                   {item.discount > 0 && <span className="text-xs bg-primary/10 px-2 py-1 rounded">{item.discount}% member discount</span>}
+                  {(item.coachIds || []).length > 0
+                    ? <span className="text-xs bg-muted px-2 py-1 rounded">
+                        {item.coachIds.length} linked coach{item.coachIds.length > 1 ? 'es' : ''}
+                      </span>
+                    : (item.coachLevels || []).length > 0 && <span className="text-xs bg-muted px-2 py-1 rounded">
+                        {item.coachLevels.join(', ')} coaches
+                      </span>}
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
                   {(item.plans || []).length

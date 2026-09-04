@@ -62,6 +62,8 @@ const publicPackage = (item: any) => ({
     // Packages predating the audience field belong to the page their category implies.
     audience: item.audience || (item.category === "special" ? "combo" : "adult"),
     coachLevels: item.coachLevels || [],
+    // When set, the membership builder shows only these coaches and ignores coachLevels.
+    coachIds: (item.coachIds || []).map(String),
     discount: item.discount,
     info: item.info,
     priceInfo: item.priceInfo,
