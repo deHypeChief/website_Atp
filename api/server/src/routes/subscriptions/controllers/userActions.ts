@@ -197,7 +197,11 @@ const subscriptions = new Elysia()
         } catch (err) {
             console.error(err);
             set.status = 500;
-            return { message: "Error creating training subscription" };
+            return {
+                message: err instanceof Error && err.message.startsWith("PAYSTACK_SECRET_KEY")
+                    ? "Payment setup is incomplete. Add a valid Paystack secret key to the API environment."
+                    : "Unable to start training payment. Please try again."
+            };
         }
     })
     .get("/pay/callback/:type/:subType/:duration/:autoRenew", async ({

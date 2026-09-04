@@ -135,7 +135,7 @@ export function MembershipAction({planData=[],type="adult"}){
         {filteredCoaches.map(item=>
           <button key={item._id} className={coach?._id===item._id?"selected":""} onClick={()=>setCoach(item)}>
             {item.imageUrl?<img src={item.imageUrl} alt={item.coachName}/>:<span>{item.coachName?.charAt(0)}</span>}
-            <div><small>{item.level}</small><h3>{item.coachName}</h3>{item.price>0&&<p>{money(item.price)} / month</p>}</div>
+            <div><h3>{item.coachName}</h3>{item.bioInfo&&<p>{item.bioInfo}</p>}</div>
             <Icon icon={coach?._id===item._id?"solar:check-circle-bold":"solar:arrow-right-linear"}/>
           </button>)}
         {!filteredCoaches.length&&<p className="pageState">{copy("membership.empty.coaches","No matching coaches are available yet.")}</p>}
