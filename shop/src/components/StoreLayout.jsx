@@ -40,12 +40,13 @@ export default function StoreLayout() {
         <div className="RoyaleCategoryNav">{categories.map(([label, to]) => <Link className={isCurrentCategory(to) ? 'active' : undefined} aria-current={isCurrentCategory(to) ? 'page' : undefined} key={label} to={to}>{label}</Link>)}</div>
         <Link className="RoyaleBrand" to="/" aria-label="ATP ROYALE home"><img src={crest} alt="" /><span><strong>ATP ROYALE</strong><small>OFFICIAL CLUB STORE</small></span></Link>
         <div className="RoyaleTools">
-          <Link to="/catalog?focus=search" aria-label="Search products"><Icon icon="solar:magnifer-linear" /><span>Search</span></Link>
+          <a className="RoyaleBackHome" href={CLIENT_URL} aria-label="Back to the ATP International website"><Icon icon="solar:arrow-left-linear" /><b>ATP</b></a>
+          <Link className="RoyaleSearchLink" to="/catalog?focus=search" aria-label="Search products"><Icon icon="solar:magnifer-linear" /><span>Search</span></Link>
           {user ? <div className="RoyaleAccount"><a href={`${CLIENT_URL}/u`}>{(user.fullName || user.username || 'Player').split(' ')[0]}</a><button onClick={signOut}>Sign out</button></div> : <Link to={clientAuthUrl('login', `${location.pathname}${location.search}`)} aria-label="Sign in"><Icon icon="solar:user-rounded-linear" /><span>Sign in</span></Link>}
           <Link className="RoyaleBag" to="/cart" aria-label={`Bag with ${cart.count} items`}><Icon icon="solar:bag-3-linear" /><span>Bag</span><b>{cart.count}</b></Link>
         </div>
       </nav>
-      {menuOpen && <div className="RoyaleMobileNav">{categories.map(([label, to]) => <Link className={isCurrentCategory(to) ? 'active' : undefined} aria-current={isCurrentCategory(to) ? 'page' : undefined} key={label} to={to} onClick={() => setMenuOpen(false)}>{label}<Icon icon="solar:arrow-right-linear" /></Link>)}<Link to="/catalog?focus=search" onClick={() => setMenuOpen(false)}>Search products</Link>{user ? <a href={`${CLIENT_URL}/u`}>Player dashboard</a> : <><Link to={clientAuthUrl('login', location.pathname)}>Sign in</Link><Link to={clientAuthUrl('signup', location.pathname)}>Create ATP account</Link></>}</div>}
+      {menuOpen && <div className="RoyaleMobileNav"><a className="RoyaleMobileBack" href={CLIENT_URL} onClick={() => setMenuOpen(false)}><Icon icon="solar:arrow-left-linear" />Back to ATP International</a>{categories.map(([label, to]) => <Link className={isCurrentCategory(to) ? 'active' : undefined} aria-current={isCurrentCategory(to) ? 'page' : undefined} key={label} to={to} onClick={() => setMenuOpen(false)}>{label}<Icon icon="solar:arrow-right-linear" /></Link>)}<Link to="/catalog?focus=search" onClick={() => setMenuOpen(false)}>Search products</Link>{user ? <a href={`${CLIENT_URL}/u`}>Player dashboard</a> : <><Link to={clientAuthUrl('login', location.pathname)}>Sign in</Link><Link to={clientAuthUrl('signup', location.pathname)}>Create ATP account</Link></>}</div>}
     </header>
     <main id="Royale-main"><Outlet /></main>
     <footer className="RoyaleFooter">

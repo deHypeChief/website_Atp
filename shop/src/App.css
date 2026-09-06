@@ -17,6 +17,12 @@
 .RoyaleBrand strong { font: 900 1.28rem/.9 var(--Royale-display); letter-spacing: .05em; white-space: nowrap; }
 .RoyaleBrand small { margin-top: 4px; font-size: .43rem; font-weight: 800; letter-spacing: .15em; color: var(--Royale-lime); }
 .RoyaleTools { justify-self: end; }
+/* The store lives on its own subdomain, so the way back to the main ATP site has to be a
+   visible header action, not just a footer link. */
+.RoyaleBackHome { padding: 7px 11px 7px 9px; border: 1px solid rgba(255,255,255,.32); border-radius: 99px; transition: background .25s ease, border-color .25s ease; }
+.RoyaleBackHome:hover { background: rgba(255,255,255,.1); border-color: var(--Royale-lime); }
+.RoyaleBackHome svg { font-size: 1.05rem; }
+.RoyaleBackHome b { font-size: .68rem; font-weight: 800; letter-spacing: .08em; }
 .RoyaleTools > a { display: inline-flex; align-items: center; gap: 6px; }
 .RoyaleTools svg { font-size: 1.3rem; }
 .RoyaleAccount { position: relative; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
@@ -25,6 +31,7 @@
 .RoyaleMenuButton { display: none; width: 42px; height: 42px; place-items: center; background: none; border: 0; color: #fff; cursor: pointer; }
 .RoyaleMenuButton svg { font-size: 1.55rem; }
 .RoyaleMobileNav { padding: 5px var(--Royale-gutter) 24px; display: grid; background: var(--Royale-ink); }
+.RoyaleMobileBack { justify-content: flex-start !important; gap: 9px; color: var(--Royale-lime) !important; }
 .RoyaleMobileNav a { padding: 15px 0; display: flex; justify-content: space-between; color: #fff; border-bottom: 1px solid rgba(255,255,255,.15); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 
 .RoyaleHero { position: relative; height: calc(100svh - 78px); min-height: 650px; overflow: hidden; background: var(--Royale-navy); color: #fff; }
@@ -353,7 +360,7 @@
   .RoyaleBrand img { width: 48px; }
   .RoyaleBrand > span { padding-left: 8px; }
   .RoyaleBrand strong { font-size: 1.05rem; }
-  .RoyaleTools > a:first-child { display: none; }
+  .RoyaleSearchLink { display: none; }
   .RoyaleHero { height: 78svh; min-height: 570px; }
   .RoyaleHeroCopy { top: auto; bottom: 83px; max-width: none; transform: none; animation-name: RoyaleRiseMobile; }
   @keyframes RoyaleRiseMobile { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
